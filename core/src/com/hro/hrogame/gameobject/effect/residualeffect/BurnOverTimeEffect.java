@@ -77,6 +77,7 @@ public class BurnOverTimeEffect extends Effect {
     protected void execute() {
         if (maxDamageAmount <= 0) owner.removeEffect(this);
         else {
+            if (owner.isInvincible()) return;
             owner.takeDamage(this, data.damage);
             maxDamageAmount -= data.damage;
 

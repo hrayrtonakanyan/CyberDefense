@@ -22,6 +22,10 @@ public class ParametrsConstants {
     public static final float TARGET_BULLET_HEIGHT = 20.12f;
     // endregion
 
+    // region ShieldOverTimeEffect params
+    public static final float SHIELD_OVER_TIME_EFFECT_DURATION = 20;
+    // endregion
+
     // region StunOverTimeEffect params
     public static final float STUN_OVER_TIME_EFFECT_DURATION = 5;
     // endregion

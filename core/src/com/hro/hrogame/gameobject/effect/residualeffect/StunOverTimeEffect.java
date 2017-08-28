@@ -31,7 +31,6 @@ public class StunOverTimeEffect extends Effect {
     // endregion
 
     // region Add on initialization
-    // region Add on initialization
     private void addStunOverTimeEffectAnimation() {
         ParticleEffect particleEffect = new ParticleEffect();
         particleEffect.load(Gdx.files.internal("stun_over_time"), Gdx.files.internal(""));
@@ -56,7 +55,6 @@ public class StunOverTimeEffect extends Effect {
         });
     }
     // endregion
-    // endregion
 
     // region Act
     @Override
@@ -71,6 +69,7 @@ public class StunOverTimeEffect extends Effect {
     protected boolean isExecutable() {
         if (isAllowedToExecute) return true;
         else {
+            System.out.println(owner.getPlayerType() + "is enabled");
             owner.enable();
             owner.removeEffect(this);
             return false;
@@ -78,8 +77,10 @@ public class StunOverTimeEffect extends Effect {
     }
     @Override
     protected void execute() {
-        owner.disable();
         isAllowedToExecute = false;
+        if (owner.isInvincible()) return;
+        System.out.println(owner.getPlayerType() + "is disabled");
+        owner.disable();
     }
     // endregion
 

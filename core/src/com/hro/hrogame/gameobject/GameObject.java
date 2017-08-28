@@ -28,6 +28,7 @@ public abstract class GameObject extends Entity {
     private Point destination;
     private float currentHealth;
     private float currentSpeed;
+    private boolean isInvincible;
     private boolean isMoving;
     protected boolean isEnable = true;
     // endregion
@@ -100,11 +101,9 @@ public abstract class GameObject extends Entity {
 
     // region Live
     public void takeDamage(GameObject attacker, float damage) {
-        if (currentHealth < 0) return;
+        if (isInvincible) return;
         if (isDead()) return;
-        if (decreaseHealth(damage)) {
-            die(attacker);
-        }
+        if (decreaseHealth(damage)) die(attacker);
     }
     /**
      * The only function that decreases the health of the unit and returns true if it must die.
@@ -198,6 +197,12 @@ public abstract class GameObject extends Entity {
     // endregion
 
     // region Setters
+    public void makeInvincible() {
+        isInvincible = true;
+    }
+    public void makeAttackable() {
+        isInvincible = false;
+    }
     public void setGameObjectData(GameObjectData data) {
         this.data = data;
         initCurrentParams(data);
@@ -294,6 +299,9 @@ public abstract class GameObject extends Entity {
             if (c.isInstance(effect)) return c.cast(effect);
         }
         return null;
+    }
+    public boolean isInvincible() {
+        return isInvincible;
     }
     public boolean isDead() {
         return currentHealth == 0;

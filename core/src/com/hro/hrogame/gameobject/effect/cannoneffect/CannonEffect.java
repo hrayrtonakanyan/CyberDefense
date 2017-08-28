@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.bullet.BulletData;
-import com.hro.hrogame.data.effect.cannoneffectdata.SimpleCannonEffectData;
+import com.hro.hrogame.data.effect.cannoneffectdata.CannonEffectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.bullet.BulletListener;
 import com.hro.hrogame.gameobject.bullet.BulletType;
@@ -19,14 +19,14 @@ import java.util.List;
 /**
  * Created by Lion on 8/15/17.
  */
-public class SimpleCannonEffect extends Effect {
+public class CannonEffect extends Effect {
 
     // region Instance field
-    private SimpleCannonEffectData data;
+    private CannonEffectData data;
     // endregion
 
     // region C-tor
-    public SimpleCannonEffect(GameObject owner, EntityManager entityManager, SimpleCannonEffectData data) {
+    public CannonEffect(GameObject owner, EntityManager entityManager, CannonEffectData data) {
         super(owner, entityManager);
         this.data = data;
         makeAutoExecutable();
@@ -58,7 +58,7 @@ public class SimpleCannonEffect extends Effect {
     // region Shoot
     private void shootABullet(GameObject target) {
         TargetBullet bullet = (TargetBullet) entityManager.createBullet(BulletType.TARGET_BULLET);
-        bullet.initialize(new BulletData(2, 80, 100));
+        bullet.initialize(new BulletData(3, 100, 100));
         // TODO: 8/16/17 Add a shooting point in effect class for the bullets to be instantiated from that point.
         bullet.setPosition(owner.getX(Align.center), owner.getY(Align.center), Align.center);
         bullet.setPlayerRace(owner.getPlayerType());

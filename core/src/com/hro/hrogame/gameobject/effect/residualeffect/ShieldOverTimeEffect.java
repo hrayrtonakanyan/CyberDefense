@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.utils.Align;
-import com.hro.hrogame.animation.ParticleAnimation;
+import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.effect.residualeffectdata.ShieldOverTimeEffectData;
 import com.hro.hrogame.gameobject.GameObject;

@@ -6,6 +6,11 @@ package com.hro.hrogame.gameobject;
 public abstract class GameObjectAdapter implements GameObjectListener {
 
     @Override
+    public void onTakeDamage(float damage, GameObject damagedUnit) {
+
+    }
+
+    @Override
     public void onDie(GameObject dyingUnit, GameObject killerUnit) {
 
     }

@@ -1,4 +1,4 @@
-package com.hro.hrogame.animation;
+package com.hro.hrogame.animation.particleanimation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;

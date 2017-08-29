@@ -1,12 +1,13 @@
 package com.hro.hrogame.screen;
 
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.HroGame;
@@ -20,6 +21,7 @@ public class MenuScreen extends ScreenAdapter {
 
     // region Instance fields
     private HroGame game;
+    private TweenManager tweenManager;
     private GameStage stage;
     private Button btnPlay;
     private Button btnQuit;
@@ -32,6 +34,7 @@ public class MenuScreen extends ScreenAdapter {
     public MenuScreen(HroGame game) {
         this.game = game;
         this.stage = game.stage;
+        this.tweenManager = game.tweenManager;
     }
     // endregion
 
@@ -58,7 +61,6 @@ public class MenuScreen extends ScreenAdapter {
         btnStyle = new Button.ButtonStyle(btnUnpressed.getDrawable(), btnPressed.getDrawable(), null);
     }
     private void initButtonsLabels() {
-        Skin skin = new Skin(Gdx.files.internal(SKIN));
         playButtonLabel = new Label(PLAY_TITLE, skin);
         quitButtonLabel = new Label(QUIT_TITLE, skin);
     }
@@ -84,6 +86,7 @@ public class MenuScreen extends ScreenAdapter {
     public void render(float delta) {
         Util.cleanScreen();
         stage.act();
+        tweenManager.update(delta);
         stage.draw();
     }
     // endregion

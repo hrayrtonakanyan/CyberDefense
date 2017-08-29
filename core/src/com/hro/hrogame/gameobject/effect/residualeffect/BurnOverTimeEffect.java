@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
-import com.hro.hrogame.animation.ParticleAnimation;
+import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.effect.residualeffectdata.BurnOverTimeEffectData;
 import com.hro.hrogame.gameobject.GameObject;

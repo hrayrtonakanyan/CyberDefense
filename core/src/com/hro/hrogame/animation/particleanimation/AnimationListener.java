@@ -1,4 +1,4 @@
-package com.hro.hrogame.animation;
+package com.hro.hrogame.animation.particleanimation;
 
 /**
  * Created by Lion on 8/21/17.

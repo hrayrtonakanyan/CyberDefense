@@ -1,12 +1,17 @@
 package com.hro.hrogame.screen;
 
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.HroGame;
+import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
+import com.hro.hrogame.constants.StringConstants;
 import com.hro.hrogame.controller.EntityFactory;
 import com.hro.hrogame.data.effect.cannoneffectdata.CannonEffectData;
 import com.hro.hrogame.data.effect.shieldeffectdata.AbsorbShieldEffectData;
@@ -14,6 +19,7 @@ import com.hro.hrogame.data.effect.waveeffectdata.FreezerEffectData;
 import com.hro.hrogame.data.effect.waveeffectdata.HellFireEffectData;
 import com.hro.hrogame.data.effect.waveeffectdata.StunnerEffectData;
 import com.hro.hrogame.gameobject.GameObject;
+import com.hro.hrogame.gameobject.GameObjectAdapter;
 import com.hro.hrogame.gameobject.PlayerRace;
 import com.hro.hrogame.gameobject.effect.cannoneffect.CannonEffect;
 import com.hro.hrogame.gameobject.effect.shieldeffect.AbsorbShieldEffect;
@@ -33,7 +39,9 @@ public class GameScreen extends ScreenAdapter {
     // region Instance fields
     private HroGame game;
     private GameStage stage;
+    private TweenManager tweenManager;
 
+    Label label;
     final Random random = new Random();
     Actor selected;
     Color defaultColor = new Color(1, 1, 1, 0.8f);
@@ -44,6 +52,7 @@ public class GameScreen extends ScreenAdapter {
     public GameScreen(HroGame game) {
         this.game = game;
         this.stage = game.stage;
+        this.tweenManager = game.tweenManager;
     }
     // endregion
 
@@ -59,6 +68,7 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         Util.cleanScreen();
         stage.act();
+        tweenManager.update(delta);
         stage.draw();
     }
     // endregion
@@ -140,12 +150,22 @@ public class GameScreen extends ScreenAdapter {
         return effect;
     }
     private GameObject create(UnitType unitType, PlayerRace race, EntityFactory factory, Color color) {
-        GameObject obj1 = factory.createUnit(unitType, race, 1);
-        obj1.setSize(60, 60);
-        obj1.setColor(color);
-        obj1.setPosition(random.nextInt((int)(Gdx.graphics.getWidth() - obj1.getWidth())),
-                random.nextInt((int)(Gdx.graphics.getHeight() - obj1.getHeight())));
-        return obj1;
+        GameObject obj = factory.createUnit(unitType, race, 1);
+        obj.setSize(60, 60);
+        obj.setColor(color);
+        obj.setPosition(random.nextInt((int)(Gdx.graphics.getWidth() - obj.getWidth())),
+                random.nextInt((int)(Gdx.graphics.getHeight() - obj.getHeight())));
+        obj.addGameObjectAdapter(new GameObjectAdapter() {
+            @Override
+            public void onTakeDamage(float damage, GameObject damagedUnit) {
+                String text = "-" + (int) damage;
+                label = new Label(text, StringConstants.skin);
+                label.setPosition(damagedUnit.getX(Align.center), damagedUnit.getY(Align.topRight));
+                TweenAnimation.pop_up(label, 3, 30, 0, tweenManager, null);
+                stage.addActor(label, LayerType.GAME_UI);
+            }
+        });
+        return obj;
     }
     // endregion
 }

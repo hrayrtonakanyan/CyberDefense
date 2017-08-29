@@ -4,7 +4,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.Align;
+import com.hro.hrogame.constants.StringConstants;
 import com.hro.hrogame.data.gameobject.GameObjectData;
 import com.hro.hrogame.gameobject.effect.Effect;
 import com.hro.hrogame.gameobject.effect.EffectListener;
@@ -20,6 +22,7 @@ import java.util.List;
 public abstract class GameObject extends Entity {
 
     // region Instance fields
+    private ProgressBar healthBar;
     private GameObjectData data;
     private PlayerRace playerType = PlayerRace.NONE;
     private Image appearance;
@@ -48,10 +51,32 @@ public abstract class GameObject extends Entity {
         this.data = data;
         initCurrentParams(data);
         setAppearance(data.texturePath);
+        addHealthBar(data.health);
     }
     private void initCurrentParams(GameObjectData data) {
         currentHealth = data.health;
         currentSpeed = data.speed;
+    }
+    private void addHealthBar(int health) {
+        healthBar = new ProgressBar(0, health, 1, false, StringConstants.skin);
+        healthBar.setSize(60, 10);
+        healthBar.setValue(health);
+        healthBar.setAnimateDuration(1);
+        healthBar.setColor(Color.GREEN);
+        addGameObjectAdapter(new GameObjectAdapter() {
+            @Override
+            public void onSizeChange(GameObject gameObject) {
+                healthBar.setPosition(getWidth() / 2, getHeight() + 5, Align.center);
+            }
+            @Override
+            public void onTakeDamage(float damage, GameObject damagedUnit) {
+                healthBar.setValue(healthBar.getValue() - damage);
+                // TODO: 8/29/2017 Inproove healthBar color changeing
+                if (healthBar.getValue() <= healthBar.getMaxValue() / 2) healthBar.setColor(Color.ORANGE);
+                if (healthBar.getValue() <= healthBar.getMaxValue() / 4) healthBar.setColor(Color.RED);
+            }
+        });
+        addActor(healthBar);
     }
     // endregion
 
@@ -111,6 +136,7 @@ public abstract class GameObject extends Entity {
      * @return true, if the unit is dead
      */
     private boolean decreaseHealth(float damage) {
+        notifyOnTakeDamage(damage);
         if (damage >= currentHealth) return true;
         currentHealth -= damage;
         return false;
@@ -134,6 +160,9 @@ public abstract class GameObject extends Entity {
     }
     private void notifySizeChange() {
         for (GameObjectAdapter adapter : gameObjectAdapterList) adapter.onSizeChange(this);
+    }
+    private void notifyOnTakeDamage(float damage) {
+        for (GameObjectAdapter adapter : gameObjectAdapterList) adapter.onTakeDamage(damage, this);
     }
     // endregion
 

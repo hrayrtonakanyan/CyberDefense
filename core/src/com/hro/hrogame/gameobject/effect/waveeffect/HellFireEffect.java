@@ -59,6 +59,7 @@ public class HellFireEffect extends Effect {
                     target.takeDamage(owner, data.damage);
                     acquireBurnOverTimeEffect(target);
 
+
                     target.setColor(Color.RED);
                     Timer.instance().scheduleTask(new Timer.Task() {
                         @Override

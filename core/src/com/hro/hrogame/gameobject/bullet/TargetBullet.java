@@ -6,13 +6,14 @@ import com.hro.hrogame.data.bullet.BulletData;
 import com.hro.hrogame.data.gameobject.GameObjectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.GameObjectAdapter;
-import com.hro.hrogame.gameobject.unit.UnitType;
 import com.hro.hrogame.sensor.CircleSensor;
+import com.hro.hrogame.sensor.SensorType;
 import com.hro.hrogame.sensor.UnitSensor;
 
 import java.util.List;
 
-import static com.hro.hrogame.constants.ParametrsConstants.*;
+import static com.hro.hrogame.constants.ParametersConstants.TARGET_BULLET_HEIGHT;
+import static com.hro.hrogame.constants.ParametersConstants.TARGET_BULLET_WIDTH;
 
 /**
  * Created by Lion on 8/16/17.
@@ -42,7 +43,7 @@ public class TargetBullet extends Bullet {
         setSize(TARGET_BULLET_WIDTH, TARGET_BULLET_HEIGHT);
         // TODO: 8/16/17 Remove texture and set drawable;
         setAppearance("bullet.png");
-        sensor = (CircleSensor) entityManager.createSensor(this, UnitType.BULLET);
+        sensor = (CircleSensor) entityManager.createSensor(this, SensorType.CIRCLE_SENSOR);
         updateSensorPosition();
         addActor(sensor);
     }

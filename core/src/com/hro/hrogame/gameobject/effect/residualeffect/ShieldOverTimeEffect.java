@@ -68,7 +68,6 @@ public class ShieldOverTimeEffect extends Effect {
     protected boolean isExecutable() {
         if (isAllowedToExecute) return true;
         else {
-            System.out.println(owner.getPlayerType() + " become attackable back");
             owner.makeAttackable();
             owner.removeEffect(this);
             return false;

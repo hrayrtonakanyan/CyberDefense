@@ -13,21 +13,11 @@ import com.hro.hrogame.HroGame;
 import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
 import com.hro.hrogame.constants.StringConstants;
 import com.hro.hrogame.controller.EntityFactory;
-import com.hro.hrogame.data.effect.cannoneffectdata.CannonEffectData;
-import com.hro.hrogame.data.effect.shieldeffectdata.AbsorbShieldEffectData;
-import com.hro.hrogame.data.effect.waveeffectdata.FreezerEffectData;
-import com.hro.hrogame.data.effect.waveeffectdata.HellFireEffectData;
-import com.hro.hrogame.data.effect.waveeffectdata.StunnerEffectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.GameObjectAdapter;
 import com.hro.hrogame.gameobject.PlayerRace;
-import com.hro.hrogame.gameobject.effect.cannoneffect.CannonEffect;
-import com.hro.hrogame.gameobject.effect.shieldeffect.AbsorbShieldEffect;
-import com.hro.hrogame.gameobject.effect.waveeffect.FreezerEffect;
-import com.hro.hrogame.gameobject.effect.waveeffect.HellFireEffect;
-import com.hro.hrogame.gameobject.effect.waveeffect.StunnerEffect;
+import com.hro.hrogame.gameobject.effect.EffectType;
 import com.hro.hrogame.gameobject.unit.UnitType;
-import com.hro.hrogame.sensor.UnitSensor;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
 import com.hro.hrogame.utils.Util;
@@ -92,11 +82,7 @@ public class GameScreen extends ScreenAdapter {
 
         obj1.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, Align.center);
 
-        obj1.addEffect(createStunnerEffect(obj1, UnitType.BASE));
-        obj2.addEffect(createAbsorbShieldEffect(obj2, UnitType.TANK));
-        obj3.addEffect(createHellFireEffect(obj3, UnitType.TANK));
-        obj4.addEffect(createSimpleCannonEffect(obj4, UnitType.TANK));
-        obj5.addEffect(createFreezerEffect(obj5, UnitType.BASE));
+        obj4.addEffect(entityFactory.createEffect(obj4, EffectType.STUNNER));
 
 
         stage.addListener(new ClickListener() {
@@ -114,41 +100,6 @@ public class GameScreen extends ScreenAdapter {
         });
     }
 
-    private CannonEffect createSimpleCannonEffect(GameObject obj, UnitType type) {
-        CannonEffectData data = new CannonEffectData(1, 5, 25, 1);
-        CannonEffect effect = new CannonEffect(obj, entityFactory, data);
-        UnitSensor sensor = entityFactory.createSensor(effect, type);
-        effect.setSensor(sensor);
-        return effect;
-    }
-    private HellFireEffect createHellFireEffect(GameObject obj, UnitType type) {
-        HellFireEffectData data = new HellFireEffectData(10, 50);
-        HellFireEffect effect = new HellFireEffect(obj, entityFactory, data);
-        UnitSensor sensor = entityFactory.createSensor(effect, type);
-        effect.setSensor(sensor);
-        return effect;
-    }
-    private FreezerEffect createFreezerEffect(GameObject obj, UnitType type) {
-        FreezerEffectData data = new FreezerEffectData(10);
-        FreezerEffect effect = new FreezerEffect(obj, entityFactory, data);
-        UnitSensor sensor = entityFactory.createSensor(effect, type);
-        effect.setSensor(sensor);
-        return effect;
-    }
-    private StunnerEffect createStunnerEffect(GameObject obj, UnitType type) {
-        StunnerEffectData data = new StunnerEffectData(10);
-        StunnerEffect effect = new StunnerEffect(obj, entityFactory, data);
-        UnitSensor sensor = entityFactory.createSensor(effect, type);
-        effect.setSensor(sensor);
-        return effect;
-    }
-    private AbsorbShieldEffect createAbsorbShieldEffect(GameObject obj, UnitType type) {
-        AbsorbShieldEffectData data = new AbsorbShieldEffectData(10);
-        AbsorbShieldEffect effect = new AbsorbShieldEffect(obj, entityFactory, data);
-        UnitSensor sensor = entityFactory.createSensor(effect, type);
-        effect.setSensor(sensor);
-        return effect;
-    }
     private GameObject create(UnitType unitType, PlayerRace race, EntityFactory factory, Color color) {
         GameObject obj = factory.createUnit(unitType, race, 1);
         obj.setSize(60, 60);

@@ -95,8 +95,8 @@ public abstract class Effect extends GameObject {
     // endregion
 
     // region Effect listener
-    public final boolean addEffectListener(EffectListener listener) {
-        return listeners.add(listener);
+    public final void addEffectListener(EffectListener listener) {
+        listeners.add(listener);
     }
     public final boolean removeEffectListener(EffectListener listener) {
         return listeners.remove(listener);
@@ -104,7 +104,7 @@ public abstract class Effect extends GameObject {
     // endregion
 
     // region Setters
-    public void makeEffectOvertime() {
+    protected void makeEffectOvertime() {
         isOverTimeEffect = true;
     }
     public void setSensor(UnitSensor sensor) {
@@ -114,6 +114,9 @@ public abstract class Effect extends GameObject {
     // endregion
 
     // region Getters
+    public boolean isPositionValidForEffect() {
+        return isOverTimeEffect || isExecutable();
+    }
     public boolean isOverTimeEffect() {
         return isOverTimeEffect;
     }

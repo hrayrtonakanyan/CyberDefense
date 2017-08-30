@@ -9,9 +9,9 @@ import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.bullet.BulletData;
 import com.hro.hrogame.gameobject.GameObject;
-import com.hro.hrogame.gameobject.unit.UnitType;
 import com.hro.hrogame.primitives.Point;
 import com.hro.hrogame.sensor.CircleSensor;
+import com.hro.hrogame.sensor.SensorType;
 import com.hro.hrogame.sensor.UnitSensor;
 
 import java.util.ArrayList;
@@ -30,7 +30,6 @@ public class WaveBullet extends Bullet {
     // region C-tor
     public WaveBullet(EntityManager entityManager) {
         super(entityManager);
-        debug();
     }
     // endregion
 
@@ -39,7 +38,8 @@ public class WaveBullet extends Bullet {
     public void initialize(BulletData bulletData) {
         if (sensor != null) throw new RuntimeException("Initialize method is only allowed to call once per bullet instance");
         this.bulletData = bulletData;
-        sensor = (CircleSensor) entityManager.createSensor(this, UnitType.BULLET);
+        sensor = (CircleSensor) entityManager.createSensor(this, SensorType.CIRCLE_SENSOR);
+        sensor.removeAppearance();
         sensor.setPosition(getX(Align.center), getY(Align.center), Align.center);
         addActor(sensor);
         maxRadius = calculateMaxRadius();

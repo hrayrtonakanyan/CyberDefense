@@ -3,7 +3,7 @@ package com.hro.hrogame.gameobject.effect.waveeffect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.utils.Align;
-import com.hro.hrogame.constants.ParametrsConstants;
+import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.bullet.BulletData;
 import com.hro.hrogame.data.effect.residualeffectdata.StunOverTimeEffectData;
@@ -63,7 +63,7 @@ public class StunnerEffect extends Effect {
 
     // region Create
     private StunOverTimeEffect createStunOverTimeEffect(GameObject target) {
-        StunOverTimeEffectData data = new StunOverTimeEffectData(ParametrsConstants.STUN_OVER_TIME_EFFECT_DURATION);
+        StunOverTimeEffectData data = new StunOverTimeEffectData(ParametersConstants.STUN_OVER_TIME_EFFECT_DURATION);
         return new StunOverTimeEffect(target, entityManager, data);
     }
     private void acquireStunOverTimeEffect(GameObject target) {

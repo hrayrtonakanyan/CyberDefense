@@ -17,7 +17,7 @@ import com.hro.hrogame.gameobject.effect.residualeffect.FreezeOverTimeEffect;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
 import java.util.List;
-import static com.hro.hrogame.constants.ParametrsConstants.*;
+import static com.hro.hrogame.constants.ParametersConstants.*;
 
 public class FreezerEffect extends Effect {
 

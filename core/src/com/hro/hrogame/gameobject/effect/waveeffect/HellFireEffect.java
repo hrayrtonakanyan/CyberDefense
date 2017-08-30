@@ -21,7 +21,7 @@ import com.hro.hrogame.stage.LayerType;
 
 import java.util.List;
 
-import static com.hro.hrogame.constants.ParametrsConstants.*;
+import static com.hro.hrogame.constants.ParametersConstants.*;
 
 public class HellFireEffect extends Effect {
 
@@ -82,7 +82,7 @@ public class HellFireEffect extends Effect {
     private BurnOverTimeEffect createBurnOverTimeEffect(GameObject target) {
         BurnOverTimeEffectData data = new BurnOverTimeEffectData(BURN_OVER_TIME_EFFECT_COOLDOWN,
                                                                  BURN_OVER_TIME_EFFECT_DAMAGE,
-                                                                 BURN_OVER_TIME_EFFECT_MAX_DAMGE_AMOUNT);
+                BURN_OVER_TIME_EFFECT_MAX_DAMAGE_AMOUNT);
         return new BurnOverTimeEffect(target, entityManager, data);
     }
     private void acquireBurnOverTimeEffect(GameObject target) {

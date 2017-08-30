@@ -71,25 +71,26 @@ public class BurnOverTimeEffect extends Effect {
     // region Execution
     @Override
     protected boolean isExecutable() {
-        return true;
+        if (maxDamageAmount > 0) return true;
+        else {
+            owner.removeEffect(this);
+            return false;
+        }
     }
     @Override
     protected void execute() {
-        if (maxDamageAmount <= 0) owner.removeEffect(this);
-        else {
-            if (owner.isInvincible()) return;
-            owner.takeDamage(this, data.damage);
-            maxDamageAmount -= data.damage;
+        if (owner.isInvincible()) return;
+        owner.takeDamage(this, data.damage);
+        maxDamageAmount -= data.damage;
 
-            owner.setColor(Color.RED);
-            Timer.instance().scheduleTask(new Timer.Task() {
-                @Override
-                public void run() {
-                    owner.setColor(Color.WHITE);
-                }
-            }, 1);
-            System.out.println("Target Health: " + owner.getCurrentHealth() + "/" + owner.getMaxHealth());
-        }
+        owner.setColor(Color.RED);
+        Timer.instance().scheduleTask(new Timer.Task() {
+            @Override
+            public void run() {
+                owner.setColor(Color.WHITE);
+            }
+        }, 1);
+        System.out.println("Target Health: " + owner.getCurrentHealth() + "/" + owner.getMaxHealth());
     }
     // endregion
 

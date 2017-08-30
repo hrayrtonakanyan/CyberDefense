@@ -6,13 +6,12 @@ package com.hro.hrogame.data.effect.cannoneffectdata;
 public class CannonEffectData {
 
 
-    public float level;  // TODO: 8/16/17 Remove the mocked data.
+    public float level = 1;  // TODO: 8/16/17 Remove the mocked data.
     public float cooldown;
     public float damage;
     public int targetLimit;
 
-    public CannonEffectData(float level, float cooldown, float damage, int targetLimit) {
-        this.level = level;
+    public CannonEffectData(float cooldown, float damage, int targetLimit) {
         this.cooldown = cooldown;
         this.damage = damage;
         this.targetLimit = targetLimit;

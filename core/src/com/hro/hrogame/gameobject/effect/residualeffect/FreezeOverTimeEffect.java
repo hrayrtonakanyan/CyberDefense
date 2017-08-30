@@ -69,7 +69,6 @@ public class FreezeOverTimeEffect extends Effect {
     protected boolean isExecutable() {
         if (isAllowedToExecute) return true;
         else {
-            System.out.println(owner.getPlayerType() + " unFreeze");
             owner.unFreeze();
             owner.removeEffect(this);
             return false;
@@ -79,7 +78,6 @@ public class FreezeOverTimeEffect extends Effect {
     protected void execute() {
         isAllowedToExecute = false;
         if (owner.isInvincible()) return;
-        System.out.println(owner.getPlayerType() + " freeze");
         owner.freeze(data.speedRatio);
     }
     // endregion

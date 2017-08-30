@@ -87,12 +87,13 @@ public abstract class GameObject extends Entity {
         if (revealPlayerType() == PlayerRace.NONE) throw new RuntimeException("playerType of the game object must not be NONE when add to stage.");
         if (!isEnable) return;
         if (destination == null) return;
+        stopIfAllEffectsPositionsAreValid();
         if (isMoving) {
             if (isAtDestination()) return;
             moveToDestination(delta);
             if (Util.calculateDistance(destination, this) < currentSpeed * delta) {
                 setPosition(destination.x, destination.y, Align.center);
-                isMoving = false;
+                stop();
                 notifyDestinationArrive();
             }
         }
@@ -121,6 +122,23 @@ public abstract class GameObject extends Entity {
     }
     private boolean isAtDestination() {
         return getX(Align.center) == destination.x && getY(Align.center) == destination.y;
+    }
+    private void stopIfAllEffectsPositionsAreValid() {
+        if (effectList.size() == 0) return;
+
+        boolean isOnlyOverTimeEffects = true;
+        for (Effect effect : effectList) {
+            if (!effect.isOverTimeEffect()) isOnlyOverTimeEffects = false;
+        }
+        if (isOnlyOverTimeEffects) return;
+
+        boolean isAllEffectsPositionsAreValid = true;
+        for (Effect effect : effectList) {
+            if (!effect.isOverTimeEffect()) {
+                if (!effect.isPositionValidForEffect()) isAllEffectsPositionsAreValid = false;
+            }
+        }
+        if (isAllEffectsPositionsAreValid) stop();
     }
     // endregion
 
@@ -245,7 +263,7 @@ public abstract class GameObject extends Entity {
         addActor(appearance);
     }
     public void setDestination(float x, float y) {
-        isMoving = true;
+        play();
         if (this.destination == null) this.destination = new Point();
         this.destination.set(x, y);
     }

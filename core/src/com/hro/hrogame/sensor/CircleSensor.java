@@ -14,9 +14,12 @@ import com.hro.hrogame.shape.Shape;
  */
 public class CircleSensor extends UnitSensor {
 
+    // region Instance fields
     private CircleShape circleShape;
     private Image appearance;
+    // endregion
 
+    // region C-tor
     //TODO RemoveTexture and pass a drawable from the skin
     public CircleSensor(GameObject owner, ShapeEntityProvider entityProvider,
                         Texture texture) {
@@ -30,22 +33,33 @@ public class CircleSensor extends UnitSensor {
         }
         setTouchable(Touchable.disabled);
     }
+    // endregion
+
+    //region Update
+    public void removeAppearance() {
+        appearance.remove();
+        appearance = null;
+    }
     private void updateAppearance() {
         if (appearance == null) return;
         appearance.setSize(getWidth(), getHeight());
         appearance.setPosition(0, 0);
     }
+    // endregion
+
+    // region Getters
     public Shape getShape() {
         return circleShape;
     }
+    // endregion
+
+    // region Setter
     public void setRadius(float radius) {
         circleShape.setRadius(radius);
         super.setSize(radius * 2, radius * 2);
         updateShapePosition();
         updateAppearance();
     }
-
-
     @Override
     public void setSize(float width, float height) {
         throw new RuntimeException("circleSensor size must not be set externally.");
@@ -58,4 +72,5 @@ public class CircleSensor extends UnitSensor {
     public void setHeight(float height) {
         throw new RuntimeException("circleSensor size must not be set externally.");
     }
+    // endregion
 }

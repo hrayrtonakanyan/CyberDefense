@@ -7,5 +7,9 @@ public enum EffectType {
     HELL_FIRE,
     FREEZER,
     STUNNER,
-    ABSORB_SHIELD;
+    ABSORB_SHIELD,
+    BURN_OVER_TIME,
+    FREEZE_OVER_TIME,
+    STUN_OVER_TIME,
+    SHIELD_OVER_TIME
 }

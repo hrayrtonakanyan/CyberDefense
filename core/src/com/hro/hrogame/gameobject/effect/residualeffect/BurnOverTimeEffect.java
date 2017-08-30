@@ -1,7 +1,6 @@
 package com.hro.hrogame.gameobject.effect.residualeffect;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
@@ -82,15 +81,6 @@ public class BurnOverTimeEffect extends Effect {
         if (owner.isInvincible()) return;
         owner.takeDamage(this, data.damage);
         maxDamageAmount -= data.damage;
-
-        owner.setColor(Color.RED);
-        Timer.instance().scheduleTask(new Timer.Task() {
-            @Override
-            public void run() {
-                owner.setColor(Color.WHITE);
-            }
-        }, 1);
-        System.out.println("Target Health: " + owner.getCurrentHealth() + "/" + owner.getMaxHealth());
     }
     // endregion
 

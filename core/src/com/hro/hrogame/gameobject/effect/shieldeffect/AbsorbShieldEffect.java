@@ -1,11 +1,10 @@
 package com.hro.hrogame.gameobject.effect.shieldeffect;
 
-import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
-import com.hro.hrogame.data.effect.residualeffectdata.ShieldOverTimeEffectData;
 import com.hro.hrogame.data.effect.shieldeffectdata.AbsorbShieldEffectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.effect.Effect;
+import com.hro.hrogame.gameobject.effect.EffectType;
 import com.hro.hrogame.gameobject.effect.residualeffect.ShieldOverTimeEffect;
 
 public class AbsorbShieldEffect extends Effect {
@@ -35,13 +34,9 @@ public class AbsorbShieldEffect extends Effect {
     // endregion
 
     // region Create
-    private ShieldOverTimeEffect createShieldOverTimeEffect(GameObject target) {
-        ShieldOverTimeEffectData data = new ShieldOverTimeEffectData(ParametersConstants.SHIELD_OVER_TIME_EFFECT_DURATION);
-        return new ShieldOverTimeEffect(target, entityManager, data);
-    }
     private void acquireShield(GameObject target) {
         ShieldOverTimeEffect effect = target.isEffectAcquired(ShieldOverTimeEffect.class);
-        if (effect == null) target.addEffect(createShieldOverTimeEffect(target));
+        if (effect == null) target.addEffect(entityManager.createEffect(target, EffectType.SHIELD_OVER_TIME));
         else effect.reNew();
     }
     // endregion

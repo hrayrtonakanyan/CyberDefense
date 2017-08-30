@@ -3,19 +3,19 @@ package com.hro.hrogame.gameobject.effect.waveeffect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.utils.Align;
-import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.bullet.BulletData;
-import com.hro.hrogame.data.effect.residualeffectdata.StunOverTimeEffectData;
 import com.hro.hrogame.data.effect.waveeffectdata.StunnerEffectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.bullet.BulletListener;
 import com.hro.hrogame.gameobject.bullet.BulletType;
 import com.hro.hrogame.gameobject.bullet.WaveBullet;
 import com.hro.hrogame.gameobject.effect.Effect;
+import com.hro.hrogame.gameobject.effect.EffectType;
 import com.hro.hrogame.gameobject.effect.residualeffect.StunOverTimeEffect;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
+
 import java.util.List;
 
 public class StunnerEffect extends Effect {
@@ -62,13 +62,10 @@ public class StunnerEffect extends Effect {
     // endregion
 
     // region Create
-    private StunOverTimeEffect createStunOverTimeEffect(GameObject target) {
-        StunOverTimeEffectData data = new StunOverTimeEffectData(ParametersConstants.STUN_OVER_TIME_EFFECT_DURATION);
-        return new StunOverTimeEffect(target, entityManager, data);
-    }
+
     private void acquireStunOverTimeEffect(GameObject target) {
         StunOverTimeEffect effect = target.isEffectAcquired(StunOverTimeEffect.class);
-        if (effect == null) target.addEffect(createStunOverTimeEffect(target));
+        if (effect == null) target.addEffect(entityManager.createEffect(target, EffectType.STUN_OVER_TIME));
         else effect.reNew();
     }
     // endregion

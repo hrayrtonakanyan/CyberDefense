@@ -134,9 +134,7 @@ public abstract class GameObject extends Entity {
 
         boolean isAllEffectsPositionsAreValid = true;
         for (Effect effect : effectList) {
-            if (!effect.isOverTimeEffect()) {
-                if (!effect.isPositionValidForEffect()) isAllEffectsPositionsAreValid = false;
-            }
+            if (!effect.isPositionValidForEffect()) isAllEffectsPositionsAreValid = false;
         }
         if (isAllEffectsPositionsAreValid) stop();
     }

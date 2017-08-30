@@ -1,8 +1,6 @@
 package com.hro.hrogame.gameobject.effect.cannoneffect;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Timer;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.bullet.BulletData;
 import com.hro.hrogame.data.effect.cannoneffectdata.CannonEffectData;
@@ -68,16 +66,6 @@ public class CannonEffect extends Effect {
             public void onHit(List<GameObject> hitUnitList) {
                 for (final GameObject target : hitUnitList) {
                     target.takeDamage(owner, data.damage);
-
-                    target.setColor(Color.RED);
-                    Timer.instance().scheduleTask(new Timer.Task() {
-                        @Override
-                        public void run() {
-                            target.setColor(Color.WHITE);
-                        }
-                    }, 0.5f);
-
-                    System.out.println("Target Health: " + target.getCurrentHealth() + "/" + target.getMaxHealth());
                 }
             }
         });

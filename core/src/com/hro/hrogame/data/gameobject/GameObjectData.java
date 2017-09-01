@@ -1,8 +1,5 @@
 package com.hro.hrogame.data.gameobject;
 
-/**
- * Created by Lion on 8/14/17.
- */
 public class GameObjectData {
 
     public int level = 1;

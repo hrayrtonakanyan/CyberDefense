@@ -15,9 +15,6 @@ import java.util.List;
 import static com.hro.hrogame.constants.ParametersConstants.TARGET_BULLET_HEIGHT;
 import static com.hro.hrogame.constants.ParametersConstants.TARGET_BULLET_WIDTH;
 
-/**
- * Created by Lion on 8/16/17.
- */
 public class TargetBullet extends Bullet {
 
     // region Instance fields
@@ -104,10 +101,6 @@ public class TargetBullet extends Bullet {
     private void updateSensorPosition() {
         sensor.setPosition(getWidth() / 2, getHeight() / 2, Align.center);
     }
-    // endregion
-
-    // region Create
-
     // endregion
 
     // region Notify

@@ -47,9 +47,6 @@ import static com.hro.hrogame.constants.ParametersConstants.*;
 import static com.hro.hrogame.sensor.SensorType.CIRCLE_SENSOR;
 import static com.hro.hrogame.sensor.SensorType.RECTANGLE_SENSOR;
 
-/**
- * Created by Lion on 8/14/17.
- */
 public class EntityFactory implements EntityManager {
 
     // TODO: 8/21/2017 Remove the static textures and use skin.getDrawable() instead.
@@ -320,7 +317,6 @@ public class EntityFactory implements EntityManager {
                 unitMap.get(dyingUnit.getPlayerType()).remove(dyingUnit);
                 // TODO: 8/17/17 write the pool logic here
                 dyingUnit.remove();
-                System.out.println("Unit killed!");
             }
         };
     }

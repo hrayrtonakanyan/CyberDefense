@@ -1,8 +1,5 @@
 package com.hro.hrogame.gameobject;
 
-/**
- * Created by Lion on 8/14/17.
- */
 public abstract class GameObjectAdapter implements GameObjectListener {
 
     @Override

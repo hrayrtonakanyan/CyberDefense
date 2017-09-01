@@ -5,9 +5,6 @@ import com.hro.hrogame.sensor.UnitSensor;
 
 import java.util.List;
 
-/**
- * Created by Lion on 8/14/17.
- */
 public abstract class UnitFilter {
 
     protected UnitSensor owner;

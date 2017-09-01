@@ -10,9 +10,6 @@ import com.hro.hrogame.sensor.UnitSensor;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Lion on 8/15/17.
- */
 public abstract class Effect extends GameObject {
 
     // region Instance fields

@@ -6,9 +6,6 @@ import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.shape.RectangleShape;
 import com.hro.hrogame.shape.Shape;
 
-/**
- * Created by Lion on 8/16/17.
- */
 public class RectangleSensor extends UnitSensor {
 
     private RectangleShape rectangleShape;

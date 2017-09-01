@@ -8,9 +8,6 @@ import com.hro.hrogame.sensor.UnitSensor;
 
 import java.util.ArrayList;
 
-/**
- * Created by Lion on 8/14/17.
- */
 public abstract class Bullet extends GameObject {
 
     // region Instance fields

@@ -2,9 +2,6 @@ package com.hro.hrogame.shape;
 
 import com.hro.hrogame.primitives.Point;
 
-/**
- * Created by Lion on 8/16/17.
- */
 public class RectangleShape extends Shape {
 
 

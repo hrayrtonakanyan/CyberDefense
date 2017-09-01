@@ -3,9 +3,6 @@ package com.hro.hrogame.constants;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-/**
- * Created by Lion on 8/14/17.
- */
 public class StringConstants {
 
     public static final  Skin skin = new Skin(Gdx.files.internal("uiskin.json"));

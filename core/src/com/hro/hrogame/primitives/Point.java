@@ -1,8 +1,5 @@
 package com.hro.hrogame.primitives;
 
-/**
- * Created by Lion on 8/14/17.
- */
 public class Point {
 
     public float x;

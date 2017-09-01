@@ -5,9 +5,6 @@ import com.hro.hrogame.gameobject.GameObject;
 
 import java.util.List;
 
-/**
- * Created by Lion on 8/14/17.
- */
 public interface EntityProvider extends ShapeEntityProvider {
 
     List<GameObject> obtainAll(List<GameObject> list);

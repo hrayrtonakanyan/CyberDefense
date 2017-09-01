@@ -67,27 +67,22 @@ public class GameScreen extends ScreenAdapter {
     private void test() {
         entityFactory = new EntityFactory();
 
-        GameObject obj1 = create(UnitType.BASE, PlayerRace.PLAYER, entityFactory, defaultColor);
+        GameObject base = create(UnitType.BASE, PlayerRace.PLAYER, entityFactory, defaultColor);
         GameObject obj2 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
         GameObject obj3 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
         GameObject obj4 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
-        GameObject obj5 = create(UnitType.BASE, PlayerRace.PLAYER, entityFactory, defaultColor);
-        GameObject obj6 = create(UnitType.BASE, PlayerRace.PLAYER, entityFactory, defaultColor);
-        stage.addActor(obj1, LayerType.FOREGROUND);
+        GameObject obj5 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
+        GameObject obj6 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
+        stage.addActor(base, LayerType.FOREGROUND);
         stage.addActor(obj2, LayerType.FOREGROUND);
         stage.addActor(obj3, LayerType.FOREGROUND);
         stage.addActor(obj4, LayerType.FOREGROUND);
         stage.addActor(obj5, LayerType.FOREGROUND);
         stage.addActor(obj6, LayerType.FOREGROUND);
 
-        obj1.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, Align.center);
+        base.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, Align.center);
 
-        obj1.addEffect(entityFactory.createEffect(obj1, EffectType.SIMPLE_CANNON));
-        obj4.addEffect(entityFactory.createEffect(obj4, EffectType.HARD_CANNON));
-        obj2.addEffect(entityFactory.createEffect(obj2, EffectType.HELL_FIRE));
-        obj5.addEffect(entityFactory.createEffect(obj5, EffectType.FREEZER));
-        obj6.addEffect(entityFactory.createEffect(obj6, EffectType.STUNNER));
-        obj4.addEffect(entityFactory.createEffect(obj4, EffectType.ABSORB_SHIELD));
+        base.addEffect(entityFactory.createEffect(base, EffectType.HELL_FIRE));
 
 
         stage.addListener(new ClickListener() {

@@ -172,11 +172,6 @@ public abstract class GameObject extends Entity {
         if (isDead()) return;
         if (decreaseHealth(damage)) die(attacker);
     }
-    /**
-     * The only function that decreases the health of the unit and returns true if it must die.
-     * @param damage The amount of health that will be decreased.
-     * @return true, if the unit is dead
-     */
     private boolean decreaseHealth(float damage) {
         notifyOnTakeDamage(damage);
         if (damage >= currentHealth) return true;
@@ -185,7 +180,6 @@ public abstract class GameObject extends Entity {
     }
     private void die(GameObject attacker) {
         currentHealth = 0;
-        // any code associated with the death of the object must go here.
         notifyOnDie(attacker);
     }
     // endregion

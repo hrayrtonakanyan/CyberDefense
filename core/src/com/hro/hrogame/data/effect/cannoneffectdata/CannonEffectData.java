@@ -1,8 +1,5 @@
 package com.hro.hrogame.data.effect.cannoneffectdata;
 
-/**
- * Created by Lion on 8/15/17.
- */
 public class CannonEffectData {
 
     public float level;

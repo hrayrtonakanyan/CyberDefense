@@ -6,9 +6,6 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
 
-/**
- * Created by Lion on 10/13/14.
- */
 public class ParticleAnimation extends Actor {
 
     // region Instance Fields

@@ -2,9 +2,6 @@ package com.hro.hrogame.shape;
 
 import com.hro.hrogame.primitives.Point;
 
-/**
- * Created by Lion on 8/15/17.
- */
 public class CircleShape extends Shape {
 
     private Point center = new Point();

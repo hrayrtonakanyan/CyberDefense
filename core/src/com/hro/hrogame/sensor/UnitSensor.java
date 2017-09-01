@@ -9,9 +9,6 @@ import com.hro.hrogame.shape.Shape;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Lion on 8/15/17.
- */
 public abstract class UnitSensor extends Entity {
 
     protected GameObject owner;

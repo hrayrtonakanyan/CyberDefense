@@ -3,9 +3,6 @@ package com.hro.hrogame.gameobject.unit;
 import com.hro.hrogame.data.gameobject.GameObjectData;
 import com.hro.hrogame.gameobject.GameObject;
 
-/**
- * Created by Lion on 8/14/17.
- */
 public class BaseUnit extends GameObject {
 
     // region Static fields

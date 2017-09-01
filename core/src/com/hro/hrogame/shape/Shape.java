@@ -6,9 +6,6 @@ import com.hro.hrogame.primitives.Point;
 
 import java.util.List;
 
-/**
- * Created by Lion on 8/15/17.
- */
 public abstract class Shape {
 
     public abstract boolean isPointInShape(Point point);

@@ -10,9 +10,6 @@ import com.hro.hrogame.gameobject.unit.UnitType;
 import com.hro.hrogame.sensor.SensorType;
 import com.hro.hrogame.sensor.UnitSensor;
 
-/**
- * Created by Lion on 8/14/17.
- */
 public interface EntityManager extends EntityProvider {
 
     GameObject createUnit(UnitType type, PlayerRace race, int level);

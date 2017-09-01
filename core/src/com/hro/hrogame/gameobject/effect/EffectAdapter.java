@@ -1,8 +1,5 @@
 package com.hro.hrogame.gameobject.effect;
 
-/**
- * Created by Lion on 8/15/17.
- */
 public abstract class EffectAdapter implements EffectListener {
     @Override
     public void onReady() {

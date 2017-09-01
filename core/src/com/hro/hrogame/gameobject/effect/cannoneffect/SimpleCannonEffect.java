@@ -18,6 +18,10 @@ public class SimpleCannonEffect extends CannonEffect {
 
     // region Static fields
     public static final String BULLET_TEXTURE_PATH = "bullet.png";
+    public static final int BULLET_HIT_UNIT_LIMIT = 3;
+    public static final float BULLET_SPEED = 100;
+    public static final int BULLET_SPLASH_AREA_RADIUS = 80;
+
     public static final int WEIGHT = 5;
     public static final float COOLDOWN = 5;
     public static final float MIN_COOLDOWN = 0.5f;
@@ -37,7 +41,11 @@ public class SimpleCannonEffect extends CannonEffect {
     @Override
     protected void shootABullet(GameObject target) {
         TargetBullet bullet = (TargetBullet) entityManager.createBullet(BulletType.TARGET_BULLET);
-        bullet.initialize(new BulletData("bullet.png", 3, 100, 100));
+        BulletData bulletData = new BulletData(SimpleCannonEffect.BULLET_TEXTURE_PATH,
+                                               SimpleCannonEffect.BULLET_HIT_UNIT_LIMIT,
+                                               SimpleCannonEffect.BULLET_SPEED,
+                                               SimpleCannonEffect.BULLET_SPLASH_AREA_RADIUS);
+        bullet.initialize(bulletData);
         // TODO: 8/16/17 Add a shooting point in effect class for the bullets to be instantiated from that point.
         bullet.setPosition(owner.getX(Align.center), owner.getY(Align.center), Align.center);
         bullet.setPlayerRace(owner.getPlayerType());

@@ -10,9 +10,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Created by Lion on 8/14/17.
- */
 public class Util {
 
     public static void cleanScreen() {

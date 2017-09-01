@@ -8,10 +8,6 @@ import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.shape.CircleShape;
 import com.hro.hrogame.shape.Shape;
 
-
-/**
- * Created by Lion on 8/14/17.
- */
 public class CircleSensor extends UnitSensor {
 
     // region Instance fields

@@ -2,9 +2,9 @@ package com.hro.hrogame.data.effect.residualeffectdata;
 
 public class BurnOverTimeEffectData {
 
-    public final float cooldown;
-    public final float maxDamageAmount;
-    public final float damage;
+    public float cooldown;
+    public float maxDamageAmount;
+    public float damage;
 
     public BurnOverTimeEffectData(float cooldown, float damge, float maxDamageAmount) {
         this.cooldown = cooldown;

@@ -82,7 +82,7 @@ public class GameScreen extends ScreenAdapter {
 
         obj1.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, Align.center);
 
-        obj4.addEffect(entityFactory.createEffect(obj4, EffectType.SIMPLE_CANNON));
+        obj1.addEffect(entityFactory.createEffect(obj1, EffectType.SIMPLE_CANNON));
         obj4.addEffect(entityFactory.createEffect(obj4, EffectType.HARD_CANNON));
         obj2.addEffect(entityFactory.createEffect(obj2, EffectType.HELL_FIRE));
         obj5.addEffect(entityFactory.createEffect(obj5, EffectType.FREEZER));

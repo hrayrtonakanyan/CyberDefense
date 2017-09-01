@@ -42,7 +42,7 @@ public class TargetBullet extends Bullet {
         setGameObjectData(gameObjectData);
         setSize(TARGET_BULLET_WIDTH, TARGET_BULLET_HEIGHT);
         // TODO: 8/16/17 Remove texture and set drawable;
-        setAppearance("bullet.png");
+        setAppearance(bulletData.texturePath);
         sensor = (CircleSensor) entityManager.createSensor(this, SensorType.CIRCLE_SENSOR);
         updateSensorPosition();
         addActor(sensor);

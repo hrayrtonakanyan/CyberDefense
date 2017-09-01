@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.Align;
+import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.constants.StringConstants;
 import com.hro.hrogame.data.gameobject.GameObjectData;
 import com.hro.hrogame.gameobject.effect.Effect;
@@ -16,19 +17,22 @@ import com.hro.hrogame.utils.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Lion on 8/14/17.
- */
 public abstract class GameObject extends Entity {
 
+    // region Static fields
+    public static final int HEALTH_TO_WEIGHT_RATIO = 10;
+    public static final float SPEED_LIMIT = 150;
+    // endregion
+
     // region Instance fields
-    private ProgressBar healthBar;
-    private GameObjectData data;
-    private PlayerRace playerType = PlayerRace.NONE;
-    private Image appearance;
     private ArrayList<GameObjectAdapter> gameObjectAdapterList = new ArrayList<>();
     private ArrayList<Effect> effectList = new ArrayList<>();
+    private PlayerRace playerType = PlayerRace.NONE;
+    private ProgressBar healthBar;
+    private Image appearance;
+    private GameObjectData data;
     private Point destination;
+    private int weight;
     private float currentHealth;
     private float currentSpeed;
     private boolean isInvincible;
@@ -49,6 +53,7 @@ public abstract class GameObject extends Entity {
     // region Init
     private void initWithData(GameObjectData data) {
         this.data = data;
+        setLevel(data.level);
         initCurrentParams(data);
         setAppearance(data.texturePath);
         addHealthBar(data.health);
@@ -56,6 +61,7 @@ public abstract class GameObject extends Entity {
     private void initCurrentParams(GameObjectData data) {
         currentHealth = data.health;
         currentSpeed = data.speed;
+        weight = calculateWeight();
     }
     private void addHealthBar(int health) {
         healthBar = new ProgressBar(0, health, 1, false, StringConstants.skin);
@@ -107,6 +113,26 @@ public abstract class GameObject extends Entity {
         appearance.setRotation(getRotation());
         appearance.setOrigin(getOriginX(), getOriginY());
         appearance.setColor(getColor());
+    }
+    // endregion
+
+    //region Level up
+    public void levelUp(boolean showParticle) {
+        data.level++;
+        data.health += data.health * ParametersConstants.WEIGHT_PROGRESS;
+        data.speed += data.speed * ParametersConstants.WEIGHT_PROGRESS;
+        if (data.speed > SPEED_LIMIT) data.speed = SPEED_LIMIT;
+        for (Effect effect : effectList) effect.levelUp(false);
+        weight = calculateWeight();
+    }
+    private int calculateWeight() {
+        int weight = data.health / HEALTH_TO_WEIGHT_RATIO;
+        if (effectList.size() != 0) {
+            for (Effect effect : effectList) {
+                weight += effect.getWeight();
+            }
+        }
+        return weight;
     }
     // endregion
 
@@ -190,6 +216,7 @@ public abstract class GameObject extends Entity {
     public void addEffect(Effect effect) {
         effectList.add(effect);
         addActor(effect);
+        weight = calculateWeight();
     }
     // endregion
 
@@ -202,6 +229,7 @@ public abstract class GameObject extends Entity {
         effectList.remove(effect);
         effect.clearTimer();
         effect.remove();
+        weight = calculateWeight();
     }
     // endregion
 
@@ -242,6 +270,9 @@ public abstract class GameObject extends Entity {
     // endregion
 
     // region Setters
+    public void setLevel(int level) {
+        for (int i = 1; i < level; i++) levelUp(false);
+    }
     public void makeInvincible() {
         isInvincible = true;
     }
@@ -339,7 +370,9 @@ public abstract class GameObject extends Entity {
     // endregion
 
     // region Getters
-    public <T extends Effect> T isEffectAcquired(Class<T> c) {
+    public int getWeight() {
+        return weight;
+    }public <T extends Effect> T isEffectAcquired(Class<T> c) {
         for (Effect effect : effectList) {
             if (c.isInstance(effect)) return c.cast(effect);
         }
@@ -350,6 +383,9 @@ public abstract class GameObject extends Entity {
     }
     public boolean isDead() {
         return currentHealth == 0;
+    }
+    public int getLevel() {
+        return data.level;
     }
     public float getCurrentHealth() {
         return currentHealth;

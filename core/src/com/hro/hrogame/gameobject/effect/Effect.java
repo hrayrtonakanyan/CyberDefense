@@ -16,22 +16,23 @@ import java.util.List;
 public abstract class Effect extends GameObject {
 
     // region Instance fields
-
-    private boolean isReady = true;
-    private boolean isOverTimeEffect = false;
-    private boolean isAutoExecutable;
+    private List<EffectListener> listeners = new ArrayList<>();
+    protected EntityManager entityManager;
     private Timer cooldownTimer = new Timer();
     private Timer.Task cooldownTask = createCooldownTask();
     protected GameObject owner;
     protected UnitSensor sensor;
-    protected EntityManager entityManager;
-    private List<EffectListener> listeners = new ArrayList<>();
+    protected boolean isMaxLevel;
+    private boolean isOverTimeEffect = false;
+    private boolean isReady = true;
+    private boolean isAutoExecutable;
     // endregion
 
     // region C-tor
     public Effect(GameObject owner, EntityManager entityManager) {
         this.owner = owner;
         this.entityManager = entityManager;
+        setLevel(owner.getLevel());
         setTouchable(Touchable.disabled);
     }
     // endregion
@@ -98,9 +99,6 @@ public abstract class Effect extends GameObject {
     public final void addEffectListener(EffectListener listener) {
         listeners.add(listener);
     }
-    public final boolean removeEffectListener(EffectListener listener) {
-        return listeners.remove(listener);
-    }
     // endregion
 
     // region Setters
@@ -120,14 +118,9 @@ public abstract class Effect extends GameObject {
     public boolean isOverTimeEffect() {
         return isOverTimeEffect;
     }
-    public final boolean isAutoExecutable() {
-        return isAutoExecutable;
-    }
-
     public List<EffectListener> getEffectListeners() {
         return listeners;
     }
-
     @Override
     public GameObject revealOwningUnit() {
         return owner;

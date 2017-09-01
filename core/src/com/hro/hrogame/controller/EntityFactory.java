@@ -1,7 +1,6 @@
 package com.hro.hrogame.controller;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.data.effect.cannoneffectdata.CannonEffectData;
 import com.hro.hrogame.data.effect.residualeffectdata.BurnOverTimeEffectData;
 import com.hro.hrogame.data.effect.residualeffectdata.FreezeOverTimeEffectData;
@@ -22,7 +21,8 @@ import com.hro.hrogame.gameobject.bullet.TargetBullet;
 import com.hro.hrogame.gameobject.bullet.WaveBullet;
 import com.hro.hrogame.gameobject.effect.Effect;
 import com.hro.hrogame.gameobject.effect.EffectType;
-import com.hro.hrogame.gameobject.effect.cannoneffect.CannonEffect;
+import com.hro.hrogame.gameobject.effect.cannoneffect.HardCannonEffect;
+import com.hro.hrogame.gameobject.effect.cannoneffect.SimpleCannonEffect;
 import com.hro.hrogame.gameobject.effect.residualeffect.BurnOverTimeEffect;
 import com.hro.hrogame.gameobject.effect.residualeffect.FreezeOverTimeEffect;
 import com.hro.hrogame.gameobject.effect.residualeffect.ShieldOverTimeEffect;
@@ -123,21 +123,29 @@ public class EntityFactory implements EntityManager {
         //TODO Change unit creation to use appropriate pools.
         switch (type) {
             case BASE:
-                GameObjectData baseData = new GameObjectData(1, 50, 600, "base.png");
-                BaseUnit baseUnit = new BaseUnit(baseData);
-                baseUnit.setPlayerRace(race);
-                baseUnit.addGameObjectAdapter(createEntityFactoryAdapter());
-                addUnitToUnitMap(baseUnit);
-                return baseUnit;
+                return createBaseUnit(race, level);
             case TANK:
-                GameObjectData tankData = new GameObjectData(1, 50, 600, "tank.png");
-                TankUnit tankUnit = new TankUnit(tankData);
-                tankUnit.setPlayerRace(race);
-                tankUnit.addGameObjectAdapter(createEntityFactoryAdapter());
-                addUnitToUnitMap(tankUnit);
-                return tankUnit;
+                return createTankUnit(race, level);
         }
         return null;
+    }
+    private BaseUnit createBaseUnit(PlayerRace race, int level) {
+        GameObjectData data = new GameObjectData(level, BaseUnit.SPEED, BaseUnit.HEALTH, BaseUnit.TEXTURE_PATH);
+        BaseUnit unit = new BaseUnit(data);
+        unit.addEffect(createEffect(unit, EffectType.SIMPLE_CANNON));
+        unit.setPlayerRace(race);
+        unit.addGameObjectAdapter(createEntityFactoryAdapter());
+        addUnitToUnitMap(unit);
+        return unit;
+    }
+    private TankUnit createTankUnit(PlayerRace race, int level) {
+        GameObjectData data = new GameObjectData(level, TankUnit.SPEED, TankUnit.HEALTH, TankUnit.TEXTURE_PATH);
+        TankUnit unit = new TankUnit(data);
+        unit.addEffect(createEffect(unit, EffectType.SIMPLE_CANNON));
+        unit.setPlayerRace(race);
+        unit.addGameObjectAdapter(createEntityFactoryAdapter());
+        addUnitToUnitMap(unit);
+        return unit;
     }
     @Override
     public Effect createEffect(GameObject owner, EffectType type) {
@@ -166,6 +174,111 @@ public class EntityFactory implements EntityManager {
                 throw new RuntimeException("Unknown Effect type passed");
         }
     }
+    private SimpleCannonEffect createSimpleCannonEffect(GameObject owner) {
+        CannonEffectData data = new CannonEffectData(SimpleCannonEffect.WEIGHT,
+                                                     SimpleCannonEffect.COOLDOWN,
+                                                     SimpleCannonEffect.DAMAGE,
+                                                     SimpleCannonEffect.TARGET_LIMIT);
+        SimpleCannonEffect effect = new SimpleCannonEffect(owner, this, data);
+        CircleSensor sensor = (CircleSensor) createSensor(owner, CIRCLE_SENSOR);
+        if (owner instanceof BaseUnit) sensor.setRadius(SimpleCannonEffect.SENSOR_RADIUS_FOR_BASE);
+        else if (owner instanceof TankUnit) sensor.setRadius(SimpleCannonEffect.SENSOR_RADIUS_FOR_TANK);
+        effect.setSensor(sensor);
+        return effect;
+    }
+    private HardCannonEffect createHardCannonEffect(GameObject owner) {
+        CannonEffectData data = new CannonEffectData(HardCannonEffect.WEIGHT,
+                                                     HardCannonEffect.COOLDOWN,
+                                                     HardCannonEffect.DAMAGE,
+                                                     HardCannonEffect.TARGET_LIMIT);
+        HardCannonEffect effect = new HardCannonEffect(owner, this, data);
+        CircleSensor sensor = (CircleSensor) createSensor(owner, CIRCLE_SENSOR);
+        if (owner instanceof BaseUnit) sensor.setRadius(HardCannonEffect.SENSOR_RADIUS_FOR_BASE);
+        else if (owner instanceof TankUnit) sensor.setRadius(HardCannonEffect.SENSOR_RADIUS_FOR_TANK);
+        effect.setSensor(sensor);
+        return effect;
+    }
+    private HellFireEffect createHellFireEffect(GameObject owner) {
+        HellFireEffectData data = new HellFireEffectData(HellFireEffect.WEIGHT,
+                                                         HellFireEffect.COOLDOWN,
+                                                         HellFireEffect.DAMAGE);
+        HellFireEffect effect = new HellFireEffect(owner, this, data);
+        UnitSensor sensor = null;
+        if (owner instanceof BaseUnit) {
+            sensor = createSensor(owner, RECTANGLE_SENSOR);
+            sensor.setSize(BASE_RECTANGLE_SENSOR_WIDTH, BASE_RECTANGLE_SENSOR_HEIGHT);
+        }
+        else if (owner instanceof TankUnit) {
+            sensor = createSensor(owner, CIRCLE_SENSOR);
+            ((CircleSensor) sensor).setRadius(HellFireEffect.SENSOR_RADIUS_FOR_TANK);
+        }
+        effect.setSensor(sensor);
+        return effect;
+    }
+    private FreezerEffect createFreezerEffect(GameObject owner) {
+        FreezerEffectData data = new FreezerEffectData(FreezerEffect.WEIGHT, FreezerEffect.COOLDOWN);
+        FreezerEffect effect = new FreezerEffect(owner, this, data);
+        UnitSensor sensor = null;
+        if (owner instanceof BaseUnit) {
+            sensor = createSensor(owner, RECTANGLE_SENSOR);
+            sensor.setSize(BASE_RECTANGLE_SENSOR_WIDTH, BASE_RECTANGLE_SENSOR_HEIGHT);
+        }
+        else if (owner instanceof TankUnit) {
+            sensor = createSensor(owner, CIRCLE_SENSOR);
+            ((CircleSensor) sensor).setRadius(FreezerEffect.SENSOR_RADIUS_FOR_TANK);
+        }
+        effect.setSensor(sensor);
+        return effect;
+    }
+    private StunnerEffect createStunnerEffect(GameObject owner) {
+        StunnerEffectData data = new StunnerEffectData(StunnerEffect.WEIGHT, StunnerEffect.COOLDOWN);
+        StunnerEffect effect = new StunnerEffect(owner, this, data);
+        UnitSensor sensor = null;
+        if (owner instanceof BaseUnit) {
+            sensor = createSensor(owner, RECTANGLE_SENSOR);
+            sensor.setSize(BASE_RECTANGLE_SENSOR_WIDTH, BASE_RECTANGLE_SENSOR_HEIGHT);
+        }
+        else if (owner instanceof TankUnit) {
+            sensor = createSensor(owner, CIRCLE_SENSOR);
+            ((CircleSensor) sensor).setRadius(StunnerEffect.SENSOR_RADIUS_FOR_TANK);
+        }
+        effect.setSensor(sensor);
+        return effect;
+    }
+    private AbsorbShieldEffect createAbsorbShieldEffect(GameObject owner) {
+        AbsorbShieldEffectData data = new AbsorbShieldEffectData(AbsorbShieldEffect.WEIGHT, AbsorbShieldEffect.COOLDOWN);
+        AbsorbShieldEffect effect = new AbsorbShieldEffect(owner, this, data);
+        UnitSensor sensor = null;
+        if (owner instanceof BaseUnit) {
+            sensor = createSensor(owner, RECTANGLE_SENSOR);
+            sensor.setSize(BASE_RECTANGLE_SENSOR_WIDTH, BASE_RECTANGLE_SENSOR_HEIGHT);
+        }
+        else if (owner instanceof TankUnit) {
+            sensor = createSensor(owner, CIRCLE_SENSOR);
+            ((CircleSensor) sensor).setRadius(AbsorbShieldEffect.SENSOR_RADIUS_FOR_TANK);
+        }
+        effect.setSensor(sensor);
+        return effect;
+    }
+    private BurnOverTimeEffect createBurnOverTimeEffect(GameObject owner) {
+        BurnOverTimeEffectData data = new BurnOverTimeEffectData(BurnOverTimeEffect.COOLDOWN,
+                                                                 BurnOverTimeEffect.DAMAGE,
+                                                                 BurnOverTimeEffect.MAX_DAMAGE_AMOUNT);
+        return new BurnOverTimeEffect(owner, this, data);
+    }
+    private FreezeOverTimeEffect createFreezeOverTimeEffect(GameObject owner) {
+        FreezeOverTimeEffectData data = new FreezeOverTimeEffectData(FreezeOverTimeEffect.DURATION,
+                                                                     FreezeOverTimeEffect.SPEED_RATIO);
+        return new FreezeOverTimeEffect(owner, this, data);
+    }
+    private StunOverTimeEffect createStunOverTimeEffect(GameObject owner) {
+        StunOverTimeEffectData data = new StunOverTimeEffectData(StunOverTimeEffect.DURATION);
+        return new StunOverTimeEffect(owner, this, data);
+    }
+    private ShieldOverTimeEffect createShieldOverTimeEffect(GameObject owner) {
+        ShieldOverTimeEffectData data = new ShieldOverTimeEffectData(ShieldOverTimeEffect.DURATION);
+        return new ShieldOverTimeEffect(owner, this, data);
+    }
     @Override
     public UnitSensor createSensor(GameObject owner, SensorType type) {
         switch (type) {
@@ -193,109 +306,6 @@ public class EntityFactory implements EntityManager {
                 return new WaveBullet(this);
         }
         return null;
-    }
-
-    private CannonEffect createSimpleCannonEffect(GameObject owner) {
-        CannonEffectData data = new CannonEffectData(SIMPLE_CANNON_EFFECT_COOLDOWN,
-                                                     SIMPLE_CANNON_EFFECT_DAMAGE,
-                                                     SIMPLE_CANNON_EFFECT_TARGET_LIMIT);
-        CannonEffect effect = new CannonEffect(owner, this, data);
-        CircleSensor sensor = (CircleSensor) createSensor(owner, CIRCLE_SENSOR);
-        if (owner instanceof BaseUnit) sensor.setRadius(BASE_SIMPLE_CANNON_EFFECT_SENSOR_RADIUS);
-        else if (owner instanceof TankUnit) sensor.setRadius(TANK_SIMPLE_CANNON_EFFECT_SENSOR_RADIUS);
-        effect.setSensor(sensor);
-        return effect;
-    }
-    private CannonEffect createHardCannonEffect(GameObject owner) {
-        CannonEffectData data = new CannonEffectData(HARD_CANNON_EFFECT_COOLDOWN,
-                                                     HARD_CANNON_EFFECT_DAMAGE,
-                                                     HARD_CANNON_EFFECT_TARGET_LIMIT);
-        CannonEffect effect = new CannonEffect(owner, this, data);
-        CircleSensor sensor = (CircleSensor) createSensor(owner, CIRCLE_SENSOR);
-        if (owner instanceof BaseUnit) sensor.setRadius(BASE_HARD_CANNON_EFFECT_SENSOR_RADIUS);
-        else if (owner instanceof TankUnit) sensor.setRadius(TANK_HARD_CANNON_EFFECT_SENSOR_RADIUS);
-        effect.setSensor(sensor);
-        return effect;
-    }
-    private HellFireEffect createHellFireEffect(GameObject owner) {
-        HellFireEffectData data = new HellFireEffectData(HELL_FIRE_EFFECT_COOLDOWN,
-                                                         HELL_FIRE_EFFECT_DAMAGE);
-        HellFireEffect effect = new HellFireEffect(owner, this, data);
-        UnitSensor sensor = null;
-        if (owner instanceof BaseUnit) {
-            sensor = createSensor(owner, RECTANGLE_SENSOR);
-            sensor.setSize(BASE_RECTANGLE_SENSOR_WIDTH, BASE_RECTANGLE_SENSOR_HEIGHT);
-        }
-        else if (owner instanceof TankUnit) {
-            sensor = createSensor(owner, CIRCLE_SENSOR);
-            ((CircleSensor) sensor).setRadius(TANK_HELL_FIRE_EFFECT_SENSOR_RADIUS);
-        }
-        effect.setSensor(sensor);
-        return effect;
-    }
-    private FreezerEffect createFreezerEffect(GameObject owner) {
-        FreezerEffectData data = new FreezerEffectData(FREEZER_EFFECT_COOLDOWN);
-        FreezerEffect effect = new FreezerEffect(owner, this, data);
-        UnitSensor sensor = null;
-        if (owner instanceof BaseUnit) {
-            sensor = createSensor(owner, RECTANGLE_SENSOR);
-            sensor.setSize(BASE_RECTANGLE_SENSOR_WIDTH, BASE_RECTANGLE_SENSOR_HEIGHT);
-        }
-        else if (owner instanceof TankUnit) {
-            sensor = createSensor(owner, CIRCLE_SENSOR);
-            ((CircleSensor) sensor).setRadius(TANK_FREEZER_EFFECT_SENSOR_RADIUS);
-        }
-        effect.setSensor(sensor);
-        return effect;
-    }
-    private StunnerEffect createStunnerEffect(GameObject owner) {
-        StunnerEffectData data = new StunnerEffectData(STUNNER_EFFECT_COOLDOWN);
-        StunnerEffect effect = new StunnerEffect(owner, this, data);
-        UnitSensor sensor = null;
-        if (owner instanceof BaseUnit) {
-            sensor = createSensor(owner, RECTANGLE_SENSOR);
-            sensor.setSize(BASE_RECTANGLE_SENSOR_WIDTH, BASE_RECTANGLE_SENSOR_HEIGHT);
-        }
-        else if (owner instanceof TankUnit) {
-            sensor = createSensor(owner, CIRCLE_SENSOR);
-            ((CircleSensor) sensor).setRadius(TANK_STUNNER_EFFECT_SENSOR_RADIUS);
-        }
-        effect.setSensor(sensor);
-        return effect;
-    }
-    private AbsorbShieldEffect createAbsorbShieldEffect(GameObject owner) {
-        AbsorbShieldEffectData data = new AbsorbShieldEffectData(ABSORB_SHIELD_EFFECT_COOLDOWN);
-        AbsorbShieldEffect effect = new AbsorbShieldEffect(owner, this, data);
-        UnitSensor sensor = null;
-        if (owner instanceof BaseUnit) {
-            sensor = createSensor(owner, RECTANGLE_SENSOR);
-            sensor.setSize(BASE_RECTANGLE_SENSOR_WIDTH, BASE_RECTANGLE_SENSOR_HEIGHT);
-        }
-        else if (owner instanceof TankUnit) {
-            sensor = createSensor(owner, CIRCLE_SENSOR);
-            ((CircleSensor) sensor).setRadius(TANK_ABSORB_SHIELD_EFFECT_SENSOR_RADIUS);
-        }
-        effect.setSensor(sensor);
-        return effect;
-    }
-    private BurnOverTimeEffect createBurnOverTimeEffect(GameObject owner) {
-        BurnOverTimeEffectData data = new BurnOverTimeEffectData(BURN_OVER_TIME_EFFECT_COOLDOWN,
-                                                                 BURN_OVER_TIME_EFFECT_DAMAGE,
-                                                                 BURN_OVER_TIME_EFFECT_MAX_DAMAGE_AMOUNT);
-        return new BurnOverTimeEffect(owner, this, data);
-    }
-    private FreezeOverTimeEffect createFreezeOverTimeEffect(GameObject owner) {
-        FreezeOverTimeEffectData data = new FreezeOverTimeEffectData(FREEZE_OVER_TIME_EFFECT_DURATION,
-                                                                     FREEZE_OVER_TIME_EFFECT_SPEED_RATIO);
-        return new FreezeOverTimeEffect(owner, this, data);
-    }
-    private StunOverTimeEffect createStunOverTimeEffect(GameObject owner) {
-        StunOverTimeEffectData data = new StunOverTimeEffectData(STUN_OVER_TIME_EFFECT_DURATION);
-        return new StunOverTimeEffect(owner, this, data);
-    }
-    private ShieldOverTimeEffect createShieldOverTimeEffect(GameObject owner) {
-        ShieldOverTimeEffectData data = new ShieldOverTimeEffectData(ParametersConstants.SHIELD_OVER_TIME_EFFECT_DURATION);
-        return new ShieldOverTimeEffect(owner, this, data);
     }
 
     private GameObjectAdapter createEntityFactoryAdapter() {

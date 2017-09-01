@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
+import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.effect.residualeffectdata.FreezeOverTimeEffectData;
 import com.hro.hrogame.gameobject.GameObject;
@@ -13,10 +14,17 @@ import com.hro.hrogame.gameobject.effect.Effect;
 
 public class FreezeOverTimeEffect extends Effect {
 
+    // region Static fields
+    public static final float DURATION = 5;
+    public static final float SPEED_RATIO = 0.8f;
+    public static final float MIN_SPEED_RATIO = 0.1f;
+    // endregion
+
     // region Instance fields
     private FreezeOverTimeEffectData data;
     private ParticleAnimation animation;
     private boolean isAllowedToExecute = true;
+    private int level;
     // endregion
 
     // region C-tor
@@ -82,9 +90,25 @@ public class FreezeOverTimeEffect extends Effect {
     }
     // endregion
 
-    // region Renew
-    public void reNew() {
-        isAllowedToExecute = true;
+    // region Renew and level up
+    @Override
+    public void levelUp(boolean showParticle) {
+        if (isMaxLevel) return;
+        data.speedRatio -= data.speedRatio * ParametersConstants.WEIGHT_PROGRESS;
+        if (data.speedRatio < MIN_SPEED_RATIO) {
+            data.speedRatio = MIN_SPEED_RATIO;
+            isMaxLevel = true;
+            return;
+        }
+        data.duration += data.duration * ParametersConstants.WEIGHT_PROGRESS;
+    }
+    public void reNew(int level) {
+        if (this.level == level) isAllowedToExecute = true;
+        else {
+            this.level = level;
+            setLevel(level);
+            isAllowedToExecute = true;
+        }
     }
     // endregion
 
@@ -92,6 +116,10 @@ public class FreezeOverTimeEffect extends Effect {
     @Override
     protected float getCoolDown() {
         return data.duration;
+    }
+    @Override
+    public int getWeight() {
+        return 0;
     }
     // endregion
 }

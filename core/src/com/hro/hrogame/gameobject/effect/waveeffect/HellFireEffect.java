@@ -3,6 +3,7 @@ package com.hro.hrogame.gameobject.effect.waveeffect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.utils.Align;
+import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.bullet.BulletData;
 import com.hro.hrogame.data.effect.waveeffectdata.HellFireEffectData;
@@ -20,6 +21,14 @@ import com.hro.hrogame.stage.LayerType;
 import java.util.List;
 
 public class HellFireEffect extends Effect {
+
+    // region Static field
+    public static final int WEIGHT = 10;
+    public static final float COOLDOWN = 10;
+    public static final float MIN_COOLDOWN = 1;
+    public static final float DAMAGE = 50;
+    public static final int SENSOR_RADIUS_FOR_TANK = 200;
+    // endregion
 
     // region Instance fields
     private HellFireEffectData data;
@@ -44,7 +53,7 @@ public class HellFireEffect extends Effect {
     @Override
     protected void execute() {
         WaveBullet bullet = (WaveBullet) entityManager.createBullet(BulletType.WAVE_BULLET);
-        bullet.initialize(new BulletData(-1, 100, 0));
+        bullet.initialize(new BulletData(null, -1, 100, 0));
         bullet.setFuzzPosition(owner.getX(Align.center), owner.getY(Align.center));
         bullet.setBulletAnimation(hellFireBulletParticleEffect);
         bullet.setPlayerRace(owner.getPlayerType());
@@ -63,15 +72,31 @@ public class HellFireEffect extends Effect {
     }
     // endregion
 
-    // region Create
-
+    // region Acquire
     private void acquireBurnOverTimeEffect(GameObject target) {
         BurnOverTimeEffect burnOverTimeEffect = target.isEffectAcquired(BurnOverTimeEffect.class);
         if (burnOverTimeEffect == null) {
             FreezeOverTimeEffect freezeOverTimeEffect = target.isEffectAcquired(FreezeOverTimeEffect.class);
             if (freezeOverTimeEffect != null) target.removeEffect(freezeOverTimeEffect);
-            target.addEffect(entityManager.createEffect(target, EffectType.BURN_OVER_TIME));
-        } else burnOverTimeEffect.reNew();
+            burnOverTimeEffect = (BurnOverTimeEffect) entityManager.createEffect(target, EffectType.BURN_OVER_TIME);
+            burnOverTimeEffect.setLevel(owner.getLevel());
+            target.addEffect(burnOverTimeEffect);
+        } else burnOverTimeEffect.reNew(owner.getLevel());
+    }
+    // endregion
+
+    // region Level Up
+    @Override
+    public void levelUp(boolean showParticle) {
+        if (isMaxLevel) return;
+        data.cooldown -= data.cooldown * ParametersConstants.WEIGHT_PROGRESS;
+        data.damage += data.damage * ParametersConstants.WEIGHT_PROGRESS;
+        if (data.cooldown < MIN_COOLDOWN) {
+            data.cooldown = MIN_COOLDOWN;
+            isMaxLevel = true;
+            return;
+        }
+        data.weight += data.weight * ParametersConstants.WEIGHT_PROGRESS;
     }
     // endregion
 
@@ -79,6 +104,10 @@ public class HellFireEffect extends Effect {
     @Override
     protected float getCoolDown() {
         return data.cooldown;
+    }
+    @Override
+    public int getWeight() {
+        return data.weight;
     }
     // endregion
 }

@@ -5,7 +5,7 @@ package com.hro.hrogame.data.gameobject;
  */
 public class GameObjectData {
 
-    public int level = -1;
+    public int level = 1;
     public float speed;
     public int health = -1;
     public String texturePath;

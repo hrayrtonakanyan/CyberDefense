@@ -2,25 +2,16 @@ package com.hro.hrogame.gameobject.effect.cannoneffect;
 
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.controller.EntityManager;
-import com.hro.hrogame.data.bullet.BulletData;
 import com.hro.hrogame.data.effect.cannoneffectdata.CannonEffectData;
 import com.hro.hrogame.gameobject.GameObject;
-import com.hro.hrogame.gameobject.bullet.BulletListener;
-import com.hro.hrogame.gameobject.bullet.BulletType;
-import com.hro.hrogame.gameobject.bullet.TargetBullet;
 import com.hro.hrogame.gameobject.effect.Effect;
-import com.hro.hrogame.stage.GameStage;
-import com.hro.hrogame.stage.LayerType;
 
 import java.util.List;
 
-/**
- * Created by Lion on 8/15/17.
- */
-public class CannonEffect extends Effect {
+public abstract class CannonEffect extends Effect {
 
     // region Instance field
-    private CannonEffectData data;
+    protected CannonEffectData data;
     // endregion
 
     // region C-tor
@@ -54,31 +45,17 @@ public class CannonEffect extends Effect {
     // endregion
 
     // region Shoot
-    private void shootABullet(GameObject target) {
-        TargetBullet bullet = (TargetBullet) entityManager.createBullet(BulletType.TARGET_BULLET);
-        bullet.initialize(new BulletData(3, 100, 100));
-        // TODO: 8/16/17 Add a shooting point in effect class for the bullets to be instantiated from that point.
-        bullet.setPosition(owner.getX(Align.center), owner.getY(Align.center), Align.center);
-        bullet.setPlayerRace(owner.getPlayerType());
-        bullet.shoot(target);
-        bullet.addBulletListener(new BulletListener() {
-            @Override
-            public void onHit(List<GameObject> hitUnitList) {
-                for (final GameObject target : hitUnitList) {
-                    target.takeDamage(owner, data.damage);
-                }
-            }
-        });
-        GameStage stage = (GameStage) getStage();
-        if (getStage() == null) throw new RuntimeException("Effect must be added to the stage to function and create bullets.");
-        stage.addActor(bullet, LayerType.FOREGROUND);
-    }
+    protected abstract void shootABullet(GameObject target);
     // endregion
 
     // region Getter
     @Override
     protected float getCoolDown() {
         return data.cooldown;
+    }
+    @Override
+    public int getWeight() {
+        return data.weight;
     }
     // endregion
 }

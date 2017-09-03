@@ -8,6 +8,12 @@ import static com.hro.hrogame.animation.tweenanimation.ActorAccessor.*;
 
 public class TweenAnimation {
 
+    // region Static fields
+    public static final float POP_UP_DURATION = 3;
+    public static final float POP_UP_MOVE_TARGET = 30;
+    public static final float POP_UP_VANISH_TARGET = 0;
+    // endregion
+
     public static Timeline pop_up(Actor actor, float duration, float moveTarget, float vanishTarget,
                                   TweenManager manager, final AnimationListener listener) {
         return Timeline.createParallel().beginParallel()

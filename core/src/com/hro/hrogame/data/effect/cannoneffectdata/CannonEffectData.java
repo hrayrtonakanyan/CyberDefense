@@ -1,14 +1,15 @@
 package com.hro.hrogame.data.effect.cannoneffectdata;
 
+import com.hro.hrogame.primitives.ProgressiveAttribute;
+
 public class CannonEffectData {
 
-    public float level;
     public int weight;
-    public float cooldown;
-    public float damage;
-    public int targetLimit;
+    public ProgressiveAttribute cooldown;
+    public ProgressiveAttribute damage;
+    public ProgressiveAttribute targetLimit;
 
-    public CannonEffectData(int weight, float cooldown, float damage, int targetLimit) {
+    public CannonEffectData(int weight, ProgressiveAttribute cooldown, ProgressiveAttribute damage, ProgressiveAttribute targetLimit) {
         this.weight = weight;
         this.cooldown = cooldown;
         this.damage = damage;

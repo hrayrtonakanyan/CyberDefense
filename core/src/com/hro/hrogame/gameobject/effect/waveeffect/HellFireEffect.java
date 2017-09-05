@@ -17,16 +17,18 @@ import com.hro.hrogame.gameobject.effect.residualeffect.BurnOverTimeEffect;
 import com.hro.hrogame.gameobject.effect.residualeffect.FreezeOverTimeEffect;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
+import com.hro.hrogame.utils.Util;
 
 import java.util.List;
 
 public class HellFireEffect extends Effect {
 
     // region Static field
-    public static final int WEIGHT = 10;
+    public static final int INITIAL_WEIGHT = 10;
     public static final float COOLDOWN = 20;
     public static final float MIN_COOLDOWN = 1;
     public static final float DAMAGE = 50;
+    public static final float MAX_DAMAGE = 100;
     public static final int SENSOR_RADIUS_FOR_TANK = 200;
     // endregion
 
@@ -39,6 +41,7 @@ public class HellFireEffect extends Effect {
     public HellFireEffect(GameObject owner, EntityManager entityManager, HellFireEffectData data) {
         super(owner, entityManager);
         this.data = data;
+        levelUpEffect(owner.getLevel());
         hellFireBulletParticleEffect = new ParticleEffect();
         hellFireBulletParticleEffect.load(Gdx.files.internal("hell_fire_particle"), Gdx.files.internal(""));
         makeAutoExecutable();
@@ -61,7 +64,7 @@ public class HellFireEffect extends Effect {
             @Override
             public void onHit(List<GameObject> hitUnitList) {
                 for (final GameObject target : hitUnitList) {
-                    target.takeDamage(owner, data.damage);
+                    target.takeDamage(owner, data.damage.current);
                     acquireBurnOverTimeEffect(target);
                 }
             }
@@ -79,7 +82,7 @@ public class HellFireEffect extends Effect {
             FreezeOverTimeEffect freezeOverTimeEffect = target.isEffectAcquired(FreezeOverTimeEffect.class);
             if (freezeOverTimeEffect != null) target.removeEffect(freezeOverTimeEffect);
             burnOverTimeEffect = (BurnOverTimeEffect) entityManager.createEffect(target, EffectType.BURN_OVER_TIME);
-            burnOverTimeEffect.setLevel(owner.getLevel());
+            burnOverTimeEffect.levelUpEffect(owner.getLevel());
             target.addEffect(burnOverTimeEffect);
         } else burnOverTimeEffect.reNew(owner.getLevel());
     }
@@ -87,26 +90,19 @@ public class HellFireEffect extends Effect {
 
     // region Level Up
     @Override
-    public void levelUp(boolean showParticle) {
-        if (isMaxLevel) return;
-        data.cooldown -= data.cooldown * ParametersConstants.WEIGHT_PROGRESS;
-        data.damage += data.damage * ParametersConstants.WEIGHT_PROGRESS;
-        if (data.cooldown < MIN_COOLDOWN) {
-            data.cooldown = MIN_COOLDOWN;
-            isMaxLevel = true;
-            return;
-        }
-        data.weight += data.weight * ParametersConstants.WEIGHT_PROGRESS;
+    public void levelUpEffect(int level)  {
+        data.weight = Util.calcProgressAndDefineWeight(INITIAL_WEIGHT, level, ParametersConstants.PROGRESS_RATIO,
+                true, data.cooldown, data.damage);
     }
     // endregion
 
     // region Getters
     @Override
     protected float getCoolDown() {
-        return data.cooldown;
+        return data.cooldown.current;
     }
     @Override
-    public int getWeight() {
+    public int getEffectWeight() {
         return data.weight;
     }
     // endregion

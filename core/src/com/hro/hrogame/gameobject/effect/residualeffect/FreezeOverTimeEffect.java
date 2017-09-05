@@ -11,11 +11,13 @@ import com.hro.hrogame.data.effect.residualeffectdata.FreezeOverTimeEffectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.GameObjectAdapter;
 import com.hro.hrogame.gameobject.effect.Effect;
+import com.hro.hrogame.utils.Util;
 
 public class FreezeOverTimeEffect extends Effect {
 
     // region Static fields
     public static final float DURATION = 5;
+    public static final float MAX_DURATION = 5;
     public static final float SPEED_RATIO = 0.8f;
     public static final float MIN_SPEED_RATIO = 0.1f;
     // endregion
@@ -86,27 +88,21 @@ public class FreezeOverTimeEffect extends Effect {
     protected void execute() {
         isAllowedToExecute = false;
         if (owner.isInvincible()) return;
-        owner.freeze(data.speedRatio);
+        owner.freeze(data.speedRatio.current);
     }
     // endregion
 
     // region Renew and level up
     @Override
-    public void levelUp(boolean showParticle) {
-        if (isMaxLevel) return;
-        data.speedRatio -= data.speedRatio * ParametersConstants.WEIGHT_PROGRESS;
-        if (data.speedRatio < MIN_SPEED_RATIO) {
-            data.speedRatio = MIN_SPEED_RATIO;
-            isMaxLevel = true;
-            return;
-        }
-        data.duration += data.duration * ParametersConstants.WEIGHT_PROGRESS;
+    public void levelUpEffect(int level)  {
+        this.level = level;
+        Util.calcProgressAndDefineWeight(0, level, ParametersConstants.PROGRESS_RATIO, true,
+                data.duration, data.speedRatio);
     }
     public void reNew(int level) {
         if (this.level == level) isAllowedToExecute = true;
         else {
-            this.level = level;
-            setLevel(level);
+            levelUpEffect(level);
             isAllowedToExecute = true;
         }
     }
@@ -115,10 +111,10 @@ public class FreezeOverTimeEffect extends Effect {
     // region Getters
     @Override
     protected float getCoolDown() {
-        return data.duration;
+        return data.duration.current;
     }
     @Override
-    public int getWeight() {
+    public int getEffectWeight() {
         return 0;
     }
     // endregion

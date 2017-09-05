@@ -29,7 +29,6 @@ public abstract class Effect extends GameObject {
     public Effect(GameObject owner, EntityManager entityManager) {
         this.owner = owner;
         this.entityManager = entityManager;
-        setLevel(owner.getLevel());
         setTouchable(Touchable.disabled);
     }
     // endregion
@@ -46,7 +45,9 @@ public abstract class Effect extends GameObject {
     // region abstract
     protected abstract boolean isExecutable();
     protected abstract void execute();
+    public abstract void levelUpEffect(int level);
     protected abstract float getCoolDown();
+    public abstract int getEffectWeight();
     // endregion
 
     // region Execution

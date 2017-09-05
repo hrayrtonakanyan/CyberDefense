@@ -6,6 +6,7 @@ import com.hro.hrogame.data.bullet.BulletData;
 import com.hro.hrogame.data.gameobject.GameObjectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.GameObjectAdapter;
+import com.hro.hrogame.primitives.ProgressiveAttribute;
 import com.hro.hrogame.sensor.CircleSensor;
 import com.hro.hrogame.sensor.SensorType;
 import com.hro.hrogame.sensor.UnitSensor;
@@ -35,7 +36,8 @@ public class TargetBullet extends Bullet {
         if (sensor != null) throw new RuntimeException("Initialize method is only allowed to call once per bullet instance");
         this.bulletData = bulletData;
         GameObjectData gameObjectData = new GameObjectData();
-        gameObjectData.speed = bulletData.speed;
+        gameObjectData.speed = new ProgressiveAttribute(bulletData.speed, bulletData.speed);
+        gameObjectData.health = new ProgressiveAttribute(0, 0);
         setGameObjectData(gameObjectData);
         setSize(TARGET_BULLET_WIDTH, TARGET_BULLET_HEIGHT);
         // TODO: 8/16/17 Remove texture and set drawable;

@@ -5,8 +5,7 @@ import com.badlogic.gdx.Gdx;
 public class ParametersConstants {
 
     // region Main
-    public static final float WEIGHT_PROGRESS = 0.4f;
-    public static final float VAWE_PROGRESS = 1;
+    public static final float PROGRESS_RATIO = 0.4f;
     // endregion
 
     // region TargetBullet data

@@ -11,6 +11,7 @@ import com.hro.hrogame.data.effect.residualeffectdata.BurnOverTimeEffectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.GameObjectAdapter;
 import com.hro.hrogame.gameobject.effect.Effect;
+import com.hro.hrogame.utils.Util;
 
 public class BurnOverTimeEffect extends Effect {
 
@@ -18,7 +19,9 @@ public class BurnOverTimeEffect extends Effect {
     public static final float COOLDOWN = 3;
     public static final float MIN_COOLDOWN = 3;
     public static final float DAMAGE = 20;
-    public static final float MAX_DAMAGE_AMOUNT = 60;
+    public static final float MAX_DAMAGE = 50;
+    public static final float TOTAL_DAMAGE = 60;
+    public static final float MAX_TOTAL_DAMAGE = 150;
     // endregion
 
     // region Instance fields
@@ -32,7 +35,7 @@ public class BurnOverTimeEffect extends Effect {
     public BurnOverTimeEffect(GameObject owner, EntityManager entityManager, BurnOverTimeEffectData data) {
         super(owner, entityManager);
         this.data = data;
-        maxDamageAmount = data.maxDamageAmount;
+        maxDamageAmount = data.maxDamageAmount.current;
         addBurnOverTimeEffectAnimation();
         addOnDieListener();
         makeEffectOvertime();
@@ -64,7 +67,7 @@ public class BurnOverTimeEffect extends Effect {
             public void run() {
                 makeAutoExecutable();
             }
-        }, data.cooldown);
+        }, data.cooldown.current);
     }
     // endregion
 
@@ -88,30 +91,23 @@ public class BurnOverTimeEffect extends Effect {
     @Override
     protected void execute() {
         if (owner.isInvincible()) return;
-        owner.takeDamage(this, data.damage);
-        maxDamageAmount -= data.damage;
+        owner.takeDamage(this, data.damage.current);
+        maxDamageAmount -= data.damage.current;
     }
     // endregion
 
     // region Renew and level up
     @Override
-    public void levelUp(boolean showParticle) {
-        if (isMaxLevel) return;
-        data.cooldown -= data.cooldown * ParametersConstants.WEIGHT_PROGRESS;
-        if (data.cooldown < MIN_COOLDOWN) {
-            data.cooldown = MIN_COOLDOWN;
-            isMaxLevel = true;
-            return;
-        }
-        data.damage += data.damage * ParametersConstants.WEIGHT_PROGRESS;
-        data.maxDamageAmount += data.maxDamageAmount * ParametersConstants.WEIGHT_PROGRESS;
+    public void levelUpEffect(int level) {
+        this.level = level;
+        Util.calcProgressAndDefineWeight(0, level, ParametersConstants.PROGRESS_RATIO, true,
+                data.cooldown, data.damage, data.maxDamageAmount);
     }
     public void reNew(int level) {
-        if (this.level == level) maxDamageAmount = data.maxDamageAmount;
+        if (this.level == level) maxDamageAmount = data.maxDamageAmount.current;
         else {
-            this.level = level;
-            setLevel(level);
-            maxDamageAmount = data.maxDamageAmount;
+            levelUpEffect(level);
+            maxDamageAmount = data.maxDamageAmount.current;
         }
     }
     // endregion
@@ -119,10 +115,10 @@ public class BurnOverTimeEffect extends Effect {
     // region Getters
     @Override
     protected float getCoolDown() {
-        return data.cooldown;
+        return data.cooldown.current;
     }
     @Override
-    public int getWeight() {
+    public int getEffectWeight() {
         return 0;
     }
     // endregion

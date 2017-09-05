@@ -17,13 +17,14 @@ import com.hro.hrogame.gameobject.effect.residualeffect.BurnOverTimeEffect;
 import com.hro.hrogame.gameobject.effect.residualeffect.FreezeOverTimeEffect;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
+import com.hro.hrogame.utils.Util;
 
 import java.util.List;
 
 public class FreezerEffect extends Effect {
 
     // region Static fields
-    public static final int WEIGHT = 10;
+    public static final int INITIAL_WEIGHT = 10;
     public static final float COOLDOWN = 10;
     public static final float MIN_COOLDOWN = 1;
     public static final int SENSOR_RADIUS_FOR_TANK = 160;
@@ -38,6 +39,7 @@ public class FreezerEffect extends Effect {
     public FreezerEffect(GameObject owner, EntityManager entityManager, FreezerEffectData data) {
         super(owner, entityManager);
         this.data = data;
+        levelUpEffect(owner.getLevel());
         freezerBulletParticleEffect = new ParticleEffect();
         freezerBulletParticleEffect.load(Gdx.files.internal("freezer_particle"), Gdx.files.internal(""));
         makeAutoExecutable();
@@ -77,7 +79,7 @@ public class FreezerEffect extends Effect {
             BurnOverTimeEffect burnOverTimeEffect = target.isEffectAcquired(BurnOverTimeEffect.class);
             if (burnOverTimeEffect != null) target.removeEffect(burnOverTimeEffect);
             freezeOverTimeEffect = (FreezeOverTimeEffect) entityManager.createEffect(target, EffectType.FREEZE_OVER_TIME);
-            freezeOverTimeEffect.setLevel(owner.getLevel());
+            freezeOverTimeEffect.levelUpEffect(owner.getLevel());
             target.addEffect(freezeOverTimeEffect);
         } else freezeOverTimeEffect.reNew(owner.getLevel());
     }
@@ -85,25 +87,19 @@ public class FreezerEffect extends Effect {
 
     // region Level Up
     @Override
-    public void levelUp(boolean showParticle) {
-        if (isMaxLevel) return;
-        data.cooldown -= data.cooldown * ParametersConstants.WEIGHT_PROGRESS;
-        if (data.cooldown < MIN_COOLDOWN) {
-            data.cooldown = MIN_COOLDOWN;
-            isMaxLevel = true;
-            return;
-        }
-        data.weight += data.weight * ParametersConstants.WEIGHT_PROGRESS;
+    public void levelUpEffect(int level)  {
+        data.weight = Util.calcProgressAndDefineWeight(INITIAL_WEIGHT, level, ParametersConstants.PROGRESS_RATIO,
+                true, data.cooldown);
     }
     // endregion
 
     // region Getters
     @Override
     protected float getCoolDown() {
-        return data.cooldown;
+        return data.cooldown.current;
     }
     @Override
-    public int getWeight() {
+    public int getEffectWeight() {
         return data.weight;
     }
     // endregion

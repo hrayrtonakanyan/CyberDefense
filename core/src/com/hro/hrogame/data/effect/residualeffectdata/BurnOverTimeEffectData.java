@@ -1,14 +1,16 @@
 package com.hro.hrogame.data.effect.residualeffectdata;
 
+import com.hro.hrogame.primitives.ProgressiveAttribute;
+
 public class BurnOverTimeEffectData {
 
-    public float cooldown;
-    public float maxDamageAmount;
-    public float damage;
+    public ProgressiveAttribute cooldown;
+    public ProgressiveAttribute maxDamageAmount;
+    public ProgressiveAttribute damage;
 
-    public BurnOverTimeEffectData(float cooldown, float damge, float maxDamageAmount) {
+    public BurnOverTimeEffectData(ProgressiveAttribute cooldown, ProgressiveAttribute damage, ProgressiveAttribute maxDamageAmount) {
         this.cooldown = cooldown;
-        this.damage = damge;
+        this.damage = damage;
         this.maxDamageAmount = maxDamageAmount;
     }
 }

@@ -16,13 +16,14 @@ import com.hro.hrogame.gameobject.effect.EffectType;
 import com.hro.hrogame.gameobject.effect.residualeffect.StunOverTimeEffect;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
+import com.hro.hrogame.utils.Util;
 
 import java.util.List;
 
 public class StunnerEffect extends Effect {
 
     // region Static fields
-    public static final int WEIGHT = 10;
+    public static final int INITIAL_WEIGHT = 10;
     public static final float COOLDOWN = 10;
     public static final float MIN_COOLDOWN = 1;
     public static final int SENSOR_RADIUS_FOR_TANK = 180;
@@ -37,6 +38,7 @@ public class StunnerEffect extends Effect {
     public StunnerEffect(GameObject owner, EntityManager entityManager, StunnerEffectData data) {
         super(owner, entityManager);
         this.data = data;
+        levelUpEffect(owner.getLevel());
         stunnerBulletParticleEffect = new ParticleEffect();
         stunnerBulletParticleEffect.load(Gdx.files.internal("stunner_particle"), Gdx.files.internal(""));
         makeAutoExecutable();
@@ -74,7 +76,7 @@ public class StunnerEffect extends Effect {
         StunOverTimeEffect effect = target.isEffectAcquired(StunOverTimeEffect.class);
         if (effect == null) {
             effect = (StunOverTimeEffect) entityManager.createEffect(target, EffectType.STUN_OVER_TIME);
-            effect.setLevel(owner.getLevel());
+            effect.levelUpEffect(owner.getLevel());
             target.addEffect(effect);
         }
         else effect.reNew(owner.getLevel());
@@ -83,25 +85,19 @@ public class StunnerEffect extends Effect {
 
     // region Level Up
     @Override
-    public void levelUp(boolean showParticle) {
-        if (isMaxLevel) return;
-        data.cooldown -= data.cooldown * ParametersConstants.WEIGHT_PROGRESS;
-        if (data.cooldown < MIN_COOLDOWN) {
-            data.cooldown = MIN_COOLDOWN;
-            isMaxLevel = true;
-            return;
-        }
-        data.weight += data.weight * ParametersConstants.WEIGHT_PROGRESS;
+    public void levelUpEffect(int level) {
+        data.weight = Util.calcProgressAndDefineWeight(INITIAL_WEIGHT, level, ParametersConstants.PROGRESS_RATIO,
+                true, data.cooldown);
     }
     // endregion
 
     // region Getters
     @Override
     protected float getCoolDown() {
-        return data.cooldown;
+        return data.cooldown.current;
     }
     @Override
-    public int getWeight() {
+    public int getEffectWeight() {
         return data.weight;
     }
     // endregion

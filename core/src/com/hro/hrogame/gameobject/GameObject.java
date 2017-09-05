@@ -21,7 +21,6 @@ public abstract class GameObject extends Entity {
 
     // region Static fields
     public static final int HEALTH_TO_WEIGHT_RATIO = 10;
-    public static final float SPEED_LIMIT = 150;
     // endregion
 
     // region Instance fields
@@ -32,7 +31,7 @@ public abstract class GameObject extends Entity {
     private Image appearance;
     private GameObjectData data;
     private Point destination;
-    private int weight;
+    private float weight;
     private float currentHealth;
     private float currentSpeed;
     private boolean isInvincible;
@@ -46,24 +45,24 @@ public abstract class GameObject extends Entity {
     }
     public GameObject(GameObjectData data) {
         initWithData(data);
-        if (data.health == 0) throw new RuntimeException("Health of the game object must have a positive value if game object data is received on instantiation.");
+        if (data.health.current == 0) throw new RuntimeException("Health of the game object must have a positive value if game object data is received on instantiation.");
     }
     // endregion
 
     // region Init
     private void initWithData(GameObjectData data) {
         this.data = data;
-        setLevel(data.level);
+        alterParamsOnLevelChange(data.level);
         initCurrentParams(data);
         setAppearance(data.texturePath);
-        addHealthBar(data.health);
+        addHealthBar(data.health.current);
     }
     private void initCurrentParams(GameObjectData data) {
-        currentHealth = data.health;
-        currentSpeed = data.speed;
+        currentHealth = data.health.current;
+        currentSpeed = data.speed.current;
         weight = calculateWeight();
     }
-    private void addHealthBar(int health) {
+    private void addHealthBar(float health) {
         healthBar = new ProgressBar(0, health, 1, false, StringConstants.skin);
         healthBar.setSize(60, 10);
         healthBar.setValue(health);
@@ -77,7 +76,6 @@ public abstract class GameObject extends Entity {
             @Override
             public void onTakeDamage(float damage, GameObject damagedUnit) {
                 healthBar.setValue(healthBar.getValue() - damage);
-                // TODO: 8/29/2017 Inproove healthBar color changeing
                 if (healthBar.getValue() <= healthBar.getMaxValue() / 2) healthBar.setColor(Color.ORANGE);
                 if (healthBar.getValue() <= healthBar.getMaxValue() / 4) healthBar.setColor(Color.RED);
             }
@@ -100,7 +98,7 @@ public abstract class GameObject extends Entity {
             if (Util.calculateDistance(destination, this) < currentSpeed * delta) {
                 setPosition(destination.x, destination.y, Align.center);
                 stop();
-                notifyDestinationArrive();
+                notifyOnDestinationArrive();
             }
         }
     }
@@ -117,19 +115,25 @@ public abstract class GameObject extends Entity {
     // endregion
 
     //region Level up
-    public void levelUp(boolean showParticle) {
+    public void levelUp() {
         data.level++;
-        data.health += data.health * ParametersConstants.WEIGHT_PROGRESS;
-        data.speed += data.speed * ParametersConstants.WEIGHT_PROGRESS;
-        if (data.speed > SPEED_LIMIT) data.speed = SPEED_LIMIT;
-        for (Effect effect : effectList) effect.levelUp(false);
+        alterParamsOnLevelChange(data.level);
         weight = calculateWeight();
     }
-    private int calculateWeight() {
-        int weight = data.health / HEALTH_TO_WEIGHT_RATIO;
+    private void alterParamsOnLevelChange(int level) {
+        Util.calcProgressAndDefineWeight(0, level, ParametersConstants.PROGRESS_RATIO,
+                true, data.health, data.speed);
         if (effectList.size() != 0) {
             for (Effect effect : effectList) {
-                weight += effect.getWeight();
+                effect.levelUpEffect(level);
+            }
+        }
+    }
+    private float calculateWeight() {
+        float weight = data.health.current / HEALTH_TO_WEIGHT_RATIO;
+        if (effectList.size() != 0) {
+            for (Effect effect : effectList) {
+                weight += effect.getEffectWeight();
             }
         }
         return weight;
@@ -167,6 +171,9 @@ public abstract class GameObject extends Entity {
     // endregion
 
     // region Live
+    public void selfDestruct() {
+        die(this);
+    }
     public void takeDamage(GameObject attacker, float damage) {
         if (isInvincible) return;
         if (isDead()) return;
@@ -185,16 +192,16 @@ public abstract class GameObject extends Entity {
     // endregion
 
     // region Notify
-    private void notifyPositionChange() {
+    private void notifyOnPositionChange() {
         for (GameObjectAdapter adapter : gameObjectAdapterList) adapter.onPositionChange(this);
     }
-    private void notifyDestinationArrive() {
+    private void notifyOnDestinationArrive() {
         for (GameObjectAdapter adapter : gameObjectAdapterList) adapter.onDestinationArrive(this);
     }
     private void notifyOnDie(GameObject attacker) {
         for (GameObjectAdapter adapter : gameObjectAdapterList) adapter.onDie(this, attacker);
     }
-    private void notifySizeChange() {
+    private void notifyOnSizeChange() {
         for (GameObjectAdapter adapter : gameObjectAdapterList) adapter.onSizeChange(this);
     }
     private void notifyOnTakeDamage(float damage) {
@@ -259,14 +266,11 @@ public abstract class GameObject extends Entity {
         }
     }
     public void unFreeze() {
-        currentSpeed = data.speed;
+        currentSpeed = data.speed.current;
     }
     // endregion
 
     // region Setters
-    public void setLevel(int level) {
-        for (int i = 1; i < level; i++) levelUp(false);
-    }
     public void makeInvincible() {
         isInvincible = true;
     }
@@ -322,40 +326,40 @@ public abstract class GameObject extends Entity {
     @Override
     public void setX(float x) {
         super.setX(x);
-        notifyPositionChange();
+        notifyOnPositionChange();
     }
     @Override
     public void setY(float y) {
         super.setY(y);
-        notifyPositionChange();
+        notifyOnPositionChange();
     }
     @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
-        notifyPositionChange();
+        notifyOnPositionChange();
     }
     @Override
     public void setPosition(float x, float y, int alignment) {
         super.setPosition(x, y, alignment);
-        notifyPositionChange();
+        notifyOnPositionChange();
     }
     @Override
     public void setWidth(float width) {
         super.setWidth(width);
         updateAppearance();
-        notifySizeChange();
+        notifyOnSizeChange();
     }
     @Override
     public void setHeight(float height) {
         super.setHeight(height);
         updateAppearance();
-        notifySizeChange();
+        notifyOnSizeChange();
     }
     @Override
     public void setSize(float width, float height) {
         super.setSize(width, height);
         updateAppearance();
-        notifySizeChange();
+        notifyOnSizeChange();
     }
     @Override
     public void setScale(float scaleX, float scaleY) {
@@ -364,7 +368,7 @@ public abstract class GameObject extends Entity {
     // endregion
 
     // region Getters
-    public int getWeight() {
+    public float getWeight() {
         return weight;
     }public <T extends Effect> T isEffectAcquired(Class<T> c) {
         for (Effect effect : effectList) {
@@ -383,9 +387,6 @@ public abstract class GameObject extends Entity {
     }
     public float getCurrentHealth() {
         return currentHealth;
-    }
-    public float getMaxHealth() {
-        return data.health;
     }
     public PlayerRace getPlayerType() {
         return playerType;

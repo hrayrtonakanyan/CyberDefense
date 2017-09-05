@@ -18,6 +18,7 @@ public abstract class CannonEffect extends Effect {
     public CannonEffect(GameObject owner, EntityManager entityManager, CannonEffectData data) {
         super(owner, entityManager);
         this.data = data;
+        levelUpEffect(owner.getLevel());
         makeAutoExecutable();
     }
     // endregion
@@ -37,7 +38,7 @@ public abstract class CannonEffect extends Effect {
     }
     @Override
     protected void execute() {
-        List<GameObject> targetList = sensor.obtainEnemies(data.targetLimit);
+        List<GameObject> targetList = sensor.obtainEnemies((int)data.targetLimit.current);
         for (GameObject target : targetList) {
             shootABullet(target);
         }
@@ -51,10 +52,10 @@ public abstract class CannonEffect extends Effect {
     // region Getter
     @Override
     protected float getCoolDown() {
-        return data.cooldown;
+        return data.cooldown.current;
     }
     @Override
-    public int getWeight() {
+    public int getEffectWeight() {
         return data.weight;
     }
     // endregion

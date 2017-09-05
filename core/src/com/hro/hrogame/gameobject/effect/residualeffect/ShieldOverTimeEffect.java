@@ -11,11 +11,13 @@ import com.hro.hrogame.data.effect.residualeffectdata.ShieldOverTimeEffectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.GameObjectAdapter;
 import com.hro.hrogame.gameobject.effect.Effect;
+import com.hro.hrogame.utils.Util;
 
 public class ShieldOverTimeEffect extends Effect {
 
     // region Static fields
-    public static final float DURATION = 20;
+    public static final float DURATION = 10;
+    public static final float MAX_DURATION = 20;
     // endregion
 
     // region Instance fields
@@ -89,14 +91,15 @@ public class ShieldOverTimeEffect extends Effect {
 
     // region Renew and level up
     @Override
-    public void levelUp(boolean showParticle) {
-        data.duration += data.duration * ParametersConstants.WEIGHT_PROGRESS;
+    public void levelUpEffect(int level)  {
+        this.level = level;
+        Util.calcProgressAndDefineWeight(0, level, ParametersConstants.PROGRESS_RATIO, true,
+                data.duration);
     }
     public void reNew(int level) {
         if (this.level == level) isAllowedToExecute = true;
         else {
-            this.level = level;
-            setLevel(level);
+            levelUpEffect(level);
             isAllowedToExecute = true;
         }
     }
@@ -105,10 +108,10 @@ public class ShieldOverTimeEffect extends Effect {
     // region Getter
     @Override
     protected float getCoolDown() {
-        return data.duration;
+        return data.duration.current;
     }
     @Override
-    public int getWeight() {
+    public int getEffectWeight() {
         return 0;
     }
     // endregion

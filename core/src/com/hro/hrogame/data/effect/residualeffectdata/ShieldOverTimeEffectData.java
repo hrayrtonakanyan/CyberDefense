@@ -1,10 +1,12 @@
 package com.hro.hrogame.data.effect.residualeffectdata;
 
+import com.hro.hrogame.primitives.ProgressiveAttribute;
+
 public class ShieldOverTimeEffectData {
 
-    public float duration;
+    public ProgressiveAttribute duration;
 
-    public ShieldOverTimeEffectData(float duration) {
+    public ShieldOverTimeEffectData(ProgressiveAttribute duration) {
         this.duration = duration;
     }
 }

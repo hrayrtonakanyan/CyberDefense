@@ -80,6 +80,37 @@ public class GameController {
         });
         stage.addActor(baseUnit, LayerType.FOREGROUND);
     }
+    private void generateWave() {
+        float waveWeight = waveController.calculateWaveWeight();
+        float tankUnitsOverallWeight = waveWeight * WaveController.TANK_UNITS_CREATION_RATIO;
+        float ramUnitsOverallWeight = waveWeight * WaveController.RAM_UNITS_CREATION_RATIO;
+
+
+    }
+
+    private int calculateUnitsLevel() {
+        int unitLevel = waveController.getWaveNumber() / WaveController.ENEMY_UNITS_LVLUP_FREQUANCY_PER_WAVE;
+        if (unitLevel == 0) unitLevel = 1;
+        return unitLevel;
+    }
+    private int calculateUnitWeight(UnitType type, int level) {
+        switch (type) {
+            case TANK:
+
+                break;
+            case BASE:
+
+                break;
+            case RAM:
+
+                break;
+        }
+        return 0;
+    }
+
+
+
+
     private void pushOnTakeDamageTweenAnimation(float damage, GameObject damagedUnit) {
         String text = "-" + (int) damage;
         Label label = new Label(text, StringConstants.skin);
@@ -120,12 +151,13 @@ public class GameController {
         GameObject obj3 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
         GameObject obj4 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
         GameObject obj5 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
-        GameObject obj6 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
+        GameObject obj6 = create(UnitType.RAM, PlayerRace.AI, entityFactory, defaultColor);
         stage.addActor(obj2, LayerType.FOREGROUND);
         stage.addActor(obj3, LayerType.FOREGROUND);
         stage.addActor(obj4, LayerType.FOREGROUND);
         stage.addActor(obj5, LayerType.FOREGROUND);
         stage.addActor(obj6, LayerType.FOREGROUND);
+
 
         stage.addListener(new ClickListener() {
             @Override

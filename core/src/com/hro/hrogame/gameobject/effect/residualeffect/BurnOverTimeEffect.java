@@ -118,7 +118,7 @@ public class BurnOverTimeEffect extends Effect {
         return data.cooldown.current;
     }
     @Override
-    public int getEffectWeight() {
+    public float getEffectWeight() {
         return 0;
     }
     // endregion

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Util {
 
-    public static int calcProgressAndDefineWeight(float initialWeight, int level, float progressRatio, boolean alterAttributes, ProgressiveAttribute... attributes) {
+    public static float calcProgressAndDefineWeight(float initialWeight, int level, float progressRatio, boolean alterAttributes, ProgressiveAttribute... attributes) {
         if (level < 1) throw new RuntimeException("Level must be 1 or greater");
         float valueSum = 0;
         for (ProgressiveAttribute attribute : attributes) valueSum += attribute.current;
@@ -36,7 +36,7 @@ public class Util {
             sumWeight += (attribute.current + Math.abs(c - attribute.current)) * dW;
             if (alterAttributes) attribute.current = c;
         }
-        return (int)sumWeight;
+        return sumWeight;
     }
 
     public static void cleanScreen() {

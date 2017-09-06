@@ -4,7 +4,7 @@ import com.hro.hrogame.primitives.ProgressiveAttribute;
 
 public class SelfDestructionEffectData {
 
-    public int weight;
+    public float weight;
     public ProgressiveAttribute damage;
 
     public SelfDestructionEffectData(int weight, ProgressiveAttribute damage) {

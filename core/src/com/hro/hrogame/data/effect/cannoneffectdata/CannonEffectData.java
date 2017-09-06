@@ -4,7 +4,7 @@ import com.hro.hrogame.primitives.ProgressiveAttribute;
 
 public class CannonEffectData {
 
-    public int weight;
+    public float weight;
     public ProgressiveAttribute cooldown;
     public ProgressiveAttribute damage;
     public ProgressiveAttribute targetLimit;

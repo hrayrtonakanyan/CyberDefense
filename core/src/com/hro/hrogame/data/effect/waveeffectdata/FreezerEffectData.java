@@ -4,7 +4,7 @@ import com.hro.hrogame.primitives.ProgressiveAttribute;
 
 public class FreezerEffectData {
 
-    public int weight;
+    public float weight;
     public ProgressiveAttribute cooldown;
 
     public FreezerEffectData(int weight, ProgressiveAttribute cooldown) {

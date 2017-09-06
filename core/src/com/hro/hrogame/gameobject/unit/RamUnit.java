@@ -10,6 +10,8 @@ public class RamUnit extends GameObject{
     public static final float MAX_SPEED = 360;
     public static final int HEALTH = 200;
     public static final int MAX_HEALTH = 600;
+    public static final int WIDTH = 60;
+    public static final int HEIGHT = 60;
     public static final String TEXTURE_PATH = "ram.png";
     // endregion
 

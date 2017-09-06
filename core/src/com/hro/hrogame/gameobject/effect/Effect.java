@@ -47,7 +47,7 @@ public abstract class Effect extends GameObject {
     protected abstract void execute();
     public abstract void levelUpEffect(int level);
     protected abstract float getCoolDown();
-    public abstract int getEffectWeight();
+    public abstract float getEffectWeight();
     // endregion
 
     // region Execution

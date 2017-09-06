@@ -112,7 +112,7 @@ public class StunOverTimeEffect extends Effect {
         return data.duration.current;
     }
     @Override
-    public int getEffectWeight() {
+    public float getEffectWeight() {
         return 0;
     }
     // endregion

@@ -102,7 +102,7 @@ public class HellFireEffect extends Effect {
         return data.cooldown.current;
     }
     @Override
-    public int getEffectWeight() {
+    public float getEffectWeight() {
         return data.weight;
     }
     // endregion

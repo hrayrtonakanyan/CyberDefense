@@ -74,7 +74,7 @@ public class AbsorbShieldEffect extends Effect {
     }
 
     @Override
-    public int getEffectWeight() {
+    public float getEffectWeight() {
         return data.weight;
     }
     // endregion

@@ -4,7 +4,7 @@ import com.hro.hrogame.primitives.ProgressiveAttribute;
 
 public class AbsorbShieldEffectData {
 
-    public int weight;
+    public float weight;
     public ProgressiveAttribute cooldown;
 
     public AbsorbShieldEffectData(int weight, ProgressiveAttribute cooldown) {

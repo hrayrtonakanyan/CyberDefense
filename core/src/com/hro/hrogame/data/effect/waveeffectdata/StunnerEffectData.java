@@ -4,7 +4,7 @@ import com.hro.hrogame.primitives.ProgressiveAttribute;
 
 public class StunnerEffectData {
 
-    public int weight;
+    public float weight;
     public ProgressiveAttribute cooldown;
 
     public StunnerEffectData(int weight, ProgressiveAttribute cooldown) {

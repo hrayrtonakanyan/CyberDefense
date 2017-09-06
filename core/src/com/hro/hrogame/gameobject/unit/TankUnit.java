@@ -10,6 +10,8 @@ public class TankUnit extends GameObject {
     public static final float MAX_SPEED = 100;
     public static final int HEALTH = 400;
     public static final int MAX_HEALTH = 1000;
+    public static final int WIDTH = 60;
+    public static final int HEIGHT = 60;
     public static final String TEXTURE_PATH = "tank.png";
     // endregion
 

@@ -137,6 +137,7 @@ public class EntityFactory implements EntityManager {
         ProgressiveAttribute health = new ProgressiveAttribute(BaseUnit.HEALTH, BaseUnit.MAX_HEALTH);
         GameObjectData data = new GameObjectData(level, speed, health, BaseUnit.TEXTURE_PATH);
         BaseUnit unit = new BaseUnit(data);
+        unit.setSize(BaseUnit.WIDTH, BaseUnit.HEIGHT);
         unit.addEffect(createEffect(unit, EffectType.SIMPLE_CANNON));
         unit.setPlayerRace(race);
         unit.addGameObjectAdapter(createEntityFactoryAdapter());
@@ -148,6 +149,7 @@ public class EntityFactory implements EntityManager {
         ProgressiveAttribute health = new ProgressiveAttribute(TankUnit.HEALTH, TankUnit.MAX_HEALTH);
         GameObjectData data = new GameObjectData(level, speed, health, TankUnit.TEXTURE_PATH);
         TankUnit unit = new TankUnit(data);
+        unit.setSize(TankUnit.WIDTH, TankUnit.HEIGHT);
         unit.addEffect(createEffect(unit, EffectType.SIMPLE_CANNON));
         unit.setPlayerRace(race);
         unit.addGameObjectAdapter(createEntityFactoryAdapter());
@@ -159,6 +161,7 @@ public class EntityFactory implements EntityManager {
         ProgressiveAttribute health = new ProgressiveAttribute(RamUnit.HEALTH, RamUnit.MAX_HEALTH);
         GameObjectData data = new GameObjectData(level, speed, health, RamUnit.TEXTURE_PATH);
         RamUnit unit = new RamUnit(data);
+        unit.setSize(RamUnit.WIDTH, RamUnit.HEIGHT);
         unit.addEffect(createEffect(unit, EffectType.SELF_DESTRUCTION));
         unit.setPlayerRace(race);
         unit.addGameObjectAdapter(createEntityFactoryAdapter());

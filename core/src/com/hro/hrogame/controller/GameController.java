@@ -8,17 +8,26 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Timer;
 import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
+import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.constants.StringConstants;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.GameObjectAdapter;
 import com.hro.hrogame.gameobject.PlayerRace;
 import com.hro.hrogame.gameobject.effect.EffectType;
+import com.hro.hrogame.gameobject.effect.cannoneffect.SimpleCannonEffect;
 import com.hro.hrogame.gameobject.unit.BaseUnit;
+import com.hro.hrogame.gameobject.unit.RamUnit;
+import com.hro.hrogame.gameobject.unit.TankUnit;
 import com.hro.hrogame.gameobject.unit.UnitType;
+import com.hro.hrogame.primitives.Point;
+import com.hro.hrogame.primitives.ProgressiveAttribute;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
+import com.hro.hrogame.utils.Util;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class GameController {
@@ -29,9 +38,10 @@ public class GameController {
     private EntityFactory entityFactory;
     private WaveController waveController;
     private BaseUnit baseUnit;
+    private ArrayList<GameObject> allEnemieysInWave;
+    private com.badlogic.gdx.utils.Timer waveTimer;
+    private Random random = new Random();
 
-
-    final Random random = new Random();
     Actor selected;
     Color defaultColor = new Color(1, 1, 1, 0.8f);
     // endregion
@@ -48,8 +58,11 @@ public class GameController {
     private void init() {
         entityFactory = new EntityFactory();
         waveController = new WaveController(WaveController.WAVE_NOMINAL_WEIGHT, WaveController.GAME_PROGRESS_RATIO);
+        allEnemieysInWave = new ArrayList<>();
+        waveTimer = new Timer();
         createBase();
-        test();
+        startWave();
+//        test();
     }
     // endregion
 
@@ -62,7 +75,6 @@ public class GameController {
     // region Create
     private void createBase() {
         baseUnit = (BaseUnit) entityFactory.createUnit(UnitType.BASE, PlayerRace.PLAYER, 1);
-        baseUnit.setSize(BaseUnit.WIDTH, BaseUnit.HEIGHT);
         baseUnit.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
         baseUnit.addGameObjectAdapter(new GameObjectAdapter() {
             @Override
@@ -80,32 +92,133 @@ public class GameController {
         });
         stage.addActor(baseUnit, LayerType.FOREGROUND);
     }
+    private void startWave() {
+        generateWave();
+        float delay = 0;
+        float interval = 1;
+        waveTimer.scheduleTask(new Timer.Task() {
+            @Override
+            public void run() {
+                spawnUnit();
+            }
+        }, delay, interval);
+    }
+    private void spawnUnit() {
+        if (allEnemieysInWave.size() == 0) return;
+
+
+        int i = random.nextInt(allEnemieysInWave.size());
+        GameObject enemy = allEnemieysInWave.get(i);
+        allEnemieysInWave.remove(i);
+        Point spawnPoint = generateSpawnPoint();
+        enemy.setPosition(spawnPoint.x, spawnPoint.y, Align.center);
+        enemy.setDestination(baseUnit.getX(Align.center), baseUnit.getY(Align.center));
+        stage.addActor(enemy, LayerType.FOREGROUND);
+    }
+    private Point generateSpawnPoint() {
+        int side = random.nextInt(4);
+        float x, y;
+        switch (side) {
+            case 0:
+                x = -40;
+                y = random.nextInt((int) stage.getHeight());
+                return new Point(x, y);
+            case 1:
+                x = random.nextInt((int) stage.getWidth());
+                y = stage.getHeight() + 40;
+                return new Point(x, y);
+            case 2:
+                x = stage.getWidth() + 40;
+                y = random.nextInt((int) stage.getHeight());
+                return new Point(x, y);
+            case 3:
+                x = random.nextInt((int) stage.getWidth());
+                y = -40;
+                return new Point(x, y);
+            default: throw new RuntimeException("Wrong Spawn Point coordinates was generated");
+        }
+    }
     private void generateWave() {
         float waveWeight = waveController.calculateWaveWeight();
-        float tankUnitsOverallWeight = waveWeight * WaveController.TANK_UNITS_CREATION_RATIO;
-        float ramUnitsOverallWeight = waveWeight * WaveController.RAM_UNITS_CREATION_RATIO;
-
-
+        int unitLevel = calculateUnitLevelForWave();
+        int tankQuantity = calculateUnitsQuantity(waveWeight, unitLevel, WaveController.TANK_UNITS_CREATION_RATIO, UnitType.TANK);
+        int ramQuantity = calculateUnitsQuantity(waveWeight, unitLevel, WaveController.RAM_UNITS_CREATION_RATIO, UnitType.RAM);
+        for (int i = 0; i < tankQuantity; i++) {
+            GameObject unit = entityFactory.createUnit(UnitType.TANK, PlayerRace.AI, unitLevel);
+            unit.addGameObjectAdapter(new GameObjectAdapter() {
+                @Override
+                public void onTakeDamage(float damage, GameObject damagedUnit) {
+                    pushOnTakeDamageTweenAnimation(damage, damagedUnit);
+                }
+                @Override
+                public void onDie(GameObject dyingUnit, GameObject killerUnit) {
+                }
+                @Override
+                public void onKill(GameObject dyingUnit, GameObject killerUnit) {
+                }
+                @Override
+                public void onDestinationArrive(GameObject gameObject) {
+                }
+            });
+            allEnemieysInWave.add(unit);
+            if (i < ramQuantity) {
+                unit = entityFactory.createUnit(UnitType.RAM, PlayerRace.AI, unitLevel);
+                unit.addGameObjectAdapter(new GameObjectAdapter() {
+                    @Override
+                    public void onTakeDamage(float damage, GameObject damagedUnit) {
+                        pushOnTakeDamageTweenAnimation(damage, damagedUnit);
+                    }
+                    @Override
+                    public void onDie(GameObject dyingUnit, GameObject killerUnit) {
+                    }
+                    @Override
+                    public void onKill(GameObject dyingUnit, GameObject killerUnit) {
+                    }
+                    @Override
+                    public void onDestinationArrive(GameObject gameObject) {
+                    }
+                });
+                allEnemieysInWave.add(unit);
+            }
+        }
     }
-
-    private int calculateUnitsLevel() {
-        int unitLevel = waveController.getWaveNumber() / WaveController.ENEMY_UNITS_LVLUP_FREQUANCY_PER_WAVE;
+    private int calculateUnitsQuantity(float waveWeight, int unitLevel, float creationRatio, UnitType type) {
+        float unitsTotalWeight = waveWeight * creationRatio;
+        float unitWave = calculateUnitWeight(type, unitLevel);
+        return (int) (unitsTotalWeight / unitWave);
+    }
+    private int calculateUnitLevelForWave() {
+        int unitLevel = waveController.getWaveNumber() / WaveController.ENEMY_UNITS_LEVEL_UP_FREQUENCY_PER_WAVE;
         if (unitLevel == 0) unitLevel = 1;
         return unitLevel;
     }
-    private int calculateUnitWeight(UnitType type, int level) {
+    private float calculateUnitWeight(UnitType type, int level) {
+        ProgressiveAttribute health;
+        float weight;
         switch (type) {
-            case TANK:
-
-                break;
             case BASE:
-
-                break;
+                health = new ProgressiveAttribute(BaseUnit.HEALTH, BaseUnit.MAX_HEALTH);
+                Util.calcProgressAndDefineWeight(0, level, ParametersConstants.PROGRESS_RATIO, true, health);
+                weight = (int) health.current / GameObject.HEALTH_TO_WEIGHT_RATIO;
+                weight += Util.calcProgressAndDefineWeight(SimpleCannonEffect.INITIAL_WEIGHT, level,
+                        ParametersConstants.PROGRESS_RATIO, false, SimpleCannonEffect.getDataProgressiveAttributes());
+                return weight;
+            case TANK:
+                health = new ProgressiveAttribute(TankUnit.HEALTH, TankUnit.MAX_HEALTH);
+                Util.calcProgressAndDefineWeight(0, level, ParametersConstants.PROGRESS_RATIO, true, health);
+                weight = (int) health.current / GameObject.HEALTH_TO_WEIGHT_RATIO;
+                weight += Util.calcProgressAndDefineWeight(SimpleCannonEffect.INITIAL_WEIGHT, level,
+                        ParametersConstants.PROGRESS_RATIO, false, SimpleCannonEffect.getDataProgressiveAttributes());
+                return weight;
             case RAM:
-
-                break;
+                health = new ProgressiveAttribute(RamUnit.HEALTH, RamUnit.MAX_HEALTH);
+                Util.calcProgressAndDefineWeight(0, level, ParametersConstants.PROGRESS_RATIO, true, health);
+                weight = (int) health.current / GameObject.HEALTH_TO_WEIGHT_RATIO;
+                weight += Util.calcProgressAndDefineWeight(SimpleCannonEffect.INITIAL_WEIGHT, level,
+                        ParametersConstants.PROGRESS_RATIO, false, SimpleCannonEffect.getDataProgressiveAttributes());
+                return weight;
+            default: throw new RuntimeException("Wrong UnitType was passed");
         }
-        return 0;
     }
 
 

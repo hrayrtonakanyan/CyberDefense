@@ -58,7 +58,7 @@ public class SelfDestructionEffect extends Effect {
         return 0;
     }
     @Override
-    public int getEffectWeight() {
+    public float getEffectWeight() {
         return data.weight;
     }
     // endregion

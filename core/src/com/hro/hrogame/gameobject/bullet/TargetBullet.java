@@ -13,10 +13,12 @@ import com.hro.hrogame.sensor.UnitSensor;
 
 import java.util.List;
 
-import static com.hro.hrogame.constants.ParametersConstants.TARGET_BULLET_HEIGHT;
-import static com.hro.hrogame.constants.ParametersConstants.TARGET_BULLET_WIDTH;
-
 public class TargetBullet extends Bullet {
+
+    // region Instance fields
+    public static final float WIDTH = 10;
+    public static final float HEIGHT = 10;
+    // endregion
 
     // region Instance fields
     private CircleSensor sensor;
@@ -39,7 +41,7 @@ public class TargetBullet extends Bullet {
         gameObjectData.speed = new ProgressiveAttribute(bulletData.speed, bulletData.speed);
         gameObjectData.health = new ProgressiveAttribute(0, 0);
         setGameObjectData(gameObjectData);
-        setSize(TARGET_BULLET_WIDTH, TARGET_BULLET_HEIGHT);
+        setSize(TargetBullet.WIDTH, TargetBullet.HEIGHT);
         // TODO: 8/16/17 Remove texture and set drawable;
         setAppearance(bulletData.texturePath);
         sensor = (CircleSensor) entityManager.createSensor(this, SensorType.CIRCLE_SENSOR);

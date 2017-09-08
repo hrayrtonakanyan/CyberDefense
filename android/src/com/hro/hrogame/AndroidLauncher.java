@@ -1,10 +1,8 @@
 package com.hro.hrogame;
 
 import android.os.Bundle;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.hro.hrogame.HroGame;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override

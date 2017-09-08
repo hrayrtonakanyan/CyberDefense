@@ -20,18 +20,18 @@ public class SimpleCannonEffect extends CannonEffect {
 
     // region Static fields
     public static final String BULLET_TEXTURE_PATH = "bullet.png";
-    public static final int BULLET_HIT_UNIT_LIMIT = 3;
-    public static final float BULLET_SPEED = 100;
+    public static final int BULLET_HIT_UNIT_LIMIT = 1;
+    public static final float BULLET_SPEED = 150;
     public static final int BULLET_SPLASH_AREA_RADIUS = 80;
 
     public static final int INITIAL_WEIGHT = 5;
-    public static final float COOLDOWN = 5;
+    public static final float COOLDOWN = 2;
     public static final float MIN_COOLDOWN = 0.5f;
     public static final float DAMAGE = 25;
-    public static final float MAX_DAMAGE = 100;
+    public static final float MAX_DAMAGE = 400;
     public static final int TARGET_LIMIT = 1;
     public static final int MAX_TARGET_LIMIT = 1;
-    public static final int SENSOR_RADIUS_FOR_BASE = 80;
+    public static final int SENSOR_RADIUS_FOR_BASE = 200;
     public static final int SENSOR_RADIUS_FOR_TANK = 80;
     // endregion
 

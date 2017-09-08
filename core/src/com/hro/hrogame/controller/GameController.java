@@ -1,12 +1,7 @@
 package com.hro.hrogame.controller;
 
 import aurelienribon.tweenengine.TweenManager;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
@@ -32,18 +27,23 @@ import java.util.Random;
 
 public class GameController {
 
+    // region Static fields
+    public static final float GAME_PROGRESS_RATIO = 1;
+    public static final float BASE_UNIT_PROGRESS_RATIO = 0.7f;
+    // endregion
+
     // region Instance fields
+    private Random random = new Random();
     private GameStage stage;
+    private Timer waveTimer;
+    private Timer.Task spawnUnitTask;
     private TweenManager tweenManager;
     private EntityFactory entityFactory;
     private WaveController waveController;
     private BaseUnit baseUnit;
-    private ArrayList<GameObject> allEnemieysInWave;
-    private com.badlogic.gdx.utils.Timer waveTimer;
-    private Random random = new Random();
-
-    Actor selected;
-    Color defaultColor = new Color(1, 1, 1, 0.8f);
+    private ArrayList<GameObject> allEnemiesInWave;
+    private float playerExperience;
+    private float accessExperience = WaveController.INITIAL_WEIGHT;
     // endregion
 
     // region C-tor
@@ -57,22 +57,34 @@ public class GameController {
     // region Init
     private void init() {
         entityFactory = new EntityFactory();
-        waveController = new WaveController(WaveController.WAVE_NOMINAL_WEIGHT, WaveController.GAME_PROGRESS_RATIO);
-        allEnemieysInWave = new ArrayList<>();
+        waveController = new WaveController(WaveController.INITIAL_WEIGHT, GAME_PROGRESS_RATIO);
+        allEnemiesInWave = new ArrayList<>();
         waveTimer = new Timer();
+        spawnUnitTask = createTask();
         createBase();
-        startWave();
-//        test();
+        startNewWave();
+    }
+    private Timer.Task createTask() {
+        return new Timer.Task() {
+            @Override
+            public void run() {
+                spawnUnit();
+            }
+        };
     }
     // endregion
 
     // region Update
-    public void update(float delta){
-
+    public void update(){
+        if (playerExperience >= accessExperience) {
+            baseUnit.levelUp();
+            calculatePlayerAccessExperience();
+            System.out.println("Base unit is level up " + baseUnit.getLevel());
+        }
     }
     // endregion
 
-    // region Create
+    // region Base
     private void createBase() {
         baseUnit = (BaseUnit) entityFactory.createUnit(UnitType.BASE, PlayerRace.PLAYER, 1);
         baseUnit.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
@@ -82,39 +94,97 @@ public class GameController {
                 pushOnTakeDamageTweenAnimation(damage, damagedUnit);
             }
             @Override
-            public void onDie(GameObject dyingUnit, GameObject killerUnit) {
-
-            }
-            @Override
             public void onKill(GameObject dyingUnit, GameObject killerUnit) {
-
+                playerExperience += dyingUnit.getWeight();
+                System.out.println("Collected weight " + playerExperience);
             }
         });
         stage.addActor(baseUnit, LayerType.FOREGROUND);
     }
-    private void startWave() {
-        generateWave();
-        float delay = 0;
-        float interval = 1;
-        waveTimer.scheduleTask(new Timer.Task() {
-            @Override
-            public void run() {
-                spawnUnit();
-            }
-        }, delay, interval);
+    public void addEffectToBase(EffectType type) {
+        switch (type) {
+            case SIMPLE_CANNON:
+                baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
+                break;
+            case HARD_CANNON:
+                baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
+                break;
+            case HELL_FIRE:
+                baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
+                break;
+            case FREEZER:
+                baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
+                break;
+            case STUNNER:
+                baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
+                break;
+            case ABSORB_SHIELD:
+                baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
+                break;
+            default: throw new RuntimeException("The effect doesn't exist, or OverTime effect type was passed. OverTime effects can't be added externally.");
+        }
     }
+    // endregion
+
+    // region Wave
+    private void startNewWave() {
+        generateWave();
+        startWaveTimer();
+    }
+    private void generateWave() {
+        float waveWeight = waveController.calculateWaveWeight();
+        System.out.println("Wave weight " + waveWeight);
+        int unitLevel = calculateUnitLevelForWave();
+        System.out.println("Units level " + unitLevel);
+        int tankQuantity = calculateUnitsQuantity(waveWeight, unitLevel, WaveController.TANK_UNITS_CREATION_RATIO, UnitType.TANK);
+        System.out.println("Tank quantity in wave " + tankQuantity);
+        int ramQuantity = calculateUnitsQuantity(waveWeight, unitLevel, WaveController.RAM_UNITS_CREATION_RATIO, UnitType.RAM);
+        System.out.println("Ram quantity in wave " + ramQuantity);
+        for (int i = 0; i < tankQuantity; i++) {
+            GameObject unit = entityFactory.createUnit(UnitType.TANK, PlayerRace.AI, unitLevel);
+            unit.addGameObjectAdapter(new GameObjectAdapter() {
+                @Override
+                public void onTakeDamage(float damage, GameObject damagedUnit) {
+                    pushOnTakeDamageTweenAnimation(damage, damagedUnit);
+                }
+            });
+            allEnemiesInWave.add(unit);
+        }
+        for (int i = 0; i < ramQuantity; i++) {
+            GameObject unit = entityFactory.createUnit(UnitType.RAM, PlayerRace.AI, unitLevel);
+            unit.addGameObjectAdapter(new GameObjectAdapter() {
+                @Override
+                public void onTakeDamage(float damage, GameObject damagedUnit) {
+                    pushOnTakeDamageTweenAnimation(damage, damagedUnit);
+                }
+            });
+            allEnemiesInWave.add(unit);
+        }
+    }
+    private void startWaveTimer() {
+        float delay = 15;
+        if (waveController.getWaveNumber() == 1) delay = 0;
+        float interval = 5;
+        waveTimer.clear();
+        waveTimer.scheduleTask(spawnUnitTask, delay, interval);
+    }
+    // endregion
+
+    // region Spawn
     private void spawnUnit() {
-        if (allEnemieysInWave.size() == 0) return;
-
-
-        int i = random.nextInt(allEnemieysInWave.size());
-        GameObject enemy = allEnemieysInWave.get(i);
-        allEnemieysInWave.remove(i);
+        if (allEnemiesInWave.size() == 0) {
+            startNewWave();
+            return;
+        }
+        int i = random.nextInt(allEnemiesInWave.size());
+        GameObject enemy = allEnemiesInWave.get(i);
+        allEnemiesInWave.remove(i);
         Point spawnPoint = generateSpawnPoint();
         enemy.setPosition(spawnPoint.x, spawnPoint.y, Align.center);
         enemy.setDestination(baseUnit.getX(Align.center), baseUnit.getY(Align.center));
         stage.addActor(enemy, LayerType.FOREGROUND);
     }
+
     private Point generateSpawnPoint() {
         int side = random.nextInt(4);
         float x, y;
@@ -138,54 +208,18 @@ public class GameController {
             default: throw new RuntimeException("Wrong Spawn Point coordinates was generated");
         }
     }
-    private void generateWave() {
-        float waveWeight = waveController.calculateWaveWeight();
-        int unitLevel = calculateUnitLevelForWave();
-        int tankQuantity = calculateUnitsQuantity(waveWeight, unitLevel, WaveController.TANK_UNITS_CREATION_RATIO, UnitType.TANK);
-        int ramQuantity = calculateUnitsQuantity(waveWeight, unitLevel, WaveController.RAM_UNITS_CREATION_RATIO, UnitType.RAM);
-        for (int i = 0; i < tankQuantity; i++) {
-            GameObject unit = entityFactory.createUnit(UnitType.TANK, PlayerRace.AI, unitLevel);
-            unit.addGameObjectAdapter(new GameObjectAdapter() {
-                @Override
-                public void onTakeDamage(float damage, GameObject damagedUnit) {
-                    pushOnTakeDamageTweenAnimation(damage, damagedUnit);
-                }
-                @Override
-                public void onDie(GameObject dyingUnit, GameObject killerUnit) {
-                }
-                @Override
-                public void onKill(GameObject dyingUnit, GameObject killerUnit) {
-                }
-                @Override
-                public void onDestinationArrive(GameObject gameObject) {
-                }
-            });
-            allEnemieysInWave.add(unit);
-            if (i < ramQuantity) {
-                unit = entityFactory.createUnit(UnitType.RAM, PlayerRace.AI, unitLevel);
-                unit.addGameObjectAdapter(new GameObjectAdapter() {
-                    @Override
-                    public void onTakeDamage(float damage, GameObject damagedUnit) {
-                        pushOnTakeDamageTweenAnimation(damage, damagedUnit);
-                    }
-                    @Override
-                    public void onDie(GameObject dyingUnit, GameObject killerUnit) {
-                    }
-                    @Override
-                    public void onKill(GameObject dyingUnit, GameObject killerUnit) {
-                    }
-                    @Override
-                    public void onDestinationArrive(GameObject gameObject) {
-                    }
-                });
-                allEnemieysInWave.add(unit);
-            }
-        }
+    // endregion
+
+    // region Calculation
+    private void calculatePlayerAccessExperience() {
+        accessExperience += accessExperience * ParametersConstants.PROGRESS_RATIO *
+                GameController.GAME_PROGRESS_RATIO *
+                GameController.BASE_UNIT_PROGRESS_RATIO;
     }
     private int calculateUnitsQuantity(float waveWeight, int unitLevel, float creationRatio, UnitType type) {
         float unitsTotalWeight = waveWeight * creationRatio;
-        float unitWave = calculateUnitWeight(type, unitLevel);
-        return (int) (unitsTotalWeight / unitWave);
+        float unitWeight = calculateUnitWeight(type, unitLevel);
+        return (int) (unitsTotalWeight / unitWeight);
     }
     private int calculateUnitLevelForWave() {
         int unitLevel = waveController.getWaveNumber() / WaveController.ENEMY_UNITS_LEVEL_UP_FREQUENCY_PER_WAVE;
@@ -220,86 +254,23 @@ public class GameController {
             default: throw new RuntimeException("Wrong UnitType was passed");
         }
     }
+    // endregion
 
-
-
-
+    // region Animation
     private void pushOnTakeDamageTweenAnimation(float damage, GameObject damagedUnit) {
         String text = "-" + (int) damage;
         Label label = new Label(text, StringConstants.skin);
         label.setPosition(damagedUnit.getX(Align.center), damagedUnit.getY(Align.topRight));
         TweenAnimation.pop_up(label, TweenAnimation.POP_UP_DURATION,
-                TweenAnimation.POP_UP_MOVE_TARGET,
-                TweenAnimation.POP_UP_VANISH_TARGET, tweenManager, null);
+                                     TweenAnimation.POP_UP_MOVE_TARGET,
+                                     TweenAnimation.POP_UP_VANISH_TARGET, tweenManager, null);
         stage.addActor(label, LayerType.GAME_UI);
-    }
-    public void addEffectToBase(EffectType type) {
-        switch (type) {
-            case SIMPLE_CANNON:
-                baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
-                break;
-            case HARD_CANNON:
-                baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
-                break;
-            case HELL_FIRE:
-                baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
-                break;
-            case FREEZER:
-                baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
-                break;
-            case STUNNER:
-                baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
-                break;
-            case ABSORB_SHIELD:
-                baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
-                break;
-            default: throw new RuntimeException("The effect doesn't exist, or OverTime effect type was passed. OverTime effects can't be added externally.");
-        }
     }
     // endregion
 
-    // region Test
-    private void test() {
-        GameObject obj2 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
-        GameObject obj3 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
-        GameObject obj4 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
-        GameObject obj5 = create(UnitType.TANK, PlayerRace.AI, entityFactory, defaultColor);
-        GameObject obj6 = create(UnitType.RAM, PlayerRace.AI, entityFactory, defaultColor);
-        stage.addActor(obj2, LayerType.FOREGROUND);
-        stage.addActor(obj3, LayerType.FOREGROUND);
-        stage.addActor(obj4, LayerType.FOREGROUND);
-        stage.addActor(obj5, LayerType.FOREGROUND);
-        stage.addActor(obj6, LayerType.FOREGROUND);
-
-
-        stage.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (event.getTarget() instanceof GameObject) {
-                    if (selected != null)
-                        selected.getColor().a = 0.4f;
-                    selected = event.getTarget();
-                    selected.getColor().a = 1f;
-                } else if (selected != null){
-                    ((GameObject)selected).setDestination(event.getStageX(), event.getStageY());
-                }
-            }
-        });
-    }
-
-    private GameObject create(UnitType unitType, PlayerRace race, EntityFactory factory, Color color) {
-        GameObject obj = factory.createUnit(unitType, race, 1);
-        obj.setSize(60, 60);
-        obj.setColor(color);
-        obj.setPosition(random.nextInt((int)(Gdx.graphics.getWidth() - obj.getWidth())),
-                random.nextInt((int)(Gdx.graphics.getHeight() - obj.getHeight())));
-        obj.addGameObjectAdapter(new GameObjectAdapter() {
-            @Override
-            public void onTakeDamage(float damage, GameObject damagedUnit) {
-                pushOnTakeDamageTweenAnimation(damage, damagedUnit);
-            }
-        });
-        return obj;
+    // region Getter
+    public int getWaveNumber() {
+        return waveController.getWaveNumber();
     }
     // endregion
 }

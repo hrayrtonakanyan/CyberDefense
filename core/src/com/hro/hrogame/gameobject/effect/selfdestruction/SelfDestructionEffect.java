@@ -12,7 +12,7 @@ import java.util.List;
 public class SelfDestructionEffect extends Effect {
 
     // region Static fields
-    public static final float SENSOR_RADIUS_FOR_RAM = 40;
+    public static final float SENSOR_RADIUS_FOR_RAM = 20;
     public static final int INITIAL_WEIGHT = 5;
     public static final float DAMAGE = 50;
     public static final float MAX_DAMAGE = 100;

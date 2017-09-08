@@ -21,13 +21,13 @@ public class HardCannonEffect extends CannonEffect {
     public static final String BULLET_TEXTURE_PATH = "bullet.png";
     public static final int BULLET_HIT_UNIT_LIMIT = 3;
     public static final float BULLET_SPEED = 100;
-    public static final int BULLET_SPLASH_AREA_RADIUS = 80;
+    public static final int BULLET_SPLASH_AREA_RADIUS = 150;
 
     public static final int INITIAL_WEIGHT = 10;
     public static final float COOLDOWN = 10;
     public static final float MIN_COOLDOWN = 10;
     public static final float DAMAGE = 50;
-    public static final float MAX_DAMAGE = 50;
+    public static final float MAX_DAMAGE = 400;
     public static final int TARGET_LIMIT = 1;
     public static final int MAX_TARGET_LIMIT = 1;
     public static final int SENSOR_RADIUS_FOR_BASE = 60;

@@ -8,10 +8,10 @@ public class BaseUnit extends GameObject {
     // region Static fields
     public static final float SPEED = 0;
     public static final float MAX_SPEED = 0;
-    public static final int HEALTH = 600;
-    public static final int MAX_HEALTH = 3000;
-    public static final int WIDTH = 60;
-    public static final int HEIGHT = 60;
+    public static final int HEALTH = 1500;
+    public static final int MAX_HEALTH = 4500;
+    public static final int WIDTH = 40;
+    public static final int HEIGHT = 40;
     public static final String TEXTURE_PATH = "base.png";
     // endregion
 

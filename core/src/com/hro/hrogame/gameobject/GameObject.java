@@ -61,12 +61,16 @@ public abstract class GameObject extends Entity {
         currentHealth = data.health.current;
         currentSpeed = data.speed.current;
         weight = calculateWeight();
+        if (healthBar != null) {
+            healthBar.setRange(0, currentHealth);
+            healthBar.setValue(currentHealth);
+        }
     }
     private void addHealthBar(float health) {
         healthBar = new ProgressBar(0, health, 1, false, StringConstants.skin);
         healthBar.setSize(60, 10);
         healthBar.setValue(health);
-        healthBar.setAnimateDuration(1);
+        healthBar.setAnimateDuration(0.2f);
         healthBar.setColor(Color.GREEN);
         addGameObjectAdapter(new GameObjectAdapter() {
             @Override
@@ -118,7 +122,7 @@ public abstract class GameObject extends Entity {
     public void levelUp() {
         data.level++;
         alterParamsOnLevelChange(data.level);
-        weight = calculateWeight();
+        initCurrentParams(data);
     }
     private void alterParamsOnLevelChange(int level) {
         Util.calcProgressAndDefineWeight(0, level, ParametersConstants.PROGRESS_RATIO,
@@ -188,6 +192,7 @@ public abstract class GameObject extends Entity {
     private void die(GameObject attacker) {
         currentHealth = 0;
         notifyOnDie(attacker);
+        attacker.notifyOnKill(this);
     }
     // endregion
 
@@ -206,6 +211,9 @@ public abstract class GameObject extends Entity {
     }
     private void notifyOnTakeDamage(float damage) {
         for (GameObjectAdapter adapter : gameObjectAdapterList) adapter.onTakeDamage(damage, this);
+    }
+    private void notifyOnKill(GameObject target) {
+        for (GameObjectAdapter adapter : gameObjectAdapterList) adapter.onKill(target, this);
     }
     // endregion
 
@@ -293,6 +301,15 @@ public abstract class GameObject extends Entity {
         play();
         if (this.destination == null) this.destination = new Point();
         this.destination.set(x, y);
+        setAngle();
+    }
+    private void setAngle() {
+        setOrigin(Align.center);
+        float dy = destination.y - getY(Align.center);
+        float dx = destination.x - getX(Align.center);
+        float angle;
+        angle = (float)Math.toDegrees(Math.atan2(dy, dx));
+        setRotation(angle);
     }
     public void setPlayerRace(PlayerRace playerType) {
         this.playerType = playerType;

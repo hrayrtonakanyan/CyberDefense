@@ -60,11 +60,11 @@ public class GameController {
         waveController = new WaveController(WaveController.INITIAL_WEIGHT, GAME_PROGRESS_RATIO);
         allEnemiesInWave = new ArrayList<>();
         waveTimer = new Timer();
-        spawnUnitTask = createTask();
+        spawnUnitTask = createSpawnUnitTask();
         createBase();
         startNewWave();
     }
-    private Timer.Task createTask() {
+    private Timer.Task createSpawnUnitTask() {
         return new Timer.Task() {
             @Override
             public void run() {
@@ -184,7 +184,6 @@ public class GameController {
         enemy.setDestination(baseUnit.getX(Align.center), baseUnit.getY(Align.center));
         stage.addActor(enemy, LayerType.FOREGROUND);
     }
-
     private Point generateSpawnPoint() {
         int side = random.nextInt(4);
         float x, y;
@@ -213,8 +212,8 @@ public class GameController {
     // region Calculation
     private void calculatePlayerAccessExperience() {
         accessExperience += accessExperience * ParametersConstants.PROGRESS_RATIO *
-                GameController.GAME_PROGRESS_RATIO *
-                GameController.BASE_UNIT_PROGRESS_RATIO;
+                                               GameController.GAME_PROGRESS_RATIO *
+                                               GameController.BASE_UNIT_PROGRESS_RATIO;
     }
     private int calculateUnitsQuantity(float waveWeight, int unitLevel, float creationRatio, UnitType type) {
         float unitsTotalWeight = waveWeight * creationRatio;

@@ -74,7 +74,9 @@ public class EntityFactory implements EntityManager {
         list.clear();
         for (PlayerRace type : PlayerRace.values()) {
             List<GameObject> unitList = unitMap.get(type);
-            list.addAll(unitList);
+            for (GameObject unit : unitList) {
+                if (unit.getStage() != null) list.add(unit);
+            }
         }
         return list;
     }
@@ -94,7 +96,9 @@ public class EntityFactory implements EntityManager {
     public List<GameObject> obtainAllAllies(GameObject requester, List<GameObject> list) {
         list.clear();
         List<GameObject> unitList = unitMap.get(requester.getPlayerType());
-        list.addAll(unitList);
+        for (GameObject unit : unitList) {
+            if (unit.getStage() != null) list.add(unit);
+        }
         list.remove(requester);
         return list;
     }
@@ -138,7 +142,7 @@ public class EntityFactory implements EntityManager {
         GameObjectData data = new GameObjectData(level, speed, health, BaseUnit.TEXTURE_PATH);
         BaseUnit unit = new BaseUnit(data);
         unit.setSize(BaseUnit.WIDTH, BaseUnit.HEIGHT);
-        unit.addEffect(createEffect(unit, EffectType.SIMPLE_CANNON));
+        unit.addEffect(createEffect(unit, EffectType.HELL_FIRE));
         unit.setPlayerRace(race);
         unit.addGameObjectAdapter(createEntityFactoryAdapter());
         addUnitToUnitMap(unit);
@@ -356,9 +360,7 @@ public class EntityFactory implements EntityManager {
             }
             @Override
             public void onDie(GameObject dyingUnit, GameObject killerUnit) {
-                unitMap.get(dyingUnit.getPlayerType()).remove(dyingUnit);
-                // TODO: 8/17/17 write the pool logic here
-                dyingUnit.remove();
+                removeUnit(dyingUnit);
             }
         };
     }

@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface ShapeEntityProvider {
 
-
     List<GameObject> obtainAll(List<GameObject> list, UnitSensor sensor);
     List<GameObject> obtainEnemies(List<GameObject> list, UnitSensor sensor);
     List<GameObject> obtainAllies(List<GameObject> list, UnitSensor sensor);

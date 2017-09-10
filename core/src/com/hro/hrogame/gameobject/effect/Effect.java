@@ -19,7 +19,6 @@ public abstract class Effect extends GameObject {
     private Timer.Task cooldownTask = createCooldownTask();
     protected GameObject owner;
     protected UnitSensor sensor;
-    protected boolean isMaxLevel;
     private boolean isOverTimeEffect = false;
     private boolean isReady = true;
     private boolean isAutoExecutable;

@@ -11,54 +11,21 @@ import java.util.List;
 
 public abstract class UnitSensor extends Entity {
 
+    // region Instance fields
     protected GameObject owner;
-    protected UnitFilter unitFilter;
-    protected ShapeEntityProvider entityProvider;
-    protected ArrayList<GameObject> unitList = new ArrayList<>();
+    private UnitFilter unitFilter;
+    private ShapeEntityProvider entityProvider;
+    private ArrayList<GameObject> unitList = new ArrayList<>();
+    // endregion
 
-
+    // region C-tor
     public UnitSensor(GameObject owner, ShapeEntityProvider entityProvider) {
         this.owner = owner;
         this.entityProvider = entityProvider;
     }
+    // endregion
 
-    public abstract Shape getShape();
-
-    @Override
-    public GameObject revealOwningUnit() {
-        return owner.revealOwningUnit();
-    }
-
-
-    @Override
-    public void setPosition(float x, float y) {
-        super.setPosition(x, y);
-        updateShapePosition();
-    }
-    @Override
-    public void setPosition(float x, float y, int alignment) {
-        super.setPosition(x, y, alignment);
-        updateShapePosition();
-    }
-    @Override
-    public void setX(float x) {
-        super.setX(x);
-        updateShapePosition();
-    }
-    @Override
-    public void setY(float y) {
-        super.setY(y);
-        updateShapePosition();
-    }
-
-    protected void updateShapePosition() {
-        coordinateConvertVector.set(getWidth() / 2, getHeight() / 2);
-        localToStageCoordinates(coordinateConvertVector);
-        getShape().setPosition(coordinateConvertVector.x, coordinateConvertVector.y);
-    }
-
-
-
+    // region Obtain
     public List<GameObject> obtainEnemies(int unitLimit) {
         entityProvider.obtainEnemies(unitList, this);
         unitFilter.filterUnitList(unitList, unitLimit);
@@ -84,27 +51,56 @@ public abstract class UnitSensor extends Entity {
         unitFilter.filterUnitList(unitList);
         return unitList;
     }
+    // endregion
 
+    // region Shape methods
     public final List<GameObject> filterUnitsInShape(List<GameObject> list) {
         return getShape().filterUnitsInShape(list);
     }
+    protected void updateShapePosition() {
+        coordinateConvertVector.set(getWidth() / 2, getHeight() / 2);
+        localToStageCoordinates(coordinateConvertVector);
+        getShape().setPosition(coordinateConvertVector.x, coordinateConvertVector.y);
+    }
+    // endregion
 
-    public GameObject getOwner() {
-        return owner;
+    // region Setter
+    public void setUnitFilter(UnitFilter unitFilter) {
+        this.unitFilter = unitFilter;
     }
     public void setOwner(GameObject owner) {
         this.owner = owner;
     }
-    public UnitFilter getUnitFilter() {
-        return unitFilter;
+    @Override
+    public void setPosition(float x, float y) {
+        super.setPosition(x, y);
+        updateShapePosition();
     }
-    public void setUnitFilter(UnitFilter unitFilter) {
-        this.unitFilter = unitFilter;
+    @Override
+    public void setPosition(float x, float y, int alignment) {
+        super.setPosition(x, y, alignment);
+        updateShapePosition();
     }
-    public ShapeEntityProvider getEntityProvider() {
-        return entityProvider;
+    @Override
+    public void setX(float x) {
+        super.setX(x);
+        updateShapePosition();
     }
-    public void setEntityProvider(ShapeEntityProvider entityProvider) {
-        this.entityProvider = entityProvider;
+    @Override
+    public void setY(float y) {
+        super.setY(y);
+        updateShapePosition();
     }
+    // endregion
+
+    // region Getter
+    public GameObject getOwner() {
+        return owner;
+    }
+    public abstract Shape getShape();
+    @Override
+    public GameObject revealOwningUnit() {
+        return owner.revealOwningUnit();
+    }
+    // endregion
 }

@@ -385,6 +385,9 @@ public abstract class GameObject extends Entity {
     // endregion
 
     // region Getters
+    public int getReward() {
+        return (int) weight * ParametersConstants.WEIGHT_TO_REWARD_RATIO;
+    }
     public float getWeight() {
         return weight;
     }public <T extends Effect> T isEffectAcquired(Class<T> c) {
@@ -402,14 +405,8 @@ public abstract class GameObject extends Entity {
     public int getLevel() {
         return data.level;
     }
-    public float getCurrentHealth() {
-        return currentHealth;
-    }
     public PlayerRace getPlayerType() {
         return playerType;
-    }
-    public GameObjectData getGameObjectData() {
-        return data;
     }
     // endregion
 }

@@ -24,7 +24,8 @@ public class GameScreen extends ScreenAdapter {
     private TweenManager tweenManager;
     private GameController gameController;
 
-    Label waveLabel;
+    private Label goldLabel;
+    private Label waveLabel;
     private boolean isPaused;
     // endregion
 
@@ -40,12 +41,27 @@ public class GameScreen extends ScreenAdapter {
     // region Show
     @Override
     public void show() {
+        createGoldLabel();
+        createWaveLabel();
         createPlayPauseButtons();
-        createLabels();
     }
     // endregion
 
     // region Init
+    private void createGoldLabel() {
+        Image coin = new Image(new Texture("coin.png"));
+        coin.setSize(20, 20);
+        goldLabel = new Label(" " + gameController.getPlayerGold(), StringConstants.skin);
+        coin.setPosition(coin.getWidth(), stage.getHeight() - coin.getHeight() * 2);
+        goldLabel.setPosition(coin.getX() + coin.getWidth(), coin.getY());
+        stage.addActor(coin, LayerType.MENU_UI);
+        stage.addActor(goldLabel, LayerType.MENU_UI);
+    }
+    private void createWaveLabel() {
+        waveLabel = new Label("Wave " + gameController.getWaveNumber(), StringConstants.skin);
+        waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() - waveLabel.getHeight(), Align.center);
+        stage.addActor(waveLabel, LayerType.MENU_UI);
+    }
     private void createPlayPauseButtons() {
         // TODO: 9/8/2017 Handle timers work on pause
         Image playImage = new Image(new Texture("play.png"));
@@ -62,11 +78,6 @@ public class GameScreen extends ScreenAdapter {
         });
         stage.addActor(playPauseBtn, LayerType.MENU_UI);
     }
-    private void createLabels() {
-        waveLabel = new Label("Wave " + gameController.getWaveNumber(), StringConstants.skin);
-        waveLabel.setPosition(waveLabel.getWidth() / 2 + 20, stage.getHeight() - waveLabel.getHeight(), Align.center);
-        stage.addActor(waveLabel, LayerType.MENU_UI);
-    }
     // endregion
 
     // region Render
@@ -75,11 +86,15 @@ public class GameScreen extends ScreenAdapter {
         if (!isPaused) {
             Util.cleanScreen();
             stage.act();
-            tweenManager.update(delta);
-            gameController.update();
-            waveLabel.setText("Wave " + gameController.getWaveNumber());
+            update(delta);
             stage.draw();
         }
+    }
+    private void update(float delta) {
+        tweenManager.update(delta);
+        gameController.update();
+        waveLabel.setText("Wave " + gameController.getWaveNumber());
+        goldLabel.setText(" " + gameController.getPlayerGold());
     }
     // endregion
 }

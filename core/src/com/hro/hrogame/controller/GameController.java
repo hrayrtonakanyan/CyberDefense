@@ -1,6 +1,9 @@
 package com.hro.hrogame.controller;
 
 import aurelienribon.tweenengine.TweenManager;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
@@ -42,6 +45,7 @@ public class GameController {
     private WaveController waveController;
     private BaseUnit baseUnit;
     private ArrayList<GameObject> allEnemiesInWave;
+    private int playerGold;
     private float playerExperience;
     private float accessExperience = WaveController.INITIAL_WEIGHT;
     // endregion
@@ -147,6 +151,12 @@ public class GameController {
                 public void onTakeDamage(float damage, GameObject damagedUnit) {
                     pushOnTakeDamageTweenAnimation(damage, damagedUnit);
                 }
+                @Override
+                public void onDie(GameObject dyingUnit, GameObject killerUnit) {
+                    int gold = dyingUnit.getReward();
+                    playerGold += gold;
+                    pushOnDieTweenAnimation(gold, dyingUnit);
+                }
             });
             allEnemiesInWave.add(unit);
         }
@@ -156,6 +166,12 @@ public class GameController {
                 @Override
                 public void onTakeDamage(float damage, GameObject damagedUnit) {
                     pushOnTakeDamageTweenAnimation(damage, damagedUnit);
+                }
+                @Override
+                public void onDie(GameObject dyingUnit, GameObject killerUnit) {
+                    int gold = dyingUnit.getReward();
+                    playerGold += gold;
+                    pushOnDieTweenAnimation(gold, dyingUnit);
                 }
             });
             allEnemiesInWave.add(unit);
@@ -259,17 +275,34 @@ public class GameController {
     private void pushOnTakeDamageTweenAnimation(float damage, GameObject damagedUnit) {
         String text = "-" + (int) damage;
         Label label = new Label(text, StringConstants.skin);
-        label.setPosition(damagedUnit.getX(Align.center), damagedUnit.getY(Align.topRight));
+        label.setPosition(damagedUnit.getX() + damagedUnit.getWidth(), damagedUnit.getY());
         TweenAnimation.pop_up(label, TweenAnimation.POP_UP_DURATION,
                                      TweenAnimation.POP_UP_MOVE_TARGET,
                                      TweenAnimation.POP_UP_VANISH_TARGET, tweenManager, null);
         stage.addActor(label, LayerType.GAME_UI);
+    }
+    private void pushOnDieTweenAnimation(int gold, GameObject damagedUnit) {
+        Image coin = new Image(new Texture("coin.png"));
+        coin.setSize(20, 20);
+        Label label = new Label(" " + gold, StringConstants.skin);
+        label.setX(coin.getWidth());
+        Group reward = new Group();
+        reward.setPosition(damagedUnit.getX() + damagedUnit.getWidth(), damagedUnit.getY() + damagedUnit.getHeight());
+        reward.addActor(coin);
+        reward.addActor(label);
+        TweenAnimation.pop_up(reward, TweenAnimation.POP_UP_DURATION,
+                                      TweenAnimation.POP_UP_MOVE_TARGET,
+                                      TweenAnimation.POP_UP_VANISH_TARGET, tweenManager, null);
+        stage.addActor(reward, LayerType.GAME_UI);
     }
     // endregion
 
     // region Getter
     public int getWaveNumber() {
         return waveController.getWaveNumber();
+    }
+    public int getPlayerGold() {
+        return playerGold;
     }
     // endregion
 }

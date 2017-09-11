@@ -20,8 +20,25 @@ public class TweenAnimation {
                 .push(Tween.to(actor, MOVE_Y, duration)
                         .ease(TweenEquations.easeOutExpo)
                         .target(actor.getY() + moveTarget))
-                .push(Tween.to(actor, VANISHING, duration)
+                .push(Tween.to(actor, VANISH, duration)
                         .target(vanishTarget))
+                .end()
+                .setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int i, BaseTween<?> baseTween) {
+                        if (listener != null) listener.onComplete();
+                    }
+                })
+                .start(manager);
+    }
+
+    public static Timeline animateWaveLabel(Actor actor, float duration, float moveTarget, float scaleTarget,
+                                            TweenManager manager, final AnimationListener listener) {
+        return Timeline.createParallel().beginParallel()
+                .push(Tween.to(actor, MOVE_Y, duration)
+                        .target(moveTarget))
+//                .push(Tween.to(actor, SCALE, duration)
+//                        .target(scaleTarget))
                 .end()
                 .setCallback(new TweenCallback() {
                     @Override

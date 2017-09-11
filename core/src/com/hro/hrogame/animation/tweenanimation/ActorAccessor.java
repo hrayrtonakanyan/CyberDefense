@@ -2,6 +2,7 @@ package com.hro.hrogame.animation.tweenanimation;
 
 import aurelienribon.tweenengine.TweenAccessor;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 public class ActorAccessor implements TweenAccessor<Actor>{
 
@@ -12,7 +13,8 @@ public class ActorAccessor implements TweenAccessor<Actor>{
     public static final int CHANGE_WIDTH = 3;
     public static final int CHANGE_HEIGHT = 4;
     public static final int CHANGE_SIZE = 5;
-    public static final int VANISHING = 6;
+    public static final int VANISH = 6;
+    public static final int SCALE = 7;
     // endregion
 
     // region Getter
@@ -39,8 +41,12 @@ public class ActorAccessor implements TweenAccessor<Actor>{
                 returnValues[0] = actor.getWidth();
                 returnValues[1] = actor.getHeight();
                 break;
-            case VANISHING:
+            case VANISH:
                 returnValues[0] = actor.getColor().a;
+                break;
+            case SCALE:
+                returnValues[0] = ((Label) actor).getFontScaleX();
+                returnValues[1] = ((Label) actor).getFontScaleY();
                 break;
         }
         return 2;
@@ -69,11 +75,13 @@ public class ActorAccessor implements TweenAccessor<Actor>{
                 break;
             case CHANGE_SIZE:
                 actor.setWidth(newValues[0]);
-                actor.setHeight(newValues[0]);
+                actor.setHeight(newValues[1]);
                 break;
-            case VANISHING:
+            case VANISH:
                 actor.getColor().a = newValues[0];
                 break;
+            case SCALE:
+                ((Label) actor).setFontScale(newValues[0], newValues[1]);
         }
     }
     // endregion

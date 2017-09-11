@@ -1,6 +1,7 @@
 package com.hro.hrogame.screen;
 
 import aurelienribon.tweenengine.TweenManager;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.HroGame;
+import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
 import com.hro.hrogame.constants.StringConstants;
 import com.hro.hrogame.controller.GameController;
 import com.hro.hrogame.stage.GameStage;
@@ -25,7 +27,9 @@ public class GameScreen extends ScreenAdapter {
     private GameController gameController;
 
     private Label goldLabel;
+    private int playerGold;
     private Label waveLabel;
+    private int waveNumber;
     private boolean isPaused;
     // endregion
 
@@ -93,8 +97,29 @@ public class GameScreen extends ScreenAdapter {
     private void update(float delta) {
         tweenManager.update(delta);
         gameController.update();
-        waveLabel.setText("Wave " + gameController.getWaveNumber());
+        updateGoldInfo();
+        updateWaveInfo();
+    }
+    private void updateWaveInfo() {
+        int number = gameController.getWaveNumber();
+        if (waveNumber == number) return;
+        waveNumber = number;
+        waveLabel.setText("Wave " + waveNumber);
+        animateLabelOnWaveChange();
+    }
+    private void updateGoldInfo() {
+        int gold = gameController.getPlayerGold();
+        if (playerGold == gold) return;
+        playerGold = gold;
         goldLabel.setText(" " + gameController.getPlayerGold());
+    }
+    // endregion
+
+    // region Animation
+    private void animateLabelOnWaveChange() {
+        waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
+        TweenAnimation.animateWaveLabel(waveLabel, 5, Gdx.graphics.getHeight() - waveLabel.getHeight() * 2,
+                                        1, tweenManager, null);
     }
     // endregion
 }

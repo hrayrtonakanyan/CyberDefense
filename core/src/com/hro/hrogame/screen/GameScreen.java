@@ -1,5 +1,6 @@
 package com.hro.hrogame.screen;
 
+import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -25,12 +26,12 @@ public class GameScreen extends ScreenAdapter {
     private GameStage stage;
     private TweenManager tweenManager;
     private GameController gameController;
-
+    private boolean isPaused;
     private Label goldLabel;
     private int playerGold;
     private Label waveLabel;
     private int waveNumber;
-    private boolean isPaused;
+    private Timeline waveAnimationTimeline = null;
     // endregion
 
     // region C-tor
@@ -70,14 +71,23 @@ public class GameScreen extends ScreenAdapter {
         // TODO: 9/8/2017 Handle timers work on pause
         Image playImage = new Image(new Texture("play.png"));
         Image pauseImage = new Image(new Texture("pause.png"));
-        Button.ButtonStyle btnStyle = new Button.ButtonStyle(pauseImage.getDrawable(), playImage.getDrawable(), null);
+        Button.ButtonStyle btnStyle = new Button.ButtonStyle(pauseImage.getDrawable(), playImage.getDrawable(), playImage.getDrawable());
         Button playPauseBtn = new Button(btnStyle);
         playPauseBtn.setSize(30, 30);
         playPauseBtn.setPosition(stage.getWidth() - playPauseBtn.getWidth(), stage.getHeight() - playPauseBtn.getHeight(), Align.center);
         playPauseBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                isPaused = !isPaused;
+                if (isPaused) {
+                    gameController.play();
+                    waveAnimationTimeline.resume();
+                    isPaused = false;
+                }
+                else {
+                    gameController.pause();
+                    waveAnimationTimeline.pause();
+                    isPaused = true;
+                }
             }
         });
         stage.addActor(playPauseBtn, LayerType.MENU_UI);
@@ -87,16 +97,14 @@ public class GameScreen extends ScreenAdapter {
     // region Render
     @Override
     public void render(float delta) {
-        if (!isPaused) {
-            Util.cleanScreen();
-            stage.act();
-            update(delta);
-            stage.draw();
-        }
+        Util.cleanScreen();
+        stage.act();
+        update(delta);
+        stage.draw();
     }
     private void update(float delta) {
+        gameController.update(delta);
         tweenManager.update(delta);
-        gameController.update();
         updateGoldInfo();
         updateWaveInfo();
     }
@@ -117,9 +125,11 @@ public class GameScreen extends ScreenAdapter {
 
     // region Animation
     private void animateLabelOnWaveChange() {
+        waveLabel.setFontScale(3);
         waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
-        TweenAnimation.animateWaveLabel(waveLabel, 5, Gdx.graphics.getHeight() - waveLabel.getHeight() * 2,
-                                        1, tweenManager, null);
+        float moveTarget = Gdx.graphics.getHeight() - waveLabel.getHeight() * 2;
+        waveAnimationTimeline = TweenAnimation.animateWaveLabel(waveLabel, 5,
+                moveTarget, 1, tweenManager, null);
     }
     // endregion
 }

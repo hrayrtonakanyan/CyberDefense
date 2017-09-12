@@ -25,8 +25,8 @@ public class HellFireEffect extends Effect {
 
     // region Static field
     public static final int INITIAL_WEIGHT = 10;
-    public static final float COOLDOWN = 20;
-    public static final float MIN_COOLDOWN = 1;
+    public static final float COOLDOWN = 10;
+    public static final float MIN_COOLDOWN = 5;
     public static final float DAMAGE = 50;
     public static final float MAX_DAMAGE = 100;
     public static final int SENSOR_RADIUS_FOR_TANK = 200;

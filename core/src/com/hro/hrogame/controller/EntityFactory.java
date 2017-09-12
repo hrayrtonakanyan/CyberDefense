@@ -47,7 +47,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.hro.hrogame.constants.ParametersConstants.*;
+import static com.hro.hrogame.constants.ParametersConstants.BASE_RECTANGLE_SENSOR_HEIGHT;
+import static com.hro.hrogame.constants.ParametersConstants.BASE_RECTANGLE_SENSOR_WIDTH;
 import static com.hro.hrogame.sensor.SensorType.CIRCLE_SENSOR;
 import static com.hro.hrogame.sensor.SensorType.RECTANGLE_SENSOR;
 

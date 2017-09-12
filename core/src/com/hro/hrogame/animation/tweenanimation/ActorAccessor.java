@@ -46,7 +46,6 @@ public class ActorAccessor implements TweenAccessor<Actor>{
                 break;
             case SCALE:
                 returnValues[0] = ((Label) actor).getFontScaleX();
-                returnValues[1] = ((Label) actor).getFontScaleY();
                 break;
         }
         return 2;
@@ -81,7 +80,7 @@ public class ActorAccessor implements TweenAccessor<Actor>{
                 actor.getColor().a = newValues[0];
                 break;
             case SCALE:
-                ((Label) actor).setFontScale(newValues[0], newValues[1]);
+                ((Label) actor).setFontScale(newValues[0]);
         }
     }
     // endregion

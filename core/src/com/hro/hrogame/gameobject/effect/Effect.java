@@ -2,7 +2,8 @@ package com.hro.hrogame.gameobject.effect;
 
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Timer;
+import com.hro.hrogame.timer.Task;
+import com.hro.hrogame.timer.Timer;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.sensor.UnitSensor;
@@ -16,7 +17,6 @@ public abstract class Effect extends GameObject {
     private List<EffectListener> listeners = new ArrayList<>();
     protected EntityManager entityManager;
     private Timer cooldownTimer = new Timer();
-    private Timer.Task cooldownTask = createCooldownTask();
     protected GameObject owner;
     protected UnitSensor sensor;
     private boolean isOverTimeEffect = false;
@@ -37,6 +37,7 @@ public abstract class Effect extends GameObject {
     public void act(float delta) {
         if (sensor != null) sensor.setPosition(owner.getWidth() / 2, owner.getHeight() / 2, Align.center);
         super.act(delta);
+        cooldownTimer.update(delta);
         if (isReady) for (EffectListener listener : listeners) listener.onReady();
     }
     // endregion
@@ -57,7 +58,7 @@ public abstract class Effect extends GameObject {
         for (EffectListener listener : listeners) {
             isReady = false;
             execute();
-            cooldownTimer.scheduleTask(cooldownTask, getCoolDown());
+            cooldownTimer.scheduleTask(createCooldownTask());
             listener.onExecute();
         }
         return true;
@@ -79,16 +80,24 @@ public abstract class Effect extends GameObject {
     // endregion
 
     // region Timer functionality
-    private Timer.Task createCooldownTask() {
-        return new Timer.Task() {
+    private Task createCooldownTask() {
+        return cooldownTimer.createTask(getCoolDown(), new Runnable() {
             @Override
             public void run() {
                 isReady = true;
             }
-        };
+        });
     }
     public void clearTimer() {
         cooldownTimer.clear();
+    }
+    @Override
+    public void pause() {
+        cooldownTimer.pause();
+    }
+    @Override
+    public void play() {
+        cooldownTimer.resume();
     }
     // endregion
 

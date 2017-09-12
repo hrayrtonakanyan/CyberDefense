@@ -92,7 +92,8 @@ public abstract class GameObject extends Entity {
     @Override
     public void act(float delta) {
         super.act(delta);
-        if (revealPlayerType() == PlayerRace.NONE) throw new RuntimeException("playerType of the game object must not be NONE when add to stage.");
+        if (revealPlayerType() == PlayerRace.NONE)
+            throw new RuntimeException("playerType of the game object must not be NONE when add to stage.");
         if (!isEnable) return;
         if (destination == null) return;
         stopIfAllEffectsPositionsAreValid();
@@ -105,6 +106,13 @@ public abstract class GameObject extends Entity {
                 notifyOnDestinationArrive();
             }
         }
+    }
+    public void pause() {
+        for (Effect effect : effectList) effect.pause();
+
+    }
+    public void play() {
+        for (Effect effect : effectList) effect.play();
     }
     // endregion
 
@@ -298,7 +306,7 @@ public abstract class GameObject extends Entity {
         addActor(appearance);
     }
     public void setDestination(float x, float y) {
-        play();
+        move();
         if (this.destination == null) this.destination = new Point();
         this.destination.set(x, y);
         setAngle();
@@ -314,7 +322,7 @@ public abstract class GameObject extends Entity {
     public void setPlayerRace(PlayerRace playerType) {
         this.playerType = playerType;
     }
-    public void play() {
+    public void move() {
         isMoving = true;
     }
     public void stop() {

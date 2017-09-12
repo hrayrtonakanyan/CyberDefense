@@ -37,8 +37,8 @@ public class TweenAnimation {
         return Timeline.createParallel().beginParallel()
                 .push(Tween.to(actor, MOVE_Y, duration)
                         .target(moveTarget))
-//                .push(Tween.to(actor, SCALE, duration)
-//                        .target(scaleTarget))
+                .push(Tween.to(actor, SCALE, duration)
+                        .target(scaleTarget))
                 .end()
                 .setCallback(new TweenCallback() {
                     @Override

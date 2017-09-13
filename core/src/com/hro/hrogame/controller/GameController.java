@@ -2,10 +2,14 @@ package com.hro.hrogame.controller;
 
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.TweenManager;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.animation.particleanimation.AnimationListener;
 import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
@@ -36,12 +40,13 @@ public class GameController {
     // region Static fields
     public static final float GAME_PROGRESS_RATIO = 1;
     public static final float BASE_UNIT_PROGRESS_RATIO = 0.7f;
-    public static final float UNITS_GENERATION_INTERVAL = 5;
-    public static final float DELAY_BETWEEN_WAVES = 15;
-    public static final float DELAY_ON_START = 5;
+    public static final float WAVE_TIMER_INTERVAL = 5;
+    public static final float WAVE_TIMER_DELAY = 5;
     // endregion
 
     // region Instance fields
+    private Label goldLabel;
+    private Label waveLabel;
     private Random random = new Random();
     private GameStage stage;
     private Timer waveTimer;
@@ -55,6 +60,7 @@ public class GameController {
     private int playerGold;
     private float playerExperience;
     private float accessExperience = WaveController.INITIAL_WEIGHT;
+    private boolean isPaused;
     // endregion
 
     // region C-tor
@@ -67,24 +73,71 @@ public class GameController {
 
     // region Init
     private void init() {
-        entityFactory = new EntityFactory();
         waveController = new WaveController(WaveController.INITIAL_WEIGHT, GAME_PROGRESS_RATIO);
+        entityFactory = new EntityFactory();
         animationTimelineList = new ArrayList<>();
         enemiesWaitList = new ArrayList<>();
         waveTimer = new Timer();
+        initUI();
         createBase();
         startNewWave();
     }
     // endregion
 
+    // region UI
+    private void initUI() {
+        createGoldLabel();
+        createWaveLabel();
+        createPlayPauseButtons();
+    }
+    private void createGoldLabel() {
+        Image coin = new Image(new Texture("coin.png"));
+        coin.setSize(20, 20);
+        goldLabel = new Label(" " + playerGold, StringConstants.skin);
+        coin.setPosition(coin.getWidth(), stage.getHeight() - coin.getHeight() * 2);
+        goldLabel.setPosition(coin.getX() + coin.getWidth(), coin.getY());
+        stage.addActor(coin, LayerType.MENU_UI);
+        stage.addActor(goldLabel, LayerType.MENU_UI);
+    }
+    private void createWaveLabel() {
+        waveLabel = new Label("Wave " + waveController.getWaveNumber(), StringConstants.skin);
+        waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() - waveLabel.getHeight(), Align.center);
+        stage.addActor(waveLabel, LayerType.MENU_UI);
+    }
+    private void createPlayPauseButtons() {
+        Image playImage = new Image(new Texture("play.png"));
+        Image pauseImage = new Image(new Texture("pause.png"));
+        Button.ButtonStyle btnStyle = new Button.ButtonStyle(pauseImage.getDrawable(), playImage.getDrawable(), playImage.getDrawable());
+        Button playPauseBtn = new Button(btnStyle);
+        playPauseBtn.setSize(30, 30);
+        playPauseBtn.setPosition(stage.getWidth() - playPauseBtn.getWidth(), stage.getHeight() - playPauseBtn.getHeight(), Align.center);
+        playPauseBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (isPaused) play();
+                else pause();
+            }
+        });
+        stage.addActor(playPauseBtn, LayerType.MENU_UI);
+    }
+    // endregion
+
     // region Update
     public void update(float delta){
+        tweenManager.update(delta);
         waveTimer.update(delta);
         if (playerExperience >= accessExperience) {
             baseUnit.levelUp();
             calculatePlayerAccessExperience();
             System.out.println("Base unit is level up " + baseUnit.getLevel());
         }
+    }
+    private void updateWaveInfo(int waveNumber) {
+        waveLabel.setText("Wave " + waveNumber);
+        animateLabelOnWaveChange();
+    }
+    private void updateGoldInfo() {
+        goldLabel.setText(" " + playerGold);
     }
     // endregion
 
@@ -133,7 +186,7 @@ public class GameController {
     // region Wave
     private void startNewWave() {
         generateWave();
-        startWaveTimer();
+        waveTimer.scheduleTask(createSpawnUnitTask());
     }
     private void generateWave() {
         float waveWeight = waveController.calculateWaveWeight();
@@ -156,6 +209,7 @@ public class GameController {
                     int gold = dyingUnit.getReward();
                     playerGold += gold;
                     pushOnDieTweenAnimation(gold, dyingUnit);
+                    updateGoldInfo();
                 }
             });
             enemiesWaitList.add(unit);
@@ -172,24 +226,15 @@ public class GameController {
                     int gold = dyingUnit.getReward();
                     playerGold += gold;
                     pushOnDieTweenAnimation(gold, dyingUnit);
+                    updateGoldInfo();
                 }
             });
             enemiesWaitList.add(unit);
         }
     }
-    private void startWaveTimer() {
-        waveTimer.scheduleTask(createSpawnUnitTask(), new Runnable() {
-            @Override
-            public void run() {
-                startNewWave();
-            }
-        });
-    }
     private Task createSpawnUnitTask() {
-        float delay = DELAY_BETWEEN_WAVES;
-        if (waveController.getWaveNumber() == 1) delay = DELAY_ON_START;
         int repeatCount = enemiesWaitList.size();
-        return waveTimer.createTask(delay, UNITS_GENERATION_INTERVAL, repeatCount, new Runnable() {
+        return waveTimer.createTask(WAVE_TIMER_DELAY, WAVE_TIMER_INTERVAL, repeatCount, new Runnable() {
             @Override
             public void run() {
                 spawnUnit();
@@ -207,6 +252,13 @@ public class GameController {
         enemy.setPosition(spawnPoint.x, spawnPoint.y, Align.center);
         enemy.setDestination(baseUnit.getX(Align.center), baseUnit.getY(Align.center));
         stage.addActor(enemy, LayerType.FOREGROUND);
+        if (enemiesWaitList.size() == 0) enemy.addGameObjectAdapter(new GameObjectAdapter() {
+            @Override
+            public void onDie(GameObject dyingUnit, GameObject killerUnit) {
+                startNewWave();
+                updateWaveInfo(waveController.getWaveNumber());
+            }
+        });
     }
     private Point generateSpawnPoint() {
         int side = random.nextInt(4);
@@ -280,15 +332,17 @@ public class GameController {
     // endregion
 
     // region Play/Pause
-    public void play() {
+    private void play() {
         waveTimer.resume();
         for (Timeline timeline : animationTimelineList) timeline.resume();
         stage.playGame();
+        isPaused = false;
     }
-    public void pause() {
+    private void pause() {
         waveTimer.pause();
         for (Timeline timeline : animationTimelineList) timeline.pause();
         stage.pauseGame();
+        isPaused = true;
     }
     // endregion
 
@@ -332,14 +386,18 @@ public class GameController {
         animationTimelineList.add(timeline);
         stage.addActor(reward, LayerType.GAME_UI);
     }
-    // endregion
-
-    // region Getter
-    public int getWaveNumber() {
-        return waveController.getWaveNumber();
-    }
-    public int getPlayerGold() {
-        return playerGold;
+    private void animateLabelOnWaveChange() {
+        waveLabel.setFontScale(3);
+        waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
+        float moveTarget = Gdx.graphics.getHeight() - waveLabel.getHeight() * 2;
+        timeline = TweenAnimation.animateWaveLabel(waveLabel, 5,
+                moveTarget, 1, tweenManager, new AnimationListener() {
+                    @Override
+                    public void onComplete() {
+                        animationTimelineList.remove(timeline);
+                    }
+                });
+        animationTimelineList.add(timeline);
     }
     // endregion
 }

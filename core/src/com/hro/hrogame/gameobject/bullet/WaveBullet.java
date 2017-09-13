@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Timer;
+import com.hro.hrogame.timer.Timer;
 import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.bullet.BulletData;
@@ -44,12 +44,12 @@ public class WaveBullet extends Bullet {
         addActor(sensor);
         maxRadius = calculateMaxRadius();
         hitTimer = new Timer();
-        hitTimer.scheduleTask(new Timer.Task() {
+        hitTimer.scheduleTask(hitTimer.createTask(0, 0.5f, new Runnable() {
             @Override
             public void run() {
                 hit();
             }
-        }, 0, 0.5f);
+        }));
     }
     private float calculateMaxRadius() {
         float a = Gdx.graphics.getWidth() / 2;
@@ -62,6 +62,7 @@ public class WaveBullet extends Bullet {
     @Override
     public void act(float delta) {
         super.act(delta);
+        hitTimer.update(delta);
         if (getWidth() / 2 <= maxRadius) fuzz(delta);
         else entityManager.removeBullet(this);
     }
@@ -86,7 +87,17 @@ public class WaveBullet extends Bullet {
     }
     // endregion
 
-    // region Remove
+    // region Override
+    @Override
+    public void play() {
+        super.play();
+        hitTimer.resume();
+    }
+    @Override
+    public void pause() {
+        super.pause();
+        hitTimer.pause();
+    }
     @Override
     public boolean remove() {
         hitTimer.clear();

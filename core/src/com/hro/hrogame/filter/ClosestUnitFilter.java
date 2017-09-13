@@ -8,10 +8,13 @@ import java.util.List;
 
 public class ClosestUnitFilter extends UnitFilter {
 
+    // region C-tor
     public ClosestUnitFilter(UnitSensor owner) {
         super(owner);
     }
+    // endregion
 
+    // region Filter
     @Override
     public List<GameObject> filterUnitList(List<GameObject> unitList, int unitLimit) {
         return filter(unitList, unitLimit);
@@ -30,7 +33,9 @@ public class ClosestUnitFilter extends UnitFilter {
         }
         return filteredList;
     }
+    // endregion
 
+    // region Remove
     private void removeDeadUnits(List<GameObject> unitList) {
         for (int i = 0; i < unitList.size(); i++) {
             GameObject unit = unitList.get(i);
@@ -39,6 +44,6 @@ public class ClosestUnitFilter extends UnitFilter {
                 i--;
             }
         }
-
     }
+    // endregion
 }

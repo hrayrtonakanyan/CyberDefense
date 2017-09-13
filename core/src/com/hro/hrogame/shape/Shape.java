@@ -8,10 +8,7 @@ import java.util.List;
 
 public abstract class Shape {
 
-    public abstract boolean isPointInShape(Point point);
-    public abstract Point getCenterPoint();
-    public abstract void setPosition(float x, float y);
-
+    // region Filter
     public final List<GameObject> filterUnitsInShape(List<GameObject> list) {
         for (int i = 0; i < list.size(); i++) {
             GameObject current = list.get(i);
@@ -21,29 +18,13 @@ public abstract class Shape {
                 i--;
             }
         }
-
-        vle(new CircleShape(), new Shape() {
-            @Override
-            public boolean isPointInShape(Point point) {
-                return false;
-            }
-
-            @Override
-            public Point getCenterPoint() {
-                return null;
-            }
-
-            @Override
-            public void setPosition(float x, float y) {
-
-            }
-        });
-
         return list;
     }
+    // endregion
 
-
-    public void vle(Shape... args) {
-
-    }
+    // region Abstract
+    public abstract void setPosition(float x, float y);
+    public abstract boolean isPointInShape(Point point);
+    public abstract Point getCenterPoint();
+    // endregion
 }

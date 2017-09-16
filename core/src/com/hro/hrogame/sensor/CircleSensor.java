@@ -33,6 +33,7 @@ public class CircleSensor extends UnitSensor {
 
     //region Update
     public void removeAppearance() {
+        if (appearance == null) return;
         appearance.remove();
         appearance = null;
     }

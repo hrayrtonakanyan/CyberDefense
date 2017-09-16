@@ -6,10 +6,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.animation.particleanimation.AnimationListener;
 import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
@@ -30,6 +32,8 @@ import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
 import com.hro.hrogame.timer.Task;
 import com.hro.hrogame.timer.Timer;
+import com.hro.hrogame.ui.EffectDialog;
+import com.hro.hrogame.ui.EffectDialogListener;
 import com.hro.hrogame.utils.Util;
 
 import java.util.ArrayList;
@@ -45,14 +49,15 @@ public class GameController {
     // endregion
 
     // region Instance fields
-    private Label goldLabel;
-    private Label waveLabel;
     private Random random = new Random();
     private GameStage stage;
-    private Timer waveTimer;
-    private TweenManager tweenManager;
+    private Label goldLabel;
+    private Label waveLabel;
+    private EffectDialog effectDialog;
     private EntityFactory entityFactory;
     private WaveController waveController;
+    private Timer waveTimer;
+    private TweenManager tweenManager;
     private BaseUnit baseUnit;
     private Timeline timeline = null;
     private ArrayList<Timeline> animationTimelineList;
@@ -81,11 +86,26 @@ public class GameController {
         initUI();
         createBase();
         startNewWave();
+        stage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (event.getTarget().equals(baseUnit)) effectDialog.show();
+                else if (!(event.getTarget().equals(effectDialog))) effectDialog.hide();
+            }
+        });
     }
     // endregion
 
     // region UI
     private void initUI() {
+        effectDialog = new EffectDialog(StringConstants.skin, stage);
+        effectDialog.addEffectDialogListener(new EffectDialogListener() {
+            @Override
+            public void onItemBought(EffectType type, int price) {
+                addEffectToBase(type);
+                payForPurchase(price);
+            }
+        });
         createGoldLabel();
         createWaveLabel();
         createPlayPauseButtons();
@@ -100,7 +120,7 @@ public class GameController {
         stage.addActor(goldLabel, LayerType.MENU_UI);
     }
     private void createWaveLabel() {
-        waveLabel = new Label("Wave " + waveController.getWaveNumber(), StringConstants.skin);
+        waveLabel = new Label("Wave " + 1, StringConstants.skin);
         waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() - waveLabel.getHeight(), Align.center);
         stage.addActor(waveLabel, LayerType.MENU_UI);
     }
@@ -158,7 +178,7 @@ public class GameController {
         });
         stage.addActor(baseUnit, LayerType.FOREGROUND);
     }
-    public void addEffectToBase(EffectType type) {
+    private void addEffectToBase(EffectType type) {
         switch (type) {
             case SIMPLE_CANNON:
                 baseUnit.addEffect(entityFactory.createEffect(baseUnit, type));
@@ -207,9 +227,8 @@ public class GameController {
                 @Override
                 public void onDie(GameObject dyingUnit, GameObject killerUnit) {
                     int gold = dyingUnit.getReward();
-                    playerGold += gold;
+                    earnGold(gold);
                     pushOnDieTweenAnimation(gold, dyingUnit);
-                    updateGoldInfo();
                 }
             });
             enemiesWaitList.add(unit);
@@ -224,9 +243,8 @@ public class GameController {
                 @Override
                 public void onDie(GameObject dyingUnit, GameObject killerUnit) {
                     int gold = dyingUnit.getReward();
-                    playerGold += gold;
+                    earnGold(gold);
                     pushOnDieTweenAnimation(gold, dyingUnit);
-                    updateGoldInfo();
                 }
             });
             enemiesWaitList.add(unit);
@@ -328,6 +346,16 @@ public class GameController {
                 return weight;
             default: throw new RuntimeException("Wrong UnitType was passed");
         }
+    }
+    private void payForPurchase(int price) {
+        playerGold -= price;
+        effectDialog.setPlayerGold(playerGold);
+        updateGoldInfo();
+    }
+    private void earnGold(int gold) {
+        playerGold += gold;
+        effectDialog.setPlayerGold(playerGold);
+        updateGoldInfo();
     }
     // endregion
 

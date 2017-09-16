@@ -39,7 +39,7 @@ public class WaveBullet extends Bullet {
         if (sensor != null) throw new RuntimeException("Initialize method is only allowed to call once per bullet instance");
         this.bulletData = bulletData;
         sensor = (CircleSensor) entityManager.createSensor(this, SensorType.CIRCLE_SENSOR);
-        sensor.removeAppearance();
+//        sensor.removeAppearance();
         sensor.setPosition(getX(Align.center), getY(Align.center), Align.center);
         addActor(sensor);
         maxRadius = calculateMaxRadius();

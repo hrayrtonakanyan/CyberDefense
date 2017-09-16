@@ -331,7 +331,7 @@ public class EntityFactory implements EntityManager {
                 rectangleSensor.setUnitFilter(new ClosestUnitFilter(rectangleSensor));
                 return rectangleSensor;
             case CIRCLE_SENSOR:
-                CircleSensor circleSensor = new CircleSensor(owner, this, circleTexture);
+                CircleSensor circleSensor = new CircleSensor(owner, this, null);
                 circleSensor.setUnitFilter(new ClosestUnitFilter(circleSensor));
                 if (owner instanceof TargetBullet) {
                     circleSensor.setRadius(((TargetBullet)owner).getBulletData().splashAreaRadius);

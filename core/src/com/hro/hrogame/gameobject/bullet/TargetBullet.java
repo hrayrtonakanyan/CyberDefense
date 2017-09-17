@@ -1,5 +1,6 @@
 package com.hro.hrogame.gameobject.bullet;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.bullet.BulletData;
@@ -16,8 +17,8 @@ import java.util.List;
 public class TargetBullet extends Bullet {
 
     // region Instance fields
-    public static final float WIDTH = 10;
-    public static final float HEIGHT = 10;
+    public static final float WIDTH = Gdx.graphics.getWidth() / 70;
+    public static final float HEIGHT = Gdx.graphics.getWidth() / 70;
     // endregion
 
     // region Instance fields

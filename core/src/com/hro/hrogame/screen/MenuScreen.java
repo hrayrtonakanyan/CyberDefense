@@ -19,6 +19,11 @@ import static com.hro.hrogame.constants.StringConstants.*;
 
 public class MenuScreen extends ScreenAdapter {
 
+    // region Static fields
+    public static final float BUTTON_WIDTH = Gdx.graphics.getWidth() / 5;
+    public static final float BUTTON_HEIGHT = Gdx.graphics.getHeight() / 5;
+    // endregion
+
     // region Instance fields
     private HroGame game;
     private TweenManager tweenManager;
@@ -48,6 +53,8 @@ public class MenuScreen extends ScreenAdapter {
         btnQuit = new Button(btnStyle);
         btnPlay.add(playButtonLabel);
         btnQuit.add(quitButtonLabel);
+        btnPlay.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        btnQuit.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         btnPlay.setPosition(stage.getWidth() / 2, stage.getHeight() * 2 / 3, Align.center);
         btnQuit.setPosition(stage.getWidth() / 2, stage.getHeight() / 3, Align.center);
         stage.addActor(btnPlay, LayerType.MENU_UI);

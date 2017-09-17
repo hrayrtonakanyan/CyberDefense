@@ -57,7 +57,7 @@ public abstract class UnitSensor extends Entity {
     public final List<GameObject> filterUnitsInShape(List<GameObject> list) {
         return getShape().filterUnitsInShape(list);
     }
-    protected void updateShapePosition() {
+    void updateShapePosition() {
         coordinateConvertVector.set(getWidth() / 2, getHeight() / 2);
         localToStageCoordinates(coordinateConvertVector);
         getShape().setPosition(coordinateConvertVector.x, coordinateConvertVector.y);
@@ -94,10 +94,10 @@ public abstract class UnitSensor extends Entity {
     // endregion
 
     // region Getter
+    public abstract Shape getShape();
     public GameObject getOwner() {
         return owner;
     }
-    public abstract Shape getShape();
     @Override
     public GameObject revealOwningUnit() {
         return owner.revealOwningUnit();

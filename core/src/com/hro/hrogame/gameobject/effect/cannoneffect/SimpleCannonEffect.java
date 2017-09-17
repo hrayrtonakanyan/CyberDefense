@@ -1,5 +1,6 @@
 package com.hro.hrogame.gameobject.effect.cannoneffect;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
@@ -31,8 +32,8 @@ public class SimpleCannonEffect extends CannonEffect {
     public static final float MAX_DAMAGE = 400;
     public static final int TARGET_LIMIT = 1;
     public static final int MAX_TARGET_LIMIT = 1;
-    public static final int SENSOR_RADIUS_FOR_BASE = 200;
-    public static final int SENSOR_RADIUS_FOR_TANK = 80;
+    public static final int SENSOR_RADIUS_FOR_BASE = Gdx.graphics.getWidth() / 3;
+    public static final int SENSOR_RADIUS_FOR_TANK = Gdx.graphics.getWidth() / 5;
     // endregion
 
     // region Static methods

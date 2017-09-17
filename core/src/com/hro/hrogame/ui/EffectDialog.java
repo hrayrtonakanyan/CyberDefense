@@ -21,6 +21,10 @@ public class EffectDialog extends Group {
     // region Static fields
     public static final float WIDTH = Gdx.graphics.getWidth() / 3;
     public static final float HEIGHT = Gdx.graphics.getHeight() / 3;
+    public static final float BUTTON_WIDTH = WIDTH / 10;
+    public static final float BUTTON_HEIGHT = HEIGHT / 10;
+    public static final float BUTTON_WIDTH_PURCHASED = BUTTON_WIDTH * 2;
+    public static final float PADDING = 10;
 
     public static final String HARD_CANNON_TITLE = "Hard Cannon";
     public static final String FREEZER_TITLE = "Freezer";
@@ -29,11 +33,11 @@ public class EffectDialog extends Group {
     public static final String HELL_FIRE_TITLE = "Hell Fire";
 
     public static final String PURCHASED = "Purchased";
-    public static final int HARD_CANNON_PRICE = 20;
-    public static final int FREEZER_PRICE = 30;
-    public static final int STUNNER_PRICE = 40;
-    public static final int ABSORB_SHIELD_PRICE = 50;
-    public static final int HELL_FIRE_PRICE = 60;
+    public static final int HARD_CANNON_PRICE = 50;
+    public static final int FREEZER_PRICE = 70;
+    public static final int STUNNER_PRICE = 90;
+    public static final int ABSORB_SHIELD_PRICE = 100;
+    public static final int HELL_FIRE_PRICE = 130;
     // endregion
 
     // region Instance fields
@@ -176,8 +180,8 @@ public class EffectDialog extends Group {
             label = new Label(effectName, getSkin());
             label.setTouchable(Touchable.disabled);
             createButton();
-            add(label).expand().left().padLeft(10);
-            add(button).width(55).height(30).right().padRight(10);
+            add(label).expand().left().padLeft(PADDING);
+            add(button).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).right().padRight(PADDING);
         }
         private void createButton() {
             Image btnUnpressed = new Image(new Texture(StringConstants.BUTTON_UNPRESSED));
@@ -197,7 +201,7 @@ public class EffectDialog extends Group {
             button.setColor(Color.GRAY);
             buttonLabel.setText(PURCHASED);
             button.setTouchable(Touchable.disabled);
-            getCell(button).width(100);
+            getCell(button).width(BUTTON_WIDTH_PURCHASED);
         }
         // endregion
     }

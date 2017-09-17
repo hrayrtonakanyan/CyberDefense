@@ -29,7 +29,7 @@ public class HellFireEffect extends Effect {
     public static final float MIN_COOLDOWN = 5;
     public static final float DAMAGE = 50;
     public static final float MAX_DAMAGE = 100;
-    public static final int SENSOR_RADIUS_FOR_TANK = 200;
+    public static final int SENSOR_RADIUS_FOR_TANK = Gdx.graphics.getWidth() / 5;
     // endregion
 
     // region Instance fields

@@ -17,10 +17,6 @@ public class CircleShape extends Shape {
     public void setRadius(float radius) {
         this.radius = radius;
     }
-    public void set(float centerX, float centerY, float radius) {
-        center.set(centerX, centerY);
-        this.radius = radius;
-    }
     // endregion
 
     // region Getter

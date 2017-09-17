@@ -42,6 +42,11 @@ import java.util.Random;
 public class GameController {
 
     // region Static fields
+    public static final float GOLD_LABEL_COIN_RADIUSx2 = Gdx.graphics.getWidth() / 35;
+    public static final float PLAY_PAUSE_BUTTON_RADIUSx2 = Gdx.graphics.getHeight() / 16;
+    public static final float WAVE_LABEL_SCALE = 2;
+
+
     public static final float GAME_PROGRESS_RATIO = 1;
     public static final float BASE_UNIT_PROGRESS_RATIO = 0.7f;
     public static final float WAVE_TIMER_INTERVAL = 5;
@@ -112,15 +117,17 @@ public class GameController {
     }
     private void createGoldLabel() {
         Image coin = new Image(new Texture("coin.png"));
-        coin.setSize(20, 20);
-        goldLabel = new Label(" " + playerGold, StringConstants.skin);
+        coin.setSize(GOLD_LABEL_COIN_RADIUSx2, GOLD_LABEL_COIN_RADIUSx2);
         coin.setPosition(coin.getWidth(), stage.getHeight() - coin.getHeight() * 2);
+        goldLabel = new Label(" " + playerGold, StringConstants.skin);
+        goldLabel.setFontScale(1.5f, 1.5f);
         goldLabel.setPosition(coin.getX() + coin.getWidth(), coin.getY());
         stage.addActor(coin, LayerType.MENU_UI);
         stage.addActor(goldLabel, LayerType.MENU_UI);
     }
     private void createWaveLabel() {
         waveLabel = new Label("Wave " + 1, StringConstants.skin);
+        waveLabel.setFontScale(WAVE_LABEL_SCALE, WAVE_LABEL_SCALE);
         waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() - waveLabel.getHeight(), Align.center);
         stage.addActor(waveLabel, LayerType.MENU_UI);
     }
@@ -129,7 +136,7 @@ public class GameController {
         Image pauseImage = new Image(new Texture("pause.png"));
         Button.ButtonStyle btnStyle = new Button.ButtonStyle(pauseImage.getDrawable(), playImage.getDrawable(), playImage.getDrawable());
         Button playPauseBtn = new Button(btnStyle);
-        playPauseBtn.setSize(30, 30);
+        playPauseBtn.setSize(PLAY_PAUSE_BUTTON_RADIUSx2, PLAY_PAUSE_BUTTON_RADIUSx2);
         playPauseBtn.setPosition(stage.getWidth() - playPauseBtn.getWidth(), stage.getHeight() - playPauseBtn.getHeight(), Align.center);
         playPauseBtn.addListener(new ChangeListener() {
             @Override

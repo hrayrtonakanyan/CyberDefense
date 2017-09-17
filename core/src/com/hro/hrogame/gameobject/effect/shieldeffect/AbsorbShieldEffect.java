@@ -1,5 +1,6 @@
 package com.hro.hrogame.gameobject.effect.shieldeffect;
 
+import com.badlogic.gdx.Gdx;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.effect.shieldeffectdata.AbsorbShieldEffectData;
@@ -15,7 +16,7 @@ public class AbsorbShieldEffect extends Effect {
     public static final int INITIAL_WEIGHT = 10;
     public static final float COOLDOWN = 10;
     public static final float MIN_COOLDOWN = 1;
-    public static final int SENSOR_RADIUS_FOR_TANK = 140;
+    public static final int SENSOR_RADIUS_FOR_TANK = Gdx.graphics.getWidth() / 5;
     // endregion
 
     // region Instance fields

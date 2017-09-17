@@ -47,8 +47,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.hro.hrogame.constants.ParametersConstants.BASE_RECTANGLE_SENSOR_HEIGHT;
-import static com.hro.hrogame.constants.ParametersConstants.BASE_RECTANGLE_SENSOR_WIDTH;
 import static com.hro.hrogame.sensor.SensorType.CIRCLE_SENSOR;
 import static com.hro.hrogame.sensor.SensorType.RECTANGLE_SENSOR;
 
@@ -234,7 +232,7 @@ public class EntityFactory implements EntityManager {
         UnitSensor sensor;
         if (owner instanceof BaseUnit) {
             sensor = createSensor(owner, RECTANGLE_SENSOR);
-            sensor.setSize(BASE_RECTANGLE_SENSOR_WIDTH, BASE_RECTANGLE_SENSOR_HEIGHT);
+            sensor.setSize(BaseUnit.RECTANGLE_SENSOR_WIDTH, BaseUnit.RECTANGLE_SENSOR_HEIGHT);
         } else {
             sensor = createSensor(owner, CIRCLE_SENSOR);
             ((CircleSensor) sensor).setRadius(HellFireEffect.SENSOR_RADIUS_FOR_TANK);
@@ -249,7 +247,7 @@ public class EntityFactory implements EntityManager {
         UnitSensor sensor;
         if (owner instanceof BaseUnit) {
             sensor = createSensor(owner, RECTANGLE_SENSOR);
-            sensor.setSize(BASE_RECTANGLE_SENSOR_WIDTH, BASE_RECTANGLE_SENSOR_HEIGHT);
+            sensor.setSize(BaseUnit.RECTANGLE_SENSOR_WIDTH, BaseUnit.RECTANGLE_SENSOR_HEIGHT);
         } else {
             sensor = createSensor(owner, CIRCLE_SENSOR);
             ((CircleSensor) sensor).setRadius(FreezerEffect.SENSOR_RADIUS_FOR_TANK);
@@ -264,7 +262,7 @@ public class EntityFactory implements EntityManager {
         UnitSensor sensor;
         if (owner instanceof BaseUnit) {
             sensor = createSensor(owner, RECTANGLE_SENSOR);
-            sensor.setSize(BASE_RECTANGLE_SENSOR_WIDTH, BASE_RECTANGLE_SENSOR_HEIGHT);
+            sensor.setSize(BaseUnit.RECTANGLE_SENSOR_WIDTH, BaseUnit.RECTANGLE_SENSOR_HEIGHT);
         } else {
             sensor = createSensor(owner, CIRCLE_SENSOR);
             ((CircleSensor) sensor).setRadius(StunnerEffect.SENSOR_RADIUS_FOR_TANK);
@@ -279,7 +277,7 @@ public class EntityFactory implements EntityManager {
         UnitSensor sensor;
         if (owner instanceof BaseUnit) {
             sensor = createSensor(owner, RECTANGLE_SENSOR);
-            sensor.setSize(BASE_RECTANGLE_SENSOR_WIDTH, BASE_RECTANGLE_SENSOR_HEIGHT);
+            sensor.setSize(BaseUnit.RECTANGLE_SENSOR_WIDTH, BaseUnit.RECTANGLE_SENSOR_HEIGHT);
         } else {
             sensor = createSensor(owner, CIRCLE_SENSOR);
             ((CircleSensor) sensor).setRadius(AbsorbShieldEffect.SENSOR_RADIUS_FOR_TANK);

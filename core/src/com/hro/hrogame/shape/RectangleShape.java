@@ -16,13 +16,6 @@ public class RectangleShape extends Shape {
     // endregion
 
     // region Setter
-    public void set(float x, float y, float width, float height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        updateCenterPoint();
-    }
     public void setSize(float width, float height) {
         this.width = width;
         this.height = height;

@@ -56,7 +56,7 @@ public class HellFireEffect extends Effect {
     @Override
     protected void execute() {
         WaveBullet bullet = (WaveBullet) entityManager.createBullet(BulletType.WAVE_BULLET);
-        bullet.initialize(new BulletData(null, -1, 100, 0));
+        bullet.initialize(new BulletData(null, -1, WaveBullet.SPEED, 0));
         bullet.setFuzzPosition(owner.getX(Align.center), owner.getY(Align.center));
         bullet.setBulletAnimation(hellFireBulletParticleEffect);
         bullet.setPlayerRace(owner.getPlayerType());

@@ -83,6 +83,10 @@ public abstract class GameObject extends Entity {
                 if (healthBar.getValue() <= healthBar.getMaxValue() / 2) healthBar.setColor(Color.ORANGE);
                 if (healthBar.getValue() <= healthBar.getMaxValue() / 4) healthBar.setColor(Color.RED);
             }
+            @Override
+            public void onLevelUp(GameObject gameObject, int level) {
+                if (gameObject.healthBar.getValue() > gameObject.healthBar.getValue() / 2) healthBar.setColor(Color.GREEN);
+            }
         });
         addActor(healthBar);
     }
@@ -131,6 +135,7 @@ public abstract class GameObject extends Entity {
         data.level++;
         alterParamsOnLevelChange(data.level);
         initCurrentParams(data);
+        notifyOnLevelUp(this, data.level);
     }
     private void alterParamsOnLevelChange(int level) {
         Util.calcProgressAndDefineWeight(0, level, ParametersConstants.PROGRESS_RATIO,
@@ -223,6 +228,9 @@ public abstract class GameObject extends Entity {
     private void notifyOnKill(GameObject target) {
         for (GameObjectAdapter adapter : gameObjectAdapterList) adapter.onKill(target, this);
     }
+    private void notifyOnLevelUp(GameObject target, int level) {
+        for (GameObjectAdapter adapter : gameObjectAdapterList) adapter.onLevelUp(target, level);
+    }
     // endregion
 
     // region Add
@@ -296,6 +304,9 @@ public abstract class GameObject extends Entity {
     public void setGameObjectData(GameObjectData data) {
         this.data = data;
         initCurrentParams(data);
+    }
+    public void setHealthBarLength(float length) {
+        healthBar.setSize(length, 10);
     }
     // TODO: 8/17/17 Change texture to drawable
     protected void setAppearance(String texturePath) {
@@ -394,7 +405,7 @@ public abstract class GameObject extends Entity {
 
     // region Getters
     public int getReward() {
-        return (int) weight * ParametersConstants.WEIGHT_TO_REWARD_RATIO;
+        return (int) weight / ParametersConstants.WEIGHT_TO_REWARD_RATIO;
     }
     public float getWeight() {
         return weight;

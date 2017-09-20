@@ -10,6 +10,7 @@ import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.bullet.BulletListener;
 import com.hro.hrogame.gameobject.bullet.BulletType;
 import com.hro.hrogame.gameobject.bullet.TargetBullet;
+import com.hro.hrogame.primitives.Point;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
 import com.hro.hrogame.utils.Util;
@@ -21,12 +22,12 @@ public class HardCannonEffect extends CannonEffect {
     // region Static fields
     public static final String BULLET_TEXTURE_PATH = "bullet.png";
     public static final int BULLET_HIT_UNIT_LIMIT = 3;
-    public static final float BULLET_SPEED = 100;
-    public static final int BULLET_SPLASH_AREA_RADIUS = 150;
+    public static final float BULLET_SPEED = Gdx.graphics.getWidth() / 7;
+    public static final int BULLET_SPLASH_AREA_RADIUS = Gdx.graphics.getHeight() / 3;
 
     public static final int INITIAL_WEIGHT = 10;
-    public static final float COOLDOWN = 10;
-    public static final float MIN_COOLDOWN = 10;
+    public static final float COOLDOWN = 5;
+    public static final float MIN_COOLDOWN = 2;
     public static final float DAMAGE = 50;
     public static final float MAX_DAMAGE = 400;
     public static final int TARGET_LIMIT = 1;
@@ -50,8 +51,8 @@ public class HardCannonEffect extends CannonEffect {
                                                HardCannonEffect.BULLET_SPEED,
                                                HardCannonEffect.BULLET_SPLASH_AREA_RADIUS);
         bullet.initialize(bulletData);
-        // TODO: 8/16/17 Add a shooting point in effect class for the bullets to be instantiated from that point.
-        bullet.setPosition(owner.getX(Align.center), owner.getY(Align.center), Align.center);
+        Point shootingPoint = defineShootingPoint();
+        bullet.setPosition(shootingPoint.x, shootingPoint.y, Align.center);
         bullet.setPlayerRace(owner.getPlayerType());
         bullet.shoot(target);
         bullet.addBulletListener(new BulletListener() {

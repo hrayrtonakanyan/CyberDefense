@@ -16,7 +16,7 @@ import java.util.List;
 
 public class TargetBullet extends Bullet {
 
-    // region Instance fields
+    // region Static fields
     public static final float WIDTH = Gdx.graphics.getWidth() / 70;
     public static final float HEIGHT = Gdx.graphics.getWidth() / 70;
     // endregion

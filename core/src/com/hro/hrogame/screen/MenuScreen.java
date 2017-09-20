@@ -22,6 +22,7 @@ public class MenuScreen extends ScreenAdapter {
     // region Static fields
     public static final float BUTTON_WIDTH = Gdx.graphics.getWidth() / 5;
     public static final float BUTTON_HEIGHT = Gdx.graphics.getHeight() / 5;
+    public static final float FONT_SCALE = 2;
     // endregion
 
     // region Instance fields
@@ -33,6 +34,7 @@ public class MenuScreen extends ScreenAdapter {
     private Button.ButtonStyle btnStyle;
     private Label playButtonLabel;
     private Label quitButtonLabel;
+    private Image background;
     // endregion
 
     // region C-tor
@@ -48,6 +50,10 @@ public class MenuScreen extends ScreenAdapter {
     public void show() {
         initButtonStyle();
         initButtonsLabels();
+
+        background = new Image(new Texture("background.png"));
+        background.setSize(stage.getWidth(), stage.getHeight());
+        stage.addActor(background, LayerType.BACKGROUND);
 
         btnPlay = new Button(btnStyle);
         btnQuit = new Button(btnStyle);
@@ -70,6 +76,8 @@ public class MenuScreen extends ScreenAdapter {
     private void initButtonsLabels() {
         playButtonLabel = new Label(PLAY_TITLE, skin);
         quitButtonLabel = new Label(QUIT_TITLE, skin);
+        playButtonLabel.setFontScale(FONT_SCALE, FONT_SCALE);
+        quitButtonLabel.setFontScale(FONT_SCALE, FONT_SCALE);
     }
     private void addButtonListeners() {
         btnPlay.addListener(new ChangeListener() {

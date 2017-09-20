@@ -19,9 +19,13 @@ import java.util.List;
 
 public class WaveBullet extends Bullet {
 
+    // region Static fields
+    public static final float SPEED = Gdx.graphics.getWidth() / 2.7f;
+    // endregion
+
     // region Instance fields
     private Point centerPoint = new Point();
-    private List<GameObject> excludeList = new ArrayList<>();;
+    private List<GameObject> excludeList = new ArrayList<>();
     private CircleSensor sensor;
     private Timer hitTimer;
     private float maxRadius;
@@ -133,6 +137,9 @@ public class WaveBullet extends Bullet {
     @Override
     public UnitSensor getUnitSensor() {
         return sensor;
+    }
+    public Timer getTimer() {
+        return hitTimer;
     }
     // endregion
 }

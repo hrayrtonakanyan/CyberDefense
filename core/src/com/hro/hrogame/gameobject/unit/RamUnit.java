@@ -11,8 +11,8 @@ public class RamUnit extends GameObject{
     public static final float MAX_SPEED = 360;
     public static final int HEALTH = 30;
     public static final int MAX_HEALTH = 200;
-    public static final int WIDTH = Gdx.graphics.getHeight() / 10;
-    public static final int HEIGHT = Gdx.graphics.getHeight() / 10;
+    public static final int WIDTH = Gdx.graphics.getWidth() / 11;
+    public static final int HEIGHT = Gdx.graphics.getHeight() / 12;
     public static final String TEXTURE_PATH = "ram.png";
     // endregion
 

@@ -141,7 +141,7 @@ public class EntityFactory implements EntityManager {
         GameObjectData data = new GameObjectData(level, speed, health, BaseUnit.TEXTURE_PATH);
         BaseUnit unit = new BaseUnit(data);
         unit.setSize(BaseUnit.WIDTH, BaseUnit.HEIGHT);
-        unit.addEffect(createEffect(unit, EffectType.HELL_FIRE));
+        unit.addEffect(createEffect(unit, EffectType.SIMPLE_CANNON));
         unit.setPlayerRace(race);
         unit.addGameObjectAdapter(createEntityFactoryAdapter());
         addUnitToUnitMap(unit);
@@ -375,6 +375,7 @@ public class EntityFactory implements EntityManager {
     @Override
     public boolean removeBullet(Bullet bullet) {
         //TODO Add pool release functionality here.
+        if (bullet instanceof WaveBullet) ((WaveBullet) bullet).getTimer().clear();
         return bullet.remove();
     }
     // endregion

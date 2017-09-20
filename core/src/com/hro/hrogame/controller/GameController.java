@@ -44,7 +44,8 @@ public class GameController {
     // region Static fields
     public static final float GOLD_LABEL_COIN_RADIUSx2 = Gdx.graphics.getWidth() / 35;
     public static final float PLAY_PAUSE_BUTTON_RADIUSx2 = Gdx.graphics.getHeight() / 16;
-    public static final float WAVE_LABEL_SCALE = 2;
+    public static final float WAVE_LABEL_SCALE_MIN = 2;
+    public static final float WAVE_LABEL_SCALE_MAX = 4;
 
 
     public static final float GAME_PROGRESS_RATIO = 1;
@@ -88,6 +89,11 @@ public class GameController {
         animationTimelineList = new ArrayList<>();
         enemiesWaitList = new ArrayList<>();
         waveTimer = new Timer();
+
+        Image background = new Image(new Texture("background.png"));
+        background.setSize(stage.getWidth(), stage.getHeight());
+        stage.addActor(background, LayerType.BACKGROUND);
+
         initUI();
         createBase();
         startNewWave();
@@ -127,7 +133,7 @@ public class GameController {
     }
     private void createWaveLabel() {
         waveLabel = new Label("Wave " + 1, StringConstants.skin);
-        waveLabel.setFontScale(WAVE_LABEL_SCALE, WAVE_LABEL_SCALE);
+        waveLabel.setFontScale(WAVE_LABEL_SCALE_MIN, WAVE_LABEL_SCALE_MIN);
         waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() - waveLabel.getHeight(), Align.center);
         stage.addActor(waveLabel, LayerType.MENU_UI);
     }
@@ -422,11 +428,11 @@ public class GameController {
         stage.addActor(reward, LayerType.GAME_UI);
     }
     private void animateLabelOnWaveChange() {
-        waveLabel.setFontScale(3);
+        waveLabel.setFontScale(WAVE_LABEL_SCALE_MAX);
         waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
         float moveTarget = Gdx.graphics.getHeight() - waveLabel.getHeight() * 2;
         timeline = TweenAnimation.animateWaveLabel(waveLabel, 5,
-                moveTarget, 1, tweenManager, new AnimationListener() {
+                moveTarget, WAVE_LABEL_SCALE_MIN, tweenManager, new AnimationListener() {
                     @Override
                     public void onComplete() {
                         animationTimelineList.remove(timeline);

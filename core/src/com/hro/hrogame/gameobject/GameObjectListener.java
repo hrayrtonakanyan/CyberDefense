@@ -9,4 +9,5 @@ public interface GameObjectListener {
     void onPositionChange(GameObject gameObject);
     void onSizeChange(GameObject gameObject);
     void onDestinationArrive(GameObject gameObject);
+    void onLevelUp(GameObject gameObject, int level);
 }

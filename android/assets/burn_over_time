@@ -2,8 +2,8 @@ Untitled
 - Delay -
 active: false
 - Duration - 
-lowMin: 3000.0
-lowMax: 3000.0
+lowMin: 1000.0
+lowMax: 1000.0
 - Count - 
 min: 0
 max: 200
@@ -62,8 +62,8 @@ timeline0: 0.0
 - Scale - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 32.0
-highMax: 32.0
+highMin: 22.0
+highMax: 22.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -74,7 +74,7 @@ active: true
 lowMin: 0.0
 lowMax: 0.0
 highMin: 30.0
-highMax: 300.0
+highMax: 80.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -132,4 +132,4 @@ additive: true
 behind: false
 premultipliedAlpha: false
 - Image Path -
-star.png
+/C:/Users/Hrayr/GDXProjects/CyberDefense/android/assets/New folder/fire.png

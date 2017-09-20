@@ -9,10 +9,10 @@ public class BaseUnit extends GameObject {
     // region Static fields
     public static final float SPEED = 0;
     public static final float MAX_SPEED = 0;
-    public static final int HEALTH = 700;
+    public static final int HEALTH = 1000;
     public static final int MAX_HEALTH = 1500;
-    public static final int WIDTH = Gdx.graphics.getHeight() / 10;
-    public static final int HEIGHT = Gdx.graphics.getHeight() / 10;
+    public static final int WIDTH = Gdx.graphics.getHeight() / 7;
+    public static final int HEIGHT = Gdx.graphics.getHeight() / 7;
     public static final float RECTANGLE_SENSOR_WIDTH = Gdx.graphics.getWidth();
     public static final float RECTANGLE_SENSOR_HEIGHT = Gdx.graphics.getHeight();
     public static final String TEXTURE_PATH = "base.png";
@@ -21,6 +21,7 @@ public class BaseUnit extends GameObject {
     // region C-tor
     public BaseUnit(GameObjectData data) {
         super(data);
+        setHealthBarLength(100);
     }
     // endregion
 

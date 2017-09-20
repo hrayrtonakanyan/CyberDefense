@@ -23,7 +23,6 @@ public class ClosestUnitFilter extends UnitFilter {
     public List<GameObject> filterUnitList(List<GameObject> unitList) {
         return filter(unitList, unitList.size());
     }
-
     private List<GameObject> filter(List<GameObject> unitList, int unitLimit) {
         List<GameObject> filteredList = Util.closestGameObjectList(owner.getShape().getCenterPoint(), unitList);
         removeDeadUnits(unitList);

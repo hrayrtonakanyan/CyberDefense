@@ -18,7 +18,7 @@ public class FreezeOverTimeEffect extends Effect {
     // region Static fields
     public static final float DURATION = 5;
     public static final float MAX_DURATION = 5;
-    public static final float SPEED_RATIO = 0.8f;
+    public static final float SPEED_RATIO = 0.6f;
     public static final float MIN_SPEED_RATIO = 0.1f;
     // endregion
 

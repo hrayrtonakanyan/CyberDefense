@@ -36,4 +36,9 @@ public abstract class GameObjectAdapter implements GameObjectListener {
     public void onSizeChange(GameObject gameObject) {
 
     }
+
+    @Override
+    public void onLevelUp(GameObject gameObject, int level) {
+
+    }
 }

@@ -10,6 +10,7 @@ import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.bullet.BulletListener;
 import com.hro.hrogame.gameobject.bullet.BulletType;
 import com.hro.hrogame.gameobject.bullet.TargetBullet;
+import com.hro.hrogame.primitives.Point;
 import com.hro.hrogame.primitives.ProgressiveAttribute;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
@@ -22,8 +23,8 @@ public class SimpleCannonEffect extends CannonEffect {
     // region Static fields
     public static final String BULLET_TEXTURE_PATH = "bullet.png";
     public static final int BULLET_HIT_UNIT_LIMIT = 1;
-    public static final float BULLET_SPEED = 150;
-    public static final int BULLET_SPLASH_AREA_RADIUS = 80;
+    public static final float BULLET_SPEED = Gdx.graphics.getWidth() / 4;
+    public static final int BULLET_SPLASH_AREA_RADIUS = Gdx.graphics.getWidth() / 10;
 
     public static final int INITIAL_WEIGHT = 5;
     public static final float COOLDOWN = 2;
@@ -39,8 +40,8 @@ public class SimpleCannonEffect extends CannonEffect {
     // region Static methods
     public static ProgressiveAttribute[] getDataProgressiveAttributes() {
         return new ProgressiveAttribute[] {new ProgressiveAttribute(COOLDOWN, MIN_COOLDOWN),
-                                             new ProgressiveAttribute(DAMAGE, MAX_DAMAGE),
-                                             new ProgressiveAttribute(TARGET_LIMIT, MAX_TARGET_LIMIT)};
+                                           new ProgressiveAttribute(DAMAGE, MAX_DAMAGE),
+                                           new ProgressiveAttribute(TARGET_LIMIT, MAX_TARGET_LIMIT)};
     }
     // endregion
 
@@ -59,8 +60,8 @@ public class SimpleCannonEffect extends CannonEffect {
                                                SimpleCannonEffect.BULLET_SPEED,
                                                SimpleCannonEffect.BULLET_SPLASH_AREA_RADIUS);
         bullet.initialize(bulletData);
-        // TODO: 8/16/17 Add a shooting point in effect class for the bullets to be instantiated from that point.
-        bullet.setPosition(owner.getX(Align.center), owner.getY(Align.center), Align.center);
+        Point shootingPoint = defineShootingPoint();
+        bullet.setPosition(shootingPoint.x, shootingPoint.y, Align.center);
         bullet.setPlayerRace(owner.getPlayerType());
         bullet.shoot(target);
         bullet.addBulletListener(new BulletListener() {

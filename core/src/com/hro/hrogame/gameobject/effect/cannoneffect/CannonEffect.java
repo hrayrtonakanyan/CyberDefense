@@ -1,5 +1,6 @@
 package com.hro.hrogame.gameobject.effect.cannoneffect;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.effect.cannoneffectdata.CannonEffectData;
@@ -7,7 +8,6 @@ import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.effect.Effect;
 import com.hro.hrogame.gameobject.unit.BaseUnit;
 import com.hro.hrogame.gameobject.unit.TankUnit;
-import com.hro.hrogame.primitives.Point;
 
 import java.util.List;
 
@@ -15,12 +15,14 @@ public abstract class CannonEffect extends Effect {
 
     // region Instance field
     protected CannonEffectData data;
+    private Vector2 firingPoint;
     // endregion
 
     // region C-tor
     public CannonEffect(GameObject owner, EntityManager entityManager, CannonEffectData data) {
         super(owner, entityManager);
         this.data = data;
+        firingPoint = new Vector2();
         levelUpEffect(owner.getLevel());
         makeAutoExecutable();
     }
@@ -50,13 +52,11 @@ public abstract class CannonEffect extends Effect {
 
     // region Shoot
     protected abstract void shootABullet(GameObject target);
-    protected Point defineShootingPoint() {
+    private Vector2 defineFiringPoint() {
         if (owner == null) throw new RuntimeException("Owner must not be null.");
-        if (owner instanceof BaseUnit) return new Point(owner.getX() + owner.getWidth() / 2,
-                                                        owner.getY() + owner.getHeight() / 2);
-        if (owner instanceof TankUnit) return new Point(owner.getX() + owner.getWidth(),
-                                                        owner.getY() + owner.getHeight() / 2);
-        throw new RuntimeException("The Owner of the bullet is not Firing Unit");
+        if (owner instanceof BaseUnit) firingPoint.set(owner.getWidth() / 2, owner.getHeight() / 2);
+        if (owner instanceof TankUnit) firingPoint.set(owner.getWidth(), owner.getHeight() / 2);
+        return localToStageCoordinates(firingPoint);
     }
     // endregion
 
@@ -68,6 +68,12 @@ public abstract class CannonEffect extends Effect {
     @Override
     public float getEffectWeight() {
         return data.weight;
+    }
+    public float getFiringPointX() {
+        return defineFiringPoint().x;
+    }
+    public float getFiringPointY() {
+        return defineFiringPoint().y;
     }
     // endregion
 }

@@ -10,7 +10,6 @@ import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.bullet.BulletListener;
 import com.hro.hrogame.gameobject.bullet.BulletType;
 import com.hro.hrogame.gameobject.bullet.TargetBullet;
-import com.hro.hrogame.primitives.Point;
 import com.hro.hrogame.primitives.ProgressiveAttribute;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
@@ -30,7 +29,7 @@ public class SimpleCannonEffect extends CannonEffect {
     public static final float COOLDOWN = 2;
     public static final float MIN_COOLDOWN = 0.5f;
     public static final float DAMAGE = 25;
-    public static final float MAX_DAMAGE = 400;
+    public static final float MAX_DAMAGE = 300;
     public static final int TARGET_LIMIT = 1;
     public static final int MAX_TARGET_LIMIT = 1;
     public static final int SENSOR_RADIUS_FOR_BASE = Gdx.graphics.getWidth() / 3;
@@ -60,8 +59,7 @@ public class SimpleCannonEffect extends CannonEffect {
                                                SimpleCannonEffect.BULLET_SPEED,
                                                SimpleCannonEffect.BULLET_SPLASH_AREA_RADIUS);
         bullet.initialize(bulletData);
-        Point shootingPoint = defineShootingPoint();
-        bullet.setPosition(shootingPoint.x, shootingPoint.y, Align.center);
+        bullet.setPosition(getFiringPointX(), getFiringPointY(), Align.center);
         bullet.setPlayerRace(owner.getPlayerType());
         bullet.shoot(target);
         bullet.addBulletListener(new BulletListener() {

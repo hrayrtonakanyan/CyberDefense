@@ -10,7 +10,6 @@ import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.bullet.BulletListener;
 import com.hro.hrogame.gameobject.bullet.BulletType;
 import com.hro.hrogame.gameobject.bullet.TargetBullet;
-import com.hro.hrogame.primitives.Point;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
 import com.hro.hrogame.utils.Util;
@@ -51,8 +50,7 @@ public class HardCannonEffect extends CannonEffect {
                                                HardCannonEffect.BULLET_SPEED,
                                                HardCannonEffect.BULLET_SPLASH_AREA_RADIUS);
         bullet.initialize(bulletData);
-        Point shootingPoint = defineShootingPoint();
-        bullet.setPosition(shootingPoint.x, shootingPoint.y, Align.center);
+        bullet.setPosition(getFiringPointX(), getFiringPointY(), Align.center);
         bullet.setPlayerRace(owner.getPlayerType());
         bullet.shoot(target);
         bullet.addBulletListener(new BulletListener() {

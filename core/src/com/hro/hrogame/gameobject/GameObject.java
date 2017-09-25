@@ -320,9 +320,9 @@ public abstract class GameObject extends Entity {
         move();
         if (this.destination == null) this.destination = new Point();
         this.destination.set(x, y);
-        setAngle();
+        rotateToDestination();
     }
-    private void setAngle() {
+    private void rotateToDestination() {
         setOrigin(Align.center);
         float dy = destination.y - getY(Align.center);
         float dx = destination.x - getX(Align.center);

@@ -9,7 +9,7 @@ public class TankUnit extends GameObject {
     // region Static fields
     public static final float SPEED = 50;
     public static final float MAX_SPEED = 100;
-    public static final int HEALTH = 200;
+    public static final int HEALTH = 100;
     public static final int MAX_HEALTH = 700;
     public static final int WIDTH = Gdx.graphics.getWidth() / 10;
     public static final int HEIGHT = Gdx.graphics.getHeight() / 11;

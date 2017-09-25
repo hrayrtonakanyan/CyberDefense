@@ -1,11 +1,15 @@
 package com.hro.hrogame.gameobject;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.Align;
+import com.hro.hrogame.animation.particleanimation.AnimationListener;
+import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.constants.StringConstants;
 import com.hro.hrogame.data.gameobject.GameObjectData;
@@ -24,6 +28,7 @@ public abstract class GameObject extends Entity {
     // endregion
 
     // region Instance fields
+    private ParticleAnimation levelUpAnimation;
     private ArrayList<GameObjectAdapter> gameObjectAdapterList = new ArrayList<>();
     private ArrayList<Effect> effectList = new ArrayList<>();
     private PlayerRace playerType = PlayerRace.NONE;
@@ -52,10 +57,11 @@ public abstract class GameObject extends Entity {
     // region Init
     private void initWithData(GameObjectData data) {
         this.data = data;
+        setAppearance(data.texturePath);
         alterParamsOnLevelChange(data.level);
         initCurrentParams(data);
-        setAppearance(data.texturePath);
         addHealthBar(data.health.current);
+        initLevelUpAnimation();
     }
     private void initCurrentParams(GameObjectData data) {
         currentHealth = data.health.current;
@@ -89,6 +95,11 @@ public abstract class GameObject extends Entity {
             }
         });
         addActor(healthBar);
+    }
+    private void initLevelUpAnimation() {
+        ParticleEffect particleEffect = new ParticleEffect();
+        particleEffect.load(Gdx.files.internal("lvlup_particle"), Gdx.files.internal(""));
+        levelUpAnimation = new ParticleAnimation(particleEffect);
     }
     // endregion
 
@@ -135,6 +146,17 @@ public abstract class GameObject extends Entity {
         data.level++;
         alterParamsOnLevelChange(data.level);
         initCurrentParams(data);
+        if (getStage() != null) {
+            levelUpAnimation.setPosition(getX() + getWidth() / 2, getY(), Align.center);
+            levelUpAnimation.setCompleteListener(new AnimationListener() {
+                @Override
+                public void onComplete() {
+                    levelUpAnimation.remove();
+                }
+            });
+            levelUpAnimation.start();
+            addActor(levelUpAnimation);
+        }
         notifyOnLevelUp(this, data.level);
     }
     private void alterParamsOnLevelChange(int level) {
@@ -333,10 +355,10 @@ public abstract class GameObject extends Entity {
     public void setPlayerRace(PlayerRace playerType) {
         this.playerType = playerType;
     }
-    public void move() {
+    private void move() {
         isMoving = true;
     }
-    public void stop() {
+    private void stop() {
         isMoving = false;
     }
     @Override

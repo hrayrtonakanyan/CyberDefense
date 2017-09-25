@@ -71,6 +71,7 @@ public class GameController {
     private int playerGold;
     private float playerExperience;
     private float accessExperience = WaveController.INITIAL_WEIGHT;
+    private int aliveUnitsQuantity;
     private boolean isPaused;
     // endregion
 
@@ -96,7 +97,6 @@ public class GameController {
 
         initUI();
         createBase();
-        startNewWave();
         stage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -164,6 +164,7 @@ public class GameController {
             calculatePlayerAccessExperience();
             System.out.println("Base unit is level up " + baseUnit.getLevel());
         }
+        if (aliveUnitsQuantity == 0) startNewWave();
     }
     private void updateWaveInfo(int waveNumber) {
         waveLabel.setText("Wave " + waveNumber);
@@ -220,6 +221,7 @@ public class GameController {
     private void startNewWave() {
         generateWave();
         waveTimer.scheduleTask(createSpawnUnitTask());
+        updateWaveInfo(waveController.getWaveNumber());
     }
     private void generateWave() {
         float waveWeight = waveController.calculateWaveWeight();
@@ -239,6 +241,7 @@ public class GameController {
                 }
                 @Override
                 public void onDie(GameObject dyingUnit, GameObject killerUnit) {
+                    aliveUnitsQuantity--;
                     int gold = dyingUnit.getReward();
                     earnGold(gold);
                     pushOnDieTweenAnimation(gold, dyingUnit);
@@ -255,6 +258,7 @@ public class GameController {
                 }
                 @Override
                 public void onDie(GameObject dyingUnit, GameObject killerUnit) {
+                    aliveUnitsQuantity--;
                     int gold = dyingUnit.getReward();
                     earnGold(gold);
                     pushOnDieTweenAnimation(gold, dyingUnit);
@@ -262,6 +266,7 @@ public class GameController {
             });
             enemiesWaitList.add(unit);
         }
+        aliveUnitsQuantity = enemiesWaitList.size();
     }
     private Task createSpawnUnitTask() {
         int repeatCount = enemiesWaitList.size();
@@ -283,13 +288,6 @@ public class GameController {
         enemy.setPosition(spawnPoint.x, spawnPoint.y, Align.center);
         enemy.setDestination(baseUnit.getX(Align.center), baseUnit.getY(Align.center));
         stage.addActor(enemy, LayerType.FOREGROUND);
-        if (enemiesWaitList.size() == 0) enemy.addGameObjectAdapter(new GameObjectAdapter() {
-            @Override
-            public void onDie(GameObject dyingUnit, GameObject killerUnit) {
-                startNewWave();
-                updateWaveInfo(waveController.getWaveNumber());
-            }
-        });
     }
     private Point generateSpawnPoint() {
         int side = random.nextInt(4);

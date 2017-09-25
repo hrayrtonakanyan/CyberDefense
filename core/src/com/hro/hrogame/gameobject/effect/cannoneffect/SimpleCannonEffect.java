@@ -28,8 +28,8 @@ public class SimpleCannonEffect extends CannonEffect {
     public static final int INITIAL_WEIGHT = 5;
     public static final float COOLDOWN = 2;
     public static final float MIN_COOLDOWN = 0.5f;
-    public static final float DAMAGE = 25;
-    public static final float MAX_DAMAGE = 300;
+    public static final float DAMAGE = 20;
+    public static final float MAX_DAMAGE = 150;
     public static final int TARGET_LIMIT = 1;
     public static final int MAX_TARGET_LIMIT = 1;
     public static final int SENSOR_RADIUS_FOR_BASE = Gdx.graphics.getWidth() / 3;

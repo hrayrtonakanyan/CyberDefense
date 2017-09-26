@@ -1,6 +1,7 @@
 package com.hro.hrogame.gameobject.effect.cannoneffect;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
@@ -25,7 +26,7 @@ public class HardCannonEffect extends CannonEffect {
     public static final int BULLET_SPLASH_AREA_RADIUS = Gdx.graphics.getHeight() / 3;
 
     public static final int INITIAL_WEIGHT = 10;
-    public static final float COOLDOWN = 5;
+    public static final float COOLDOWN = 7;
     public static final float MIN_COOLDOWN = 2;
     public static final float DAMAGE = 50;
     public static final float MAX_DAMAGE = 400;
@@ -52,6 +53,7 @@ public class HardCannonEffect extends CannonEffect {
         bullet.initialize(bulletData);
         bullet.setPosition(getFiringPointX(), getFiringPointY(), Align.center);
         bullet.setPlayerRace(owner.getPlayerType());
+        bullet.setColor(Color.RED);
         bullet.shoot(target);
         bullet.addBulletListener(new BulletListener() {
             @Override

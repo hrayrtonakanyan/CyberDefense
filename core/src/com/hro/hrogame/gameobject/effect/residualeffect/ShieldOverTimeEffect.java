@@ -16,8 +16,8 @@ import com.hro.hrogame.utils.Util;
 public class ShieldOverTimeEffect extends Effect {
 
     // region Static fields
-    public static final float DURATION = 10;
-    public static final float MAX_DURATION = 20;
+    public static final float DURATION = 3;
+    public static final float MAX_DURATION = 10;
     // endregion
 
     // region Instance fields

@@ -16,8 +16,8 @@ import com.hro.hrogame.utils.Util;
 public class StunOverTimeEffect extends Effect {
 
     // region Static fields
-    public static final float DURATION = 5;
-    public static final float MAX_DURATION = 10;
+    public static final float DURATION = 3;
+    public static final float MAX_DURATION = 8;
     // endregion
 
     // region Instance fields

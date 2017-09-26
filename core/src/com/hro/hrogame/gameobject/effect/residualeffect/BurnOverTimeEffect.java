@@ -16,8 +16,8 @@ import com.hro.hrogame.utils.Util;
 public class BurnOverTimeEffect extends Effect {
 
     // region Static fields
-    public static final float COOLDOWN = 3;
-    public static final float MIN_COOLDOWN = 3;
+    public static final float COOLDOWN = 5;
+    public static final float MIN_COOLDOWN = 1;
     public static final float DAMAGE = 20;
     public static final float MAX_DAMAGE = 50;
     public static final float TOTAL_DAMAGE = 60;

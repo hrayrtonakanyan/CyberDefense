@@ -2,6 +2,7 @@ package com.hro.hrogame.animation.tweenanimation;
 
 import aurelienribon.tweenengine.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.animation.particleanimation.AnimationListener;
 
 import static com.hro.hrogame.animation.tweenanimation.ActorAccessor.*;
@@ -49,29 +50,38 @@ public class TweenAnimation {
                 .start(manager);
     }
 
-    public static Timeline bounce(Actor actor, float duration, TweenManager manager, final AnimationListener listener) {
+    public static Timeline bounce(Actor actor, TweenManager manager, final AnimationListener listener) {
         float height = actor.getHeight();
         float width = actor.getWidth();
-        return Timeline.createSequence().beginSequence()
-                .push(Timeline.createParallel().beginParallel()
-                        .push(Tween.to(actor, CHANGE_HEIGHT, 0.5f)
-                                .target(actor.getHeight() - height / 2))
-                        .push(Tween.to(actor, CHANGE_WIDTH, 0.5f)
-                                .target(actor.getWidth() + width / 2))
+        float centerX = actor.getX(Align.center);
+        float centerY = actor.getY(Align.center);
+        return Timeline.createParallel().beginParallel()
+                .push(Timeline.createSequence().beginSequence()
+                        .push(Timeline.createParallel().beginParallel()
+                                .push(Tween.to(actor, CHANGE_HEIGHT, 0.3f)
+                                        .target(actor.getHeight() - height / 2))
+                                .push(Tween.to(actor, CHANGE_WIDTH, 0.3f)
+                                        .target(actor.getWidth() + width / 2))
+                                .end())
+                        .push(Timeline.createParallel().beginParallel()
+                                .push(Tween.to(actor, CHANGE_HEIGHT, 0.2f)
+                                        .target(actor.getHeight() + height / 4))
+                                .push(Tween.to(actor, CHANGE_WIDTH, 0.2f)
+                                        .target(actor.getWidth() - width / 4))
+                                .end())
+                        .push(Timeline.createParallel().beginParallel()
+                                .push(Tween.to(actor, CHANGE_HEIGHT, 0.1f)
+                                        .target(actor.getHeight()))
+                                .push(Tween.to(actor, CHANGE_WIDTH, 0.1f)
+                                        .target(actor.getWidth()))
+                                .end())
                         .end())
                 .push(Timeline.createParallel().beginParallel()
-                        .push(Tween.to(actor, CHANGE_HEIGHT, 0.4f)
-                                .target(actor.getHeight() + height / 4))
-                        .push(Tween.to(actor, CHANGE_WIDTH, 0.4f)
-                                .target(actor.getWidth() - width / 4))
+                        .push(Tween.to(actor, ALIGN_CENTER_X, 0.6f)
+                                .target(centerX))
+                        .push(Tween.to(actor, ALIGN_CENTER_Y, 0.6f)
+                                .target(centerY))
                         .end())
-                .push(Timeline.createParallel().beginParallel()
-                        .push(Tween.to(actor, CHANGE_HEIGHT, 0.3f)
-                                .target(actor.getHeight()))
-                        .push(Tween.to(actor, CHANGE_WIDTH, 0.3f)
-                                .target(actor.getWidth()))
-                        .end())
-                .end()
                 .setCallback(new TweenCallback() {
                     @Override
                     public void onEvent(int i, BaseTween<?> baseTween) {

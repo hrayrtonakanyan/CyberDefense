@@ -3,6 +3,7 @@ package com.hro.hrogame.controller;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -44,12 +46,12 @@ public class GameController {
     // region Static fields
     public static final float GOLD_LABEL_COIN_RADIUSx2 = Gdx.graphics.getWidth() / 35;
     public static final float PLAY_PAUSE_BUTTON_RADIUSx2 = Gdx.graphics.getHeight() / 16;
-    public static final float WAVE_LABEL_SCALE_MIN = 2;
+    public static final float LABEL_SCALE = 1.5f;
     public static final float WAVE_LABEL_SCALE_MAX = 4;
 
 
     public static final float GAME_PROGRESS_RATIO = 1;
-    public static final float BASE_UNIT_PROGRESS_RATIO = 0.7f;
+    public static final float PLAYER_PROGRESS_RATIO = 0.7f;
     public static final float WAVE_TIMER_INTERVAL = 5;
     public static final float WAVE_TIMER_DELAY = 5;
     // endregion
@@ -58,7 +60,9 @@ public class GameController {
     private Random random = new Random();
     private GameStage stage;
     private Label goldLabel;
+    private Label levelLabel;
     private Label waveLabel;
+    private ProgressBar xpBar;
     private EffectDialog effectDialog;
     private EntityFactory entityFactory;
     private WaveController waveController;
@@ -69,8 +73,8 @@ public class GameController {
     private ArrayList<Timeline> animationTimelineList;
     private ArrayList<GameObject> enemiesWaitList;
     private int playerGold;
-    private float playerExperience;
-    private float accessExperience = WaveController.INITIAL_WEIGHT;
+    private float playerXP;
+    private float accessXP = WaveController.INITIAL_WEIGHT;
     private int aliveUnitsQuantity;
     private boolean isPaused;
     // endregion
@@ -118,6 +122,8 @@ public class GameController {
             }
         });
         createGoldLabel();
+        createLevelLabel();
+        createXPBar();
         createWaveLabel();
         createPlayPauseButtons();
     }
@@ -126,15 +132,35 @@ public class GameController {
         coin.setSize(GOLD_LABEL_COIN_RADIUSx2, GOLD_LABEL_COIN_RADIUSx2);
         coin.setPosition(coin.getWidth(), stage.getHeight() - coin.getHeight() * 2);
         goldLabel = new Label(" " + playerGold, StringConstants.skin);
-        goldLabel.setFontScale(1.5f, 1.5f);
+        goldLabel.setFontScale(LABEL_SCALE, LABEL_SCALE);
         goldLabel.setPosition(coin.getX() + coin.getWidth(), coin.getY());
         stage.addActor(coin, LayerType.MENU_UI);
         stage.addActor(goldLabel, LayerType.MENU_UI);
     }
+    private void createLevelLabel() {
+        levelLabel = new Label("Lvl: " + 1, StringConstants.skin);
+        levelLabel.setFontScale(LABEL_SCALE, LABEL_SCALE);
+        levelLabel.setPosition(goldLabel.getX() + goldLabel.getWidth() + levelLabel.getWidth(), goldLabel.getY());
+        stage.addActor(levelLabel, LayerType.MENU_UI);
+    }
+    private void createXPBar() {
+        Label xpLabel = new Label("XP: ", StringConstants.skin);
+        xpLabel.setScale(1.5f, 1.5f);
+        xpLabel.setPosition(levelLabel.getX() + levelLabel.getWidth() * 2, levelLabel.getY());
+        xpLabel.setFontScale(LABEL_SCALE, LABEL_SCALE);
+        xpBar = new ProgressBar(0, accessXP, 1, false, StringConstants.skin);
+        xpBar.setSize(150, GOLD_LABEL_COIN_RADIUSx2);
+        xpBar.setPosition(xpLabel.getX() + xpLabel.getWidth() * 2, xpLabel.getY());
+        xpBar.setValue(0);
+        xpBar.setAnimateDuration(0.2f);
+        xpBar.setColor(Color.GOLD);
+        stage.addActor(xpLabel, LayerType.MENU_UI);
+        stage.addActor(xpBar, LayerType.MENU_UI);
+    }
     private void createWaveLabel() {
         waveLabel = new Label("Wave " + 1, StringConstants.skin);
-        waveLabel.setFontScale(WAVE_LABEL_SCALE_MIN, WAVE_LABEL_SCALE_MIN);
-        waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() - waveLabel.getHeight(), Align.center);
+        waveLabel.setFontScale(LABEL_SCALE, LABEL_SCALE);
+        waveLabel.setPosition(xpBar.getX() + xpBar.getWidth() + waveLabel.getWidth(), xpBar.getY());
         stage.addActor(waveLabel, LayerType.MENU_UI);
     }
     private void createPlayPauseButtons() {
@@ -149,6 +175,7 @@ public class GameController {
             public void changed(ChangeEvent event, Actor actor) {
                 if (isPaused) play();
                 else pause();
+                TweenAnimation.bounce(actor, tweenManager, null);
             }
         });
         stage.addActor(playPauseBtn, LayerType.MENU_UI);
@@ -159,19 +186,19 @@ public class GameController {
     public void update(float delta){
         tweenManager.update(delta);
         waveTimer.update(delta);
-        if (playerExperience >= accessExperience) {
+        if (playerXP >= accessXP) {
+            System.out.println("Player XP is " + playerXP + ", AccessXP was " + accessXP);
             baseUnit.levelUp();
-            calculatePlayerAccessExperience();
-            System.out.println("Base unit is level up " + baseUnit.getLevel());
+            updateNextLevelAccessXP();
         }
         if (aliveUnitsQuantity == 0) startNewWave();
+    }
+    private void updateGoldInfo() {
+        goldLabel.setText(" " + playerGold);
     }
     private void updateWaveInfo(int waveNumber) {
         waveLabel.setText("Wave " + waveNumber);
         animateLabelOnWaveChange();
-    }
-    private void updateGoldInfo() {
-        goldLabel.setText(" " + playerGold);
     }
     // endregion
 
@@ -186,8 +213,13 @@ public class GameController {
             }
             @Override
             public void onKill(GameObject dyingUnit, GameObject killerUnit) {
-                playerExperience += dyingUnit.getWeight();
-                System.out.println("Collected weight " + playerExperience);
+                playerXP += dyingUnit.getWeight() * PLAYER_PROGRESS_RATIO;
+                xpBar.setValue(playerXP);
+                System.out.println(xpBar.getValue() + " XP from " + accessXP);
+            }
+            @Override
+            public void onLevelUp(GameObject gameObject, int level) {
+                levelLabel.setText("Lvl: " + level);
             }
         });
         stage.addActor(baseUnit, LayerType.FOREGROUND);
@@ -225,13 +257,9 @@ public class GameController {
     }
     private void generateWave() {
         float waveWeight = waveController.calculateWaveWeight();
-        System.out.println("Wave weight " + waveWeight);
         int unitLevel = calculateUnitLevelForWave();
-        System.out.println("Units level " + unitLevel);
         int tankQuantity = calculateUnitsQuantity(waveWeight, unitLevel, WaveController.TANK_UNITS_CREATION_RATIO, UnitType.TANK);
-        System.out.println("Tank quantity in wave " + tankQuantity);
         int ramQuantity = calculateUnitsQuantity(waveWeight, unitLevel, WaveController.RAM_UNITS_CREATION_RATIO, UnitType.RAM);
-        System.out.println("Ram quantity in wave " + ramQuantity);
         for (int i = 0; i < tankQuantity; i++) {
             GameObject unit = entityFactory.createUnit(UnitType.TANK, PlayerRace.AI, unitLevel);
             unit.addGameObjectAdapter(new GameObjectAdapter() {
@@ -315,10 +343,15 @@ public class GameController {
     // endregion
 
     // region Calculation
-    private void calculatePlayerAccessExperience() {
-        accessExperience += accessExperience * ParametersConstants.PROGRESS_RATIO *
-                                               GameController.GAME_PROGRESS_RATIO *
-                                               GameController.BASE_UNIT_PROGRESS_RATIO;
+    private void updateNextLevelAccessXP() {
+        float previousLevelXP = accessXP;
+        float nextLevelXP = accessXP;
+        nextLevelXP += nextLevelXP * ParametersConstants.PROGRESS_RATIO;
+        accessXP += nextLevelXP;
+        xpBar.setRange(previousLevelXP, accessXP);
+        xpBar.setValue(playerXP);
+        System.out.println("Progress bar XP " + xpBar.getValue() + " XP from " + xpBar.getMaxValue());
+        System.out.println("True XP " + playerXP + " XP from " + accessXP);
     }
     private int calculateUnitsQuantity(float waveWeight, int unitLevel, float creationRatio, UnitType type) {
         float unitsTotalWeight = waveWeight * creationRatio;
@@ -426,17 +459,17 @@ public class GameController {
         stage.addActor(reward, LayerType.GAME_UI);
     }
     private void animateLabelOnWaveChange() {
-        waveLabel.setFontScale(WAVE_LABEL_SCALE_MAX);
-        waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
-        float moveTarget = Gdx.graphics.getHeight() - waveLabel.getHeight() * 2;
-        timeline = TweenAnimation.animateWaveLabel(waveLabel, 5,
-                moveTarget, WAVE_LABEL_SCALE_MIN, tweenManager, new AnimationListener() {
-                    @Override
-                    public void onComplete() {
-                        animationTimelineList.remove(timeline);
-                    }
-                });
-        animationTimelineList.add(timeline);
+//        waveLabel.setFontScale(WAVE_LABEL_SCALE_MAX);
+//        waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
+//        float moveTarget = Gdx.graphics.getHeight() - waveLabel.getHeight() * 2;
+//        timeline = TweenAnimation.animateWaveLabel(waveLabel, 5,
+//                moveTarget, LABEL_SCALE, tweenManager, new AnimationListener() {
+//                    @Override
+//                    public void onComplete() {
+//                        animationTimelineList.remove(timeline);
+//                    }
+//                });
+//        animationTimelineList.add(timeline);
     }
     // endregion
 }

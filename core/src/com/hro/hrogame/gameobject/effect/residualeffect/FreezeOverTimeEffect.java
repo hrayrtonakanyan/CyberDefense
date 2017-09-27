@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
+import com.hro.hrogame.controller.SoundController;
 import com.hro.hrogame.data.effect.residualeffectdata.FreezeOverTimeEffectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.GameObjectAdapter;
@@ -30,8 +31,8 @@ public class FreezeOverTimeEffect extends Effect {
     // endregion
 
     // region C-tor
-    public FreezeOverTimeEffect(GameObject owner, EntityManager entityManager, FreezeOverTimeEffectData data) {
-        super(owner, entityManager);
+    public FreezeOverTimeEffect(GameObject owner, EntityManager entityManager, SoundController soundController, FreezeOverTimeEffectData data) {
+        super(owner, entityManager, soundController);
         this.data = data;
         addFreezeOverTimeEffectAnimation();
         makeEffectOvertime();

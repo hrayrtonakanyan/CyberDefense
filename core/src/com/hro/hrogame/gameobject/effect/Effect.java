@@ -2,11 +2,12 @@ package com.hro.hrogame.gameobject.effect;
 
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Align;
-import com.hro.hrogame.timer.Task;
-import com.hro.hrogame.timer.Timer;
 import com.hro.hrogame.controller.EntityManager;
+import com.hro.hrogame.controller.SoundController;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.sensor.UnitSensor;
+import com.hro.hrogame.timer.Task;
+import com.hro.hrogame.timer.Timer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public abstract class Effect extends GameObject {
     // region Instance fields
     private List<EffectListener> listeners = new ArrayList<>();
     protected EntityManager entityManager;
+    protected SoundController soundController;
     private Timer cooldownTimer = new Timer();
     protected GameObject owner;
     protected UnitSensor sensor;
@@ -25,9 +27,10 @@ public abstract class Effect extends GameObject {
     // endregion
 
     // region C-tor
-    public Effect(GameObject owner, EntityManager entityManager) {
+    public Effect(GameObject owner, EntityManager entityManager, SoundController soundController) {
         this.owner = owner;
         this.entityManager = entityManager;
+        this.soundController = soundController;
         setTouchable(Touchable.disabled);
     }
     // endregion

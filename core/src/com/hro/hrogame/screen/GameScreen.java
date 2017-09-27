@@ -9,16 +9,14 @@ import com.hro.hrogame.utils.Util;
 public class GameScreen extends ScreenAdapter {
 
     // region Instance fields
-    private HroGame game;
     private GameStage stage;
     private GameController gameController;
     // endregion
 
     // region C-tor
     public GameScreen(HroGame game) {
-        this.game = game;
         this.stage = game.stage;
-        gameController = new GameController(this.stage, game.tweenManager);
+        gameController = new GameController(this.stage, game.tweenManager, game.soundController);
     }
     // endregion
 

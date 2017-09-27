@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
+import com.hro.hrogame.controller.SoundController;
 import com.hro.hrogame.data.effect.residualeffectdata.BurnOverTimeEffectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.GameObjectAdapter;
@@ -32,8 +33,8 @@ public class BurnOverTimeEffect extends Effect {
     // endregion
 
     // region C-tor
-    public BurnOverTimeEffect(GameObject owner, EntityManager entityManager, BurnOverTimeEffectData data) {
-        super(owner, entityManager);
+    public BurnOverTimeEffect(GameObject owner, EntityManager entityManager, SoundController soundController, BurnOverTimeEffectData data) {
+        super(owner, entityManager, soundController);
         this.data = data;
         maxDamageAmount = data.maxDamageAmount.current;
         addBurnOverTimeEffectAnimation();

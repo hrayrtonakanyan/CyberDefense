@@ -11,6 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.HroGame;
+import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
+import com.hro.hrogame.controller.SoundController;
+import com.hro.hrogame.controller.SoundType;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
 import com.hro.hrogame.utils.Util;
@@ -20,21 +23,16 @@ import static com.hro.hrogame.constants.StringConstants.*;
 public class MenuScreen extends ScreenAdapter {
 
     // region Static fields
-    public static final float BUTTON_WIDTH = Gdx.graphics.getWidth() / 5;
-    public static final float BUTTON_HEIGHT = Gdx.graphics.getHeight() / 5;
+    public static final float MAIN_BUTTON_WIDTH = Gdx.graphics.getWidth() / 5;
+    public static final float MAIN_BUTTON_HEIGHT = Gdx.graphics.getHeight() / 5;
     public static final float FONT_SCALE = 2;
     // endregion
 
     // region Instance fields
     private HroGame game;
-    private TweenManager tweenManager;
     private GameStage stage;
-    private Button btnPlay;
-    private Button btnQuit;
-    private Button.ButtonStyle btnStyle;
-    private Label playButtonLabel;
-    private Label quitButtonLabel;
-    private Image background;
+    private TweenManager tweenManager;
+    private SoundController soundController;
     // endregion
 
     // region C-tor
@@ -42,47 +40,60 @@ public class MenuScreen extends ScreenAdapter {
         this.game = game;
         this.stage = game.stage;
         this.tweenManager = game.tweenManager;
+        this.soundController = game.soundController;
     }
     // endregion
 
-    // region Show and init
+    // region Lifecycle
     @Override
     public void show() {
-        initButtonStyle();
-        initButtonsLabels();
+        soundController.musicOn();
 
-        background = new Image(new Texture("background.png"));
+        Image background = new Image(new Texture("background.png"));
         background.setSize(stage.getWidth(), stage.getHeight());
         stage.addActor(background, LayerType.BACKGROUND);
 
-        btnPlay = new Button(btnStyle);
-        btnQuit = new Button(btnStyle);
+        createMainButtons();
+        createMusicButton();
+        createSoundButton();
+    }
+
+    @Override
+    public void render(float delta) {
+        Util.cleanScreen();
+        stage.act();
+        tweenManager.update(delta);
+        stage.draw();
+    }
+    // endregion
+
+    // region Create
+    private void createMainButtons() {
+        Image btnUnpressed = new Image(new Texture(BUTTON_UNPRESSED));
+        Image btnPressed = new Image(new Texture(BUTTON_PRESSED));
+        Button.ButtonStyle btnStyle = new Button.ButtonStyle(btnUnpressed.getDrawable(), btnPressed.getDrawable(), null);
+
+        Label playButtonLabel = new Label(PLAY_TITLE, skin);
+        Label quitButtonLabel = new Label(QUIT_TITLE, skin);
+        playButtonLabel.setFontScale(FONT_SCALE, FONT_SCALE);
+        quitButtonLabel.setFontScale(FONT_SCALE, FONT_SCALE);
+
+        Button btnPlay = new Button(btnStyle);
+        Button btnQuit = new Button(btnStyle);
         btnPlay.add(playButtonLabel);
         btnQuit.add(quitButtonLabel);
-        btnPlay.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        btnQuit.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        btnPlay.setSize(MAIN_BUTTON_WIDTH, MAIN_BUTTON_HEIGHT);
+        btnQuit.setSize(MAIN_BUTTON_WIDTH, MAIN_BUTTON_HEIGHT);
         btnPlay.setPosition(stage.getWidth() / 2, stage.getHeight() * 2 / 3, Align.center);
         btnQuit.setPosition(stage.getWidth() / 2, stage.getHeight() / 3, Align.center);
+
         stage.addActor(btnPlay, LayerType.MENU_UI);
         stage.addActor(btnQuit, LayerType.MENU_UI);
 
-        addButtonListeners();
-    }
-    private void initButtonStyle() {
-        Image btnUnpressed = new Image(new Texture(BUTTON_UNPRESSED));
-        Image btnPressed = new Image(new Texture(BUTTON_PRESSED));
-        btnStyle = new Button.ButtonStyle(btnUnpressed.getDrawable(), btnPressed.getDrawable(), null);
-    }
-    private void initButtonsLabels() {
-        playButtonLabel = new Label(PLAY_TITLE, skin);
-        quitButtonLabel = new Label(QUIT_TITLE, skin);
-        playButtonLabel.setFontScale(FONT_SCALE, FONT_SCALE);
-        quitButtonLabel.setFontScale(FONT_SCALE, FONT_SCALE);
-    }
-    private void addButtonListeners() {
         btnPlay.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                soundController.play(SoundType.CLICK);
                 stage.clear();
                 game.setScreen(new GameScreen(game));
             }
@@ -90,19 +101,46 @@ public class MenuScreen extends ScreenAdapter {
         btnQuit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                soundController.play(SoundType.CLICK);
                 Gdx.app.exit();
             }
         });
     }
-    // endregion
-
-    // region Render
-    @Override
-    public void render(float delta) {
-        Util.cleanScreen();
-        stage.act();
-        tweenManager.update(delta);
-        stage.draw();
+    private void createMusicButton() {
+        Image imageOn = new Image(new Texture(BTN_MUSIC_ON));
+        Image imageOff = new Image(new Texture(BTN_MUSIC_OFF));
+        Button.ButtonStyle btnStyle = new Button.ButtonStyle(imageOff.getDrawable(), imageOn.getDrawable(), imageOn.getDrawable());
+        Button btn = new Button(btnStyle);
+        btn.setSize(BTN_DIAMETER, BTN_DIAMETER);
+        btn.setPosition(stage.getWidth() - btn.getWidth(), btn.getHeight(), Align.center);
+        btn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                soundController.play(SoundType.CLICK);
+                if (soundController.isMusicOn()) soundController.musicOff();
+                else soundController.musicOn();
+                TweenAnimation.bounce(actor, tweenManager, null);
+            }
+        });
+        stage.addActor(btn, LayerType.MENU_UI);
+    }
+    private void createSoundButton() {
+        Image imageOn = new Image(new Texture(BTN_SOUND_ON));
+        Image imageOff = new Image(new Texture(BTN_SOUND_OFF));
+        Button.ButtonStyle btnStyle = new Button.ButtonStyle(imageOff.getDrawable(), imageOn.getDrawable(), imageOn.getDrawable());
+        Button btn = new Button(btnStyle);
+        btn.setSize(BTN_DIAMETER, BTN_DIAMETER);
+        btn.setPosition(stage.getWidth() - btn.getWidth(), btn.getHeight() * 3, Align.center);
+        btn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                soundController.play(SoundType.CLICK);
+                if (soundController.isSoundOn()) soundController.soundOff();
+                else soundController.soundOn();
+                TweenAnimation.bounce(actor, tweenManager, null);
+            }
+        });
+        stage.addActor(btn, LayerType.MENU_UI);
     }
     // endregion
 }

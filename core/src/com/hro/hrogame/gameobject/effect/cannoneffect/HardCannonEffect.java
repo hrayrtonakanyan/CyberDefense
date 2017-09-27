@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
+import com.hro.hrogame.controller.SoundController;
+import com.hro.hrogame.controller.SoundType;
 import com.hro.hrogame.data.bullet.BulletData;
 import com.hro.hrogame.data.effect.cannoneffectdata.CannonEffectData;
 import com.hro.hrogame.gameobject.GameObject;
@@ -37,8 +39,8 @@ public class HardCannonEffect extends CannonEffect {
     // endregion
 
     // region C-tor
-    public HardCannonEffect(GameObject owner, EntityManager entityManager, CannonEffectData data) {
-        super(owner, entityManager, data);
+    public HardCannonEffect(GameObject owner, EntityManager entityManager, SoundController soundController, CannonEffectData data) {
+        super(owner, entityManager, soundController, data);
     }
     // endregion
 
@@ -58,6 +60,7 @@ public class HardCannonEffect extends CannonEffect {
         bullet.addBulletListener(new BulletListener() {
             @Override
             public void onHit(List<GameObject> hitUnitList) {
+                soundController.play(SoundType.HARD_CANNONBALL);
                 for (final GameObject target : hitUnitList) {
                     target.takeDamage(owner, data.damage.current);
                 }
@@ -66,6 +69,7 @@ public class HardCannonEffect extends CannonEffect {
         GameStage stage = (GameStage) getStage();
         if (getStage() == null) throw new RuntimeException("Effect must be added to the stage to function and create bullets.");
         stage.addActor(bullet, LayerType.FOREGROUND);
+        soundController.play(SoundType.HARD_CANNON);
     }
     // endregion
 

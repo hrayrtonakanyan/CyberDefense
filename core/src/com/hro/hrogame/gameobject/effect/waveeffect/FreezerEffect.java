@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
+import com.hro.hrogame.controller.SoundController;
+import com.hro.hrogame.controller.SoundType;
 import com.hro.hrogame.data.bullet.BulletData;
 import com.hro.hrogame.data.effect.waveeffectdata.FreezerEffectData;
 import com.hro.hrogame.gameobject.GameObject;
@@ -36,8 +38,8 @@ public class FreezerEffect extends Effect {
     // endregion
 
     // region C-tor
-    public FreezerEffect(GameObject owner, EntityManager entityManager, FreezerEffectData data) {
-        super(owner, entityManager);
+    public FreezerEffect(GameObject owner, EntityManager entityManager, SoundController soundController, FreezerEffectData data) {
+        super(owner, entityManager, soundController);
         this.data = data;
         levelUpEffect(owner.getLevel());
         freezerBulletParticleEffect = new ParticleEffect();
@@ -69,6 +71,7 @@ public class FreezerEffect extends Effect {
         GameStage stage = (GameStage) getStage();
         if (getStage() == null) throw new RuntimeException("Effect must be added to the stage to function and create bullets.");
         stage.addActor(bullet, LayerType.FOREGROUND);
+        soundController.play(SoundType.FREEZER);
     }
     // endregion
 

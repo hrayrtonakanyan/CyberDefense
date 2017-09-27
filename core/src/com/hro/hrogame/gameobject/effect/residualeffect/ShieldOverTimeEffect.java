@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
+import com.hro.hrogame.controller.SoundController;
 import com.hro.hrogame.data.effect.residualeffectdata.ShieldOverTimeEffectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.GameObjectAdapter;
@@ -28,8 +29,8 @@ public class ShieldOverTimeEffect extends Effect {
     // endregion
 
     // region C-tor
-    public ShieldOverTimeEffect(GameObject owner, EntityManager entityManager, ShieldOverTimeEffectData data) {
-        super(owner, entityManager);
+    public ShieldOverTimeEffect(GameObject owner, EntityManager entityManager, SoundController soundController, ShieldOverTimeEffectData data) {
+        super(owner, entityManager, soundController);
         this.data = data;
         addShieldOverTimeEffectAnimation();
         makeEffectOvertime();

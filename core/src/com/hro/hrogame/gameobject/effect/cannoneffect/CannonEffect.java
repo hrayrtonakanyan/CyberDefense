@@ -3,6 +3,7 @@ package com.hro.hrogame.gameobject.effect.cannoneffect;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.controller.EntityManager;
+import com.hro.hrogame.controller.SoundController;
 import com.hro.hrogame.data.effect.cannoneffectdata.CannonEffectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.effect.Effect;
@@ -19,8 +20,8 @@ public abstract class CannonEffect extends Effect {
     // endregion
 
     // region C-tor
-    public CannonEffect(GameObject owner, EntityManager entityManager, CannonEffectData data) {
-        super(owner, entityManager);
+    public CannonEffect(GameObject owner, EntityManager entityManager, SoundController soundController, CannonEffectData data) {
+        super(owner, entityManager, soundController);
         this.data = data;
         firingPoint = new Vector2();
         levelUpEffect(owner.getLevel());

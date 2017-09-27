@@ -57,13 +57,15 @@ public class EntityFactory implements EntityManager {
 
     // region Instance fields
     private HashMap<PlayerRace, ArrayList<GameObject>> unitMap = new HashMap<>();
+    private SoundController soundController;
     // endregion
 
     // region C-tor
-    public EntityFactory() {
+    public EntityFactory(SoundController soundController) {
         for (PlayerRace race : PlayerRace.values()) {
             unitMap.put(race, new ArrayList<GameObject>());
         }
+        this.soundController = soundController;
     }
     // endregion
 
@@ -205,7 +207,7 @@ public class EntityFactory implements EntityManager {
         ProgressiveAttribute damage = new ProgressiveAttribute(SimpleCannonEffect.DAMAGE, SimpleCannonEffect.MAX_DAMAGE);
         ProgressiveAttribute targetLimit = new ProgressiveAttribute(SimpleCannonEffect.TARGET_LIMIT, SimpleCannonEffect.MAX_TARGET_LIMIT);
         CannonEffectData data = new CannonEffectData(SimpleCannonEffect.INITIAL_WEIGHT, cooldown, damage, targetLimit);
-        SimpleCannonEffect effect = new SimpleCannonEffect(owner, this, data);
+        SimpleCannonEffect effect = new SimpleCannonEffect(owner, this, soundController, data);
         CircleSensor sensor = (CircleSensor) createSensor(owner, CIRCLE_SENSOR);
         if (owner instanceof BaseUnit) sensor.setRadius(SimpleCannonEffect.SENSOR_RADIUS_FOR_BASE);
         else if (owner instanceof TankUnit) sensor.setRadius(SimpleCannonEffect.SENSOR_RADIUS_FOR_TANK);
@@ -217,7 +219,7 @@ public class EntityFactory implements EntityManager {
         ProgressiveAttribute damage = new ProgressiveAttribute(HardCannonEffect.DAMAGE, HardCannonEffect.MAX_DAMAGE);
         ProgressiveAttribute targetLimit = new ProgressiveAttribute(HardCannonEffect.TARGET_LIMIT, HardCannonEffect.MAX_TARGET_LIMIT);
         CannonEffectData data = new CannonEffectData(HardCannonEffect.INITIAL_WEIGHT, cooldown, damage, targetLimit);
-        HardCannonEffect effect = new HardCannonEffect(owner, this, data);
+        HardCannonEffect effect = new HardCannonEffect(owner, this, soundController, data);
         CircleSensor sensor = (CircleSensor) createSensor(owner, CIRCLE_SENSOR);
         if (owner instanceof BaseUnit) sensor.setRadius(HardCannonEffect.SENSOR_RADIUS_FOR_BASE);
         else if (owner instanceof TankUnit) sensor.setRadius(HardCannonEffect.SENSOR_RADIUS_FOR_TANK);
@@ -228,7 +230,7 @@ public class EntityFactory implements EntityManager {
         ProgressiveAttribute cooldown = new ProgressiveAttribute(HellFireEffect.COOLDOWN, HellFireEffect.MIN_COOLDOWN);
         ProgressiveAttribute damage = new ProgressiveAttribute(HellFireEffect.DAMAGE, HellFireEffect.MAX_DAMAGE);
         HellFireEffectData data = new HellFireEffectData(HellFireEffect.INITIAL_WEIGHT, cooldown, damage);
-        HellFireEffect effect = new HellFireEffect(owner, this, data);
+        HellFireEffect effect = new HellFireEffect(owner, this, soundController, data);
         UnitSensor sensor;
         if (owner instanceof BaseUnit) {
             sensor = createSensor(owner, RECTANGLE_SENSOR);
@@ -243,7 +245,7 @@ public class EntityFactory implements EntityManager {
     private FreezerEffect createFreezerEffect(GameObject owner) {
         ProgressiveAttribute cooldown = new ProgressiveAttribute(FreezerEffect.COOLDOWN, FreezerEffect.MIN_COOLDOWN);
         FreezerEffectData data = new FreezerEffectData(FreezerEffect.INITIAL_WEIGHT, cooldown);
-        FreezerEffect effect = new FreezerEffect(owner, this, data);
+        FreezerEffect effect = new FreezerEffect(owner, this, soundController, data);
         UnitSensor sensor;
         if (owner instanceof BaseUnit) {
             sensor = createSensor(owner, RECTANGLE_SENSOR);
@@ -258,7 +260,7 @@ public class EntityFactory implements EntityManager {
     private StunnerEffect createStunnerEffect(GameObject owner) {
         ProgressiveAttribute cooldown = new ProgressiveAttribute(StunnerEffect.COOLDOWN, StunnerEffect.MIN_COOLDOWN);
         StunnerEffectData data = new StunnerEffectData(StunnerEffect.INITIAL_WEIGHT, cooldown);
-        StunnerEffect effect = new StunnerEffect(owner, this, data);
+        StunnerEffect effect = new StunnerEffect(owner, this, soundController, data);
         UnitSensor sensor;
         if (owner instanceof BaseUnit) {
             sensor = createSensor(owner, RECTANGLE_SENSOR);
@@ -273,7 +275,7 @@ public class EntityFactory implements EntityManager {
     private AbsorbShieldEffect createAbsorbShieldEffect(GameObject owner) {
         ProgressiveAttribute cooldown = new ProgressiveAttribute(AbsorbShieldEffect.COOLDOWN, AbsorbShieldEffect.MIN_COOLDOWN);
         AbsorbShieldEffectData data = new AbsorbShieldEffectData(AbsorbShieldEffect.INITIAL_WEIGHT, cooldown);
-        AbsorbShieldEffect effect = new AbsorbShieldEffect(owner, this, data);
+        AbsorbShieldEffect effect = new AbsorbShieldEffect(owner, this, soundController, data);
         UnitSensor sensor;
         if (owner instanceof BaseUnit) {
             sensor = createSensor(owner, RECTANGLE_SENSOR);
@@ -288,7 +290,7 @@ public class EntityFactory implements EntityManager {
     private SelfDestructionEffect createSelfDestructionEffect(GameObject owner) {
         ProgressiveAttribute damage = new ProgressiveAttribute(SelfDestructionEffect.DAMAGE, SelfDestructionEffect.MAX_DAMAGE);
         SelfDestructionEffectData data = new SelfDestructionEffectData(SelfDestructionEffect.INITIAL_WEIGHT, damage);
-        SelfDestructionEffect effect = new SelfDestructionEffect(owner, this, data);
+        SelfDestructionEffect effect = new SelfDestructionEffect(owner, this, soundController, data);
         UnitSensor sensor = createSensor(owner, CIRCLE_SENSOR);
         ((CircleSensor) sensor).setRadius(SelfDestructionEffect.SENSOR_RADIUS_FOR_RAM);
         effect.setSensor(sensor);
@@ -301,7 +303,7 @@ public class EntityFactory implements EntityManager {
                                                                BurnOverTimeEffect.MAX_DAMAGE);
         ProgressiveAttribute totalDamage = new ProgressiveAttribute(BurnOverTimeEffect.TOTAL_DAMAGE, BurnOverTimeEffect.MAX_TOTAL_DAMAGE);
         BurnOverTimeEffectData data = new BurnOverTimeEffectData(cooldown, damage, totalDamage);
-        return new BurnOverTimeEffect(owner, this, data);
+        return new BurnOverTimeEffect(owner, this, soundController, data);
     }
     private FreezeOverTimeEffect createFreezeOverTimeEffect(GameObject owner) {
         ProgressiveAttribute duration = new ProgressiveAttribute(FreezeOverTimeEffect.DURATION,
@@ -309,17 +311,17 @@ public class EntityFactory implements EntityManager {
         ProgressiveAttribute speedRatio = new ProgressiveAttribute(FreezeOverTimeEffect.SPEED_RATIO,
                                                                    FreezeOverTimeEffect.MIN_SPEED_RATIO);
         FreezeOverTimeEffectData data = new FreezeOverTimeEffectData(duration, speedRatio);
-        return new FreezeOverTimeEffect(owner, this, data);
+        return new FreezeOverTimeEffect(owner, this, soundController, data);
     }
     private StunOverTimeEffect createStunOverTimeEffect(GameObject owner) {
         ProgressiveAttribute duration = new ProgressiveAttribute(StunOverTimeEffect.DURATION, StunOverTimeEffect.MAX_DURATION);
         StunOverTimeEffectData data = new StunOverTimeEffectData(duration);
-        return new StunOverTimeEffect(owner, this, data);
+        return new StunOverTimeEffect(owner, this, soundController, data);
     }
     private ShieldOverTimeEffect createShieldOverTimeEffect(GameObject owner) {
         ProgressiveAttribute duration = new ProgressiveAttribute(ShieldOverTimeEffect.DURATION, ShieldOverTimeEffect.MAX_DURATION);
         ShieldOverTimeEffectData data = new ShieldOverTimeEffectData(duration);
-        return new ShieldOverTimeEffect(owner, this, data);
+        return new ShieldOverTimeEffect(owner, this, soundController, data);
     }
     @Override
     public UnitSensor createSensor(GameObject owner, SensorType type) {

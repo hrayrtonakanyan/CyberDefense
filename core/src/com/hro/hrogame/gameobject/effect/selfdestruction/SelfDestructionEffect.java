@@ -2,6 +2,7 @@ package com.hro.hrogame.gameobject.effect.selfdestruction;
 
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
+import com.hro.hrogame.controller.SoundController;
 import com.hro.hrogame.data.effect.selfdestructioneffectdata.SelfDestructionEffectData;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.effect.Effect;
@@ -24,8 +25,8 @@ public class SelfDestructionEffect extends Effect {
     // endregion
 
     // region C-tor
-    public SelfDestructionEffect(GameObject owner, EntityManager entityManager, SelfDestructionEffectData data) {
-        super(owner, entityManager);
+    public SelfDestructionEffect(GameObject owner, EntityManager entityManager, SoundController soundController, SelfDestructionEffectData data) {
+        super(owner, entityManager, soundController);
         this.data = data;
         levelUpEffect(owner.getLevel());
         makeAutoExecutable();

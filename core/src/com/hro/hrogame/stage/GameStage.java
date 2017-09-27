@@ -54,6 +54,7 @@ public class GameStage extends Stage {
     // region Stage functionality
     @Override
     public void clear() {
+        setAlpha(1);
         Collection<Layer> values = layers.values();
         for (Layer layer : values) {
             layer.clear();

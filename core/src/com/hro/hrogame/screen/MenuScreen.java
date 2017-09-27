@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.HroGame;
 import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
+import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.SoundController;
 import com.hro.hrogame.controller.SoundType;
 import com.hro.hrogame.stage.GameStage;
@@ -21,12 +22,6 @@ import com.hro.hrogame.utils.Util;
 import static com.hro.hrogame.constants.StringConstants.*;
 
 public class MenuScreen extends ScreenAdapter {
-
-    // region Static fields
-    public static final float MAIN_BUTTON_WIDTH = Gdx.graphics.getWidth() / 5;
-    public static final float MAIN_BUTTON_HEIGHT = Gdx.graphics.getHeight() / 5;
-    public static final float FONT_SCALE = 2;
-    // endregion
 
     // region Instance fields
     private HroGame game;
@@ -75,15 +70,15 @@ public class MenuScreen extends ScreenAdapter {
 
         Label playButtonLabel = new Label(PLAY_TITLE, skin);
         Label quitButtonLabel = new Label(QUIT_TITLE, skin);
-        playButtonLabel.setFontScale(FONT_SCALE, FONT_SCALE);
-        quitButtonLabel.setFontScale(FONT_SCALE, FONT_SCALE);
+        playButtonLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
+        quitButtonLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
 
         Button btnPlay = new Button(btnStyle);
         Button btnQuit = new Button(btnStyle);
         btnPlay.add(playButtonLabel);
         btnQuit.add(quitButtonLabel);
-        btnPlay.setSize(MAIN_BUTTON_WIDTH, MAIN_BUTTON_HEIGHT);
-        btnQuit.setSize(MAIN_BUTTON_WIDTH, MAIN_BUTTON_HEIGHT);
+        btnPlay.setSize(ParametersConstants.MAIN_BUTTON_WIDTH, ParametersConstants.MAIN_BUTTON_HEIGHT);
+        btnQuit.setSize(ParametersConstants.MAIN_BUTTON_WIDTH, ParametersConstants.MAIN_BUTTON_HEIGHT);
         btnPlay.setPosition(stage.getWidth() / 2, stage.getHeight() * 2 / 3, Align.center);
         btnQuit.setPosition(stage.getWidth() / 2, stage.getHeight() / 3, Align.center);
 

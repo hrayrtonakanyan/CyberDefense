@@ -16,7 +16,7 @@ public class GameScreen extends ScreenAdapter {
     // region C-tor
     public GameScreen(HroGame game) {
         this.stage = game.stage;
-        gameController = new GameController(this.stage, game.tweenManager, game.soundController);
+        gameController = new GameController(game);
     }
     // endregion
 

@@ -2,6 +2,7 @@ package com.hro.hrogame.controller;
 
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.TweenManager;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.hro.hrogame.HroGame;
 import com.hro.hrogame.animation.particleanimation.AnimationListener;
 import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
 import com.hro.hrogame.constants.ParametersConstants;
@@ -28,6 +30,8 @@ import com.hro.hrogame.gameobject.unit.TankUnit;
 import com.hro.hrogame.gameobject.unit.UnitType;
 import com.hro.hrogame.primitives.Point;
 import com.hro.hrogame.primitives.ProgressiveAttribute;
+import com.hro.hrogame.screen.GameScreen;
+import com.hro.hrogame.screen.MenuScreen;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
 import com.hro.hrogame.timer.Task;
@@ -55,6 +59,7 @@ public class GameController {
 
     // region Instance fields
     private Random random = new Random();
+    private HroGame game;
     private GameStage stage;
     private Label goldLabel;
     private Label levelLabel;
@@ -80,10 +85,11 @@ public class GameController {
     // endregion
 
     // region C-tor
-    public GameController(GameStage stage, TweenManager tweenManager, SoundController soundController) {
-        this.stage = stage;
-        this.tweenManager = tweenManager;
-        this.soundController = soundController;
+    public GameController(HroGame game) {
+        this.game = game;
+        this.stage = game.stage;
+        this.tweenManager = game.tweenManager;
+        this.soundController = game.soundController;
         init();
     }
     // endregion
@@ -188,6 +194,60 @@ public class GameController {
         });
         stage.addActor(btn, LayerType.MENU_UI);
     }
+    private void createLooseDialog() {
+        Image btnUnpressed = new Image(new Texture(BUTTON_UNPRESSED));
+        Image btnPressed = new Image(new Texture(BUTTON_PRESSED));
+        Button.ButtonStyle btnStyle = new Button.ButtonStyle(btnUnpressed.getDrawable(), btnPressed.getDrawable(), null);
+
+        Label labelRestart = new Label(RESTART_TITLE, skin);
+        Label labelMainMenu = new Label(MAIN_MENU_TITLE, skin);
+        Label labelQuit = new Label(QUIT_TITLE, skin);
+        labelRestart.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
+        labelMainMenu.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
+        labelQuit.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
+
+        Button btnRestart = new Button(btnStyle);
+        Button btnMainMenu = new Button(btnStyle);
+        Button btnQuit = new Button(btnStyle);
+        btnRestart.add(labelRestart);
+        btnMainMenu.add(labelMainMenu);
+        btnQuit.add(labelQuit);
+        btnRestart.setSize(ParametersConstants.MAIN_BUTTON_WIDTH, ParametersConstants.MAIN_BUTTON_HEIGHT);
+        btnMainMenu.setSize(ParametersConstants.MAIN_BUTTON_WIDTH, ParametersConstants.MAIN_BUTTON_HEIGHT);
+        btnQuit.setSize(ParametersConstants.MAIN_BUTTON_WIDTH, ParametersConstants.MAIN_BUTTON_HEIGHT);
+        btnRestart.setPosition(stage.getWidth() / 2, stage.getHeight() - btnRestart.getHeight(), Align.center);
+        btnMainMenu.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
+        btnQuit.setPosition(stage.getWidth() / 2, btnRestart.getHeight(), Align.center);
+
+        btnRestart.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                soundController.play(SoundType.CLICK);
+                soundController.musicOn();
+                stage.clear();
+                game.setScreen(new GameScreen(game));
+            }
+        });
+        btnMainMenu.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                soundController.play(SoundType.CLICK);
+                stage.clear();
+                game.setScreen(new MenuScreen(game));
+            }
+        });
+        btnQuit.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                soundController.play(SoundType.CLICK);
+                Gdx.app.exit();
+            }
+        });
+
+        stage.addActor(btnRestart, LayerType.MENU_UI);
+        stage.addActor(btnMainMenu, LayerType.MENU_UI);
+        stage.addActor(btnQuit, LayerType.MENU_UI);
+    }
     // endregion
 
     // region Update
@@ -222,10 +282,21 @@ public class GameController {
             public void onKill(GameObject dyingUnit, GameObject killerUnit) {
                 playerXP += dyingUnit.getWeight() * PLAYER_PROGRESS_RATIO;
                 xpBar.setValue(playerXP);
+
+                int gold = dyingUnit.getReward();
+                earnGold(gold);
+                pushOnDieTweenAnimation(gold, dyingUnit);
             }
             @Override
             public void onLevelUp(GameObject gameObject, int level) {
                 levelLabel.setText("Lvl: " + level);
+            }
+            @Override
+            public void onDie(GameObject dyingUnit, GameObject killerUnit) {
+                stage.setAlpha(0.5f);
+                pause();
+                soundController.musicOff();
+                createLooseDialog();
             }
         });
         stage.addActor(baseUnit, LayerType.FOREGROUND);
@@ -276,9 +347,6 @@ public class GameController {
                 @Override
                 public void onDie(GameObject dyingUnit, GameObject killerUnit) {
                     aliveUnitsQuantity--;
-                    int gold = dyingUnit.getReward();
-                    earnGold(gold);
-                    pushOnDieTweenAnimation(gold, dyingUnit);
                 }
             });
             enemiesWaitList.add(unit);
@@ -293,9 +361,6 @@ public class GameController {
                 @Override
                 public void onDie(GameObject dyingUnit, GameObject killerUnit) {
                     aliveUnitsQuantity--;
-                    int gold = dyingUnit.getReward();
-                    earnGold(gold);
-                    pushOnDieTweenAnimation(gold, dyingUnit);
                 }
             });
             enemiesWaitList.add(unit);

@@ -5,12 +5,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.HroGame;
+import com.hro.hrogame.animation.particleanimation.AnimationListener;
 import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.SoundController;
@@ -105,16 +107,22 @@ public class MenuScreen extends ScreenAdapter {
         Image imageOn = new Image(new Texture(BTN_MUSIC_ON));
         Image imageOff = new Image(new Texture(BTN_MUSIC_OFF));
         Button.ButtonStyle btnStyle = new Button.ButtonStyle(imageOn.getDrawable(), imageOff.getDrawable(), imageOff.getDrawable());
-        Button btn = new Button(btnStyle);
-        btn.setSize(BTN_DIAMETER, BTN_DIAMETER);
+        final Button btn = new Button(btnStyle);
+        btn.setSize(ParametersConstants.BTN_DIAMETER, ParametersConstants.BTN_DIAMETER);
         btn.setPosition(stage.getWidth() - btn.getWidth(), btn.getHeight(), Align.center);
         btn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                btn.setTouchable(Touchable.disabled);
                 soundController.play(SoundType.CLICK);
                 if (soundController.isMusicOn()) soundController.musicOff();
                 else soundController.musicOn();
-                TweenAnimation.bounce(actor, tweenManager, null);
+                TweenAnimation.bounce(actor, tweenManager, new AnimationListener() {
+                    @Override
+                    public void onComplete() {
+                        btn.setTouchable(Touchable.enabled);
+                    }
+                });
             }
         });
         stage.addActor(btn, LayerType.MENU_UI);
@@ -123,16 +131,22 @@ public class MenuScreen extends ScreenAdapter {
         Image imageOn = new Image(new Texture(BTN_SOUND_ON));
         Image imageOff = new Image(new Texture(BTN_SOUND_OFF));
         Button.ButtonStyle btnStyle = new Button.ButtonStyle(imageOn.getDrawable(), imageOff.getDrawable(), imageOff.getDrawable());
-        Button btn = new Button(btnStyle);
-        btn.setSize(BTN_DIAMETER, BTN_DIAMETER);
+        final Button btn = new Button(btnStyle);
+        btn.setSize(ParametersConstants.BTN_DIAMETER, ParametersConstants.BTN_DIAMETER);
         btn.setPosition(stage.getWidth() - btn.getWidth(), btn.getHeight() * 3, Align.center);
         btn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                btn.setTouchable(Touchable.disabled);
                 soundController.play(SoundType.CLICK);
                 if (soundController.isSoundOn()) soundController.soundOff();
                 else soundController.soundOn();
-                TweenAnimation.bounce(actor, tweenManager, null);
+                TweenAnimation.bounce(actor, tweenManager, new AnimationListener() {
+                    @Override
+                    public void onComplete() {
+                        btn.setTouchable(Touchable.enabled);
+                    }
+                });
             }
         });
         stage.addActor(btn, LayerType.MENU_UI);

@@ -43,7 +43,7 @@ public class StunOverTimeEffect extends Effect {
     private void addAnimation() {
         ParticleEffect particleEffect = new ParticleEffect();
         particleEffect.load(Gdx.files.internal("stun_over_time"), Gdx.files.internal(""));
-//        adjustParticleEffectSize(particleEffect);
+        adjustParticleEffectSize(particleEffect);
         animation = new ParticleAnimation(particleEffect);
         animation.setPosition(owner.getX(Align.center), owner.getY(Align.center), Align.center);
         animation.start();
@@ -51,7 +51,7 @@ public class StunOverTimeEffect extends Effect {
     }
     private void adjustParticleEffectSize(ParticleEffect particleEffect) {
         for (ParticleEmitter emitter : particleEffect.getEmitters()) {
-            emitter.getSpawnWidth().setHigh(owner.getWidth());
+            emitter.getSpawnWidth().setHigh(owner.getHeight());
             emitter.getSpawnHeight().setHigh(owner.getHeight());
         }
     }

@@ -1,9 +1,12 @@
 package com.hro.hrogame.filter;
 
 import com.hro.hrogame.gameobject.GameObject;
+import com.hro.hrogame.primitives.Point;
 import com.hro.hrogame.sensor.UnitSensor;
 import com.hro.hrogame.utils.Util;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ClosestUnitFilter extends UnitFilter {
@@ -24,13 +27,26 @@ public class ClosestUnitFilter extends UnitFilter {
         return filter(unitList, unitList.size());
     }
     private List<GameObject> filter(List<GameObject> unitList, int unitLimit) {
-        List<GameObject> filteredList = Util.closestGameObjectList(owner.getShape().getCenterPoint(), unitList);
+        List<GameObject> filteredList = defineClosestGameObjectList(owner.getShape().getCenterPoint(), unitList);
         removeDeadUnits(unitList);
         if (unitLimit >= filteredList.size()) return filteredList;
         while (filteredList.size() > unitLimit) {
             filteredList.remove(unitLimit);
         }
         return filteredList;
+    }
+    private List<GameObject> defineClosestGameObjectList(final Point self, List<GameObject> gameObjectList) {
+        Collections.sort(gameObjectList, new Comparator<GameObject>() {
+            @Override
+            public int compare(GameObject o1, GameObject o2) {
+                float d1 = Util.calculateDistance(self, o1);
+                float d2 = Util.calculateDistance(self, o2);
+                if (d1 > d2) return 1;
+                if (d1 < d2) return -1;
+                return 0;
+            }
+        });
+        return gameObjectList;
     }
     // endregion
 

@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.constants.StringConstants;
 import com.hro.hrogame.gameobject.effect.EffectType;
 import com.hro.hrogame.stage.GameStage;
@@ -20,11 +21,11 @@ public class EffectDialog extends Group {
 
     // region Static fields
     public static final float WIDTH = Gdx.graphics.getWidth() / 3;
-    public static final float HEIGHT = Gdx.graphics.getHeight() / 3;
+    public static final float HEIGHT = Gdx.graphics.getHeight() / 2;
     public static final float BUTTON_WIDTH = WIDTH / 5;
-    public static final float BUTTON_HEIGHT = HEIGHT / 5;
+    public static final float BUTTON_HEIGHT = HEIGHT / 6;
     public static final float BUTTON_WIDTH_PURCHASED = BUTTON_WIDTH * 2;
-    public static final float PADDING = 10;
+    public static final float PADDING = Gdx.graphics.getWidth() / 80;
 
     public static final String HARD_CANNON_TITLE = "Hard Cannon";
     public static final String FREEZER_TITLE = "Freezer";
@@ -178,6 +179,7 @@ public class EffectDialog extends Group {
         // region Init
         private void init() {
             label = new Label(effectName, getSkin());
+            label.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
             label.setTouchable(Touchable.disabled);
             createButton();
             add(label).expand().left().padLeft(PADDING);
@@ -190,6 +192,7 @@ public class EffectDialog extends Group {
                                                                     btnUnpressed.getDrawable(),
                                                                     btnUnpressed.getDrawable());
             buttonLabel = new Label(price + "", getSkin());
+            buttonLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
             button = new Button(buttonStyle);
             button.add(buttonLabel);
         }

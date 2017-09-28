@@ -2,17 +2,19 @@ package com.hro.hrogame.gameobject;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.animation.particleanimation.AnimationListener;
 import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
 import com.hro.hrogame.constants.ParametersConstants;
-import com.hro.hrogame.constants.StringConstants;
 import com.hro.hrogame.data.gameobject.GameObjectData;
 import com.hro.hrogame.gameobject.effect.Effect;
 import com.hro.hrogame.gameobject.effect.EffectListener;
@@ -74,11 +76,11 @@ public abstract class GameObject extends Entity {
         }
     }
     private void addHealthBar(float health) {
-        healthBar = new ProgressBar(0, health, 1, false, StringConstants.skin);
-        healthBar.setSize(60, 10);
+        int width = Gdx.graphics.getWidth() / 10;
+        healthBar = new ProgressBar(0, health, 1, false, createHealthBarStyle());
+        healthBar.setSize(width, 0);
         healthBar.setValue(health);
         healthBar.setAnimateDuration(0.2f);
-        healthBar.setColor(Color.GREEN);
         addGameObjectAdapter(new GameObjectAdapter() {
             @Override
             public void onSizeChange(GameObject gameObject) {
@@ -87,15 +89,39 @@ public abstract class GameObject extends Entity {
             @Override
             public void onTakeDamage(float damage, GameObject damagedUnit) {
                 healthBar.setValue(healthBar.getValue() - damage);
-                if (healthBar.getValue() <= healthBar.getMaxValue() / 2) healthBar.setColor(Color.ORANGE);
-                if (healthBar.getValue() <= healthBar.getMaxValue() / 4) healthBar.setColor(Color.RED);
             }
             @Override
             public void onLevelUp(GameObject gameObject, int level) {
-                if (gameObject.healthBar.getValue() > gameObject.healthBar.getValue() / 2) healthBar.setColor(Color.GREEN);
+                healthBar.setValue(healthBar.getMaxValue());
             }
         });
         addActor(healthBar);
+    }
+    private ProgressBar.ProgressBarStyle createHealthBarStyle() {
+        int height = Gdx.graphics.getHeight() / 100;
+        Pixmap backgroundPixmap = new Pixmap(10, height, Pixmap.Format.RGB888);
+        backgroundPixmap.setColor(Color.RED);
+        backgroundPixmap.fill();
+        TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(backgroundPixmap)));
+        backgroundPixmap.dispose();
+
+        Pixmap knobPixmap = new Pixmap(0, height, Pixmap.Format.RGB888);
+        knobPixmap.setColor(Color.GREEN);
+        knobPixmap.fill();
+        TextureRegionDrawable knobDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(knobPixmap)));
+        knobPixmap.dispose();
+
+        Pixmap knobBeforePixmap = new Pixmap(10, height, Pixmap.Format.RGB888);
+        knobBeforePixmap.setColor(Color.GREEN);
+        knobBeforePixmap.fill();
+        TextureRegionDrawable knobBeforeDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(knobBeforePixmap)));
+        knobBeforePixmap.dispose();
+
+        ProgressBar.ProgressBarStyle style = new ProgressBar.ProgressBarStyle();
+        style.background = backgroundDrawable;
+        style.knob = knobDrawable;
+        style.knobBefore = knobBeforeDrawable;
+        return style;
     }
     private void initLevelUpAnimation() {
         ParticleEffect particleEffect = new ParticleEffect();

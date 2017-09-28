@@ -4,7 +4,9 @@ import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,11 +17,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.HroGame;
 import com.hro.hrogame.animation.particleanimation.AnimationListener;
 import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
 import com.hro.hrogame.constants.ParametersConstants;
+import com.hro.hrogame.constants.StringConstants;
 import com.hro.hrogame.gameobject.GameObject;
 import com.hro.hrogame.gameobject.GameObjectAdapter;
 import com.hro.hrogame.gameobject.PlayerRace;
@@ -49,7 +53,6 @@ import static com.hro.hrogame.constants.StringConstants.*;
 public class GameController {
 
     // region Static fields
-    public static final float LABEL_SCALE = 1.5f;
     public static final float WAVE_LABEL_SCALE_MAX = 4;
 
     public static final float GAME_PROGRESS_RATIO = 1;
@@ -137,39 +140,67 @@ public class GameController {
         createPauseButton();
     }
     private void createGoldLabel() {
-        Image coin = new Image(new Texture("coin.png"));
-        coin.setSize(GOLD_LABEL_COIN_DIAMETER, GOLD_LABEL_COIN_DIAMETER);
-        coin.setPosition(coin.getWidth(), stage.getHeight() - coin.getHeight() * 2);
+        Image coin = new Image(new Texture(StringConstants.COIN));
+        coin.setSize(ParametersConstants.COIN_DIAMETER, ParametersConstants.COIN_DIAMETER);
+        coin.setPosition(coin.getWidth(), stage.getHeight() - coin.getHeight(), Align.center);
         goldLabel = new Label(" " + playerGold, skin);
-        goldLabel.setFontScale(LABEL_SCALE, LABEL_SCALE);
         goldLabel.setPosition(coin.getX() + coin.getWidth(), coin.getY());
+        goldLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
         stage.addActor(coin, LayerType.GAME_MENU_UI);
         stage.addActor(goldLabel, LayerType.GAME_MENU_UI);
     }
     private void createLevelLabel() {
         levelLabel = new Label("Lvl: " + 1, skin);
-        levelLabel.setFontScale(LABEL_SCALE, LABEL_SCALE);
-        levelLabel.setPosition(goldLabel.getX() + goldLabel.getWidth() + levelLabel.getWidth(), goldLabel.getY());
+        levelLabel.setPosition(goldLabel.getX() + Gdx.graphics.getWidth() / 4, goldLabel.getY());
+        levelLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
         stage.addActor(levelLabel, LayerType.GAME_MENU_UI);
     }
     private void createXPBar() {
         Label xpLabel = new Label("XP: ", skin);
         xpLabel.setScale(1.5f, 1.5f);
-        xpLabel.setPosition(levelLabel.getX() + levelLabel.getWidth() * 2, levelLabel.getY());
-        xpLabel.setFontScale(LABEL_SCALE, LABEL_SCALE);
-        xpBar = new ProgressBar(0, accessXP, 1, false, skin);
-        xpBar.setSize(150, GOLD_LABEL_COIN_DIAMETER);
-        xpBar.setPosition(xpLabel.getX() + xpLabel.getWidth() * 2, xpLabel.getY());
+        xpLabel.setPosition(levelLabel.getX() + Gdx.graphics.getWidth() / 8, levelLabel.getY());
+        xpLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
+
+        xpBar = new ProgressBar(0, accessXP, 1, false, createHealthBarStyle());
+        float width = Gdx.graphics.getWidth() / 4;
+        xpBar.setSize(width, ParametersConstants.COIN_DIAMETER);
+        xpBar.setPosition(xpLabel.getX() + stage.getWidth() / 20 + xpBar.getWidth() / 2,
+                          stage.getHeight() - xpBar.getHeight(), Align.center);
         xpBar.setValue(0);
         xpBar.setAnimateDuration(0.2f);
-        xpBar.setColor(Color.GOLD);
         stage.addActor(xpLabel, LayerType.GAME_MENU_UI);
         stage.addActor(xpBar, LayerType.GAME_MENU_UI);
     }
+    private ProgressBar.ProgressBarStyle createHealthBarStyle() {
+        int height = (int) ParametersConstants.COIN_DIAMETER / 2;
+        Pixmap backgroundPixmap = new Pixmap(10, height, Pixmap.Format.RGB888);
+        backgroundPixmap.setColor(Color.LIGHT_GRAY);
+        backgroundPixmap.fill();
+        TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(backgroundPixmap)));
+        backgroundPixmap.dispose();
+
+        Pixmap knobPixmap = new Pixmap(0, height, Pixmap.Format.RGB888);
+        knobPixmap.setColor(Color.CORAL);
+        knobPixmap.fill();
+        TextureRegionDrawable knobDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(knobPixmap)));
+        knobPixmap.dispose();
+
+        Pixmap knobBeforePixmap = new Pixmap(10, height, Pixmap.Format.RGB888);
+        knobBeforePixmap.setColor(Color.CORAL);
+        knobBeforePixmap.fill();
+        TextureRegionDrawable knobBeforeDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(knobBeforePixmap)));
+        knobBeforePixmap.dispose();
+
+        ProgressBar.ProgressBarStyle style = new ProgressBar.ProgressBarStyle();
+        style.background = backgroundDrawable;
+        style.knob = knobDrawable;
+        style.knobBefore = knobBeforeDrawable;
+        return style;
+    }
     private void createWaveLabel() {
         waveLabel = new Label("Wave " + 1, skin);
-        waveLabel.setFontScale(LABEL_SCALE, LABEL_SCALE);
-        waveLabel.setPosition(xpBar.getX() + xpBar.getWidth() + waveLabel.getWidth(), xpBar.getY());
+        waveLabel.setPosition(xpBar.getX() + xpBar.getWidth() + waveLabel.getWidth(), levelLabel.getY());
+        waveLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
         stage.addActor(waveLabel, LayerType.GAME_MENU_UI);
     }
     private void createPauseButton() {
@@ -177,11 +208,12 @@ public class GameController {
         Image imagePause = new Image(new Texture(BTN_PAUSE));
         Button.ButtonStyle btnStyle = new Button.ButtonStyle(imagePause.getDrawable(), imagePlay.getDrawable(), imagePlay.getDrawable());
         btnPause = new Button(btnStyle);
-        btnPause.setSize(BTN_DIAMETER, BTN_DIAMETER);
+        btnPause.setSize(ParametersConstants.BTN_DIAMETER, ParametersConstants.BTN_DIAMETER);
         btnPause.setPosition(stage.getWidth() - btnPause.getWidth(), stage.getHeight() - btnPause.getHeight(), Align.center);
         btnPause.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                btnPause.setTouchable(Touchable.disabled);
                 soundController.play(SoundType.CLICK);
                 if (isPaused) {
                     soundController.musicResume();
@@ -191,7 +223,12 @@ public class GameController {
                     soundController.musicPause();
                     pause();
                 }
-                TweenAnimation.bounce(actor, tweenManager, null);
+                TweenAnimation.bounce(actor, tweenManager, new AnimationListener() {
+                    @Override
+                    public void onComplete() {
+                        btnPause.setTouchable(Touchable.enabled);
+                    }
+                });
             }
         });
         stage.addActor(btnPause, LayerType.GAME_MENU_UI);
@@ -536,7 +573,7 @@ public class GameController {
         float moveTargetY = waveLabel.getY();
         waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
         timeline = TweenAnimation.animateWaveLabel(waveLabel, 5,
-                moveTargetX, moveTargetY, LABEL_SCALE, tweenManager, new AnimationListener() {
+                moveTargetX, moveTargetY, ParametersConstants.FONT_SCALE, tweenManager, new AnimationListener() {
                     @Override
                     public void onComplete() {
                         animationTimelineList.remove(timeline);

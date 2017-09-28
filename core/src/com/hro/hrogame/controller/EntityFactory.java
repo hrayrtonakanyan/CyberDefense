@@ -139,7 +139,7 @@ public class EntityFactory implements EntityManager {
         GameObjectData data = new GameObjectData(level, speed, health, BaseUnit.TEXTURE_PATH);
         BaseUnit unit = new BaseUnit(data);
         unit.setSize(BaseUnit.WIDTH, BaseUnit.HEIGHT);
-        unit.addEffect(createEffect(unit, EffectType.FREEZER));
+        unit.addEffect(createEffect(unit, EffectType.SIMPLE_CANNON));
         unit.setPlayerRace(race);
         unit.addGameObjectAdapter(createEntityFactoryAdapter());
         addUnitToUnitMap(unit);

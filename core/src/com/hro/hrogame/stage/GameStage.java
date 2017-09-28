@@ -3,6 +3,7 @@ package com.hro.hrogame.stage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -55,6 +56,7 @@ public class GameStage extends Stage {
     @Override
     public void clear() {
         setAlpha(1);
+        setTouchable(Touchable.enabled);
         Collection<Layer> values = layers.values();
         for (Layer layer : values) {
             layer.clear();
@@ -63,7 +65,15 @@ public class GameStage extends Stage {
     public void setAlpha(float alpha) {
         Collection<Layer> values = layers.values();
         for (Layer layer : values) {
+            if (layer.getName().equals(LayerType.MENU_UI.toString())) continue;
             layer.getColor().a = alpha;
+        }
+    }
+    public void setTouchable(Touchable influence) {
+        Collection<Layer> values = layers.values();
+        for (Layer layer : values) {
+            if (layer.getName().equals(LayerType.MENU_UI.toString())) continue;
+            layer.setTouchable(influence);
         }
     }
     public void pauseGame() {

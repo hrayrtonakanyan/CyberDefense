@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -64,6 +65,7 @@ public class GameController {
     private Label goldLabel;
     private Label levelLabel;
     private Label waveLabel;
+    private Button btnPause;
     private ProgressBar xpBar;
     private EffectDialog effectDialog;
 
@@ -132,7 +134,7 @@ public class GameController {
         createLevelLabel();
         createXPBar();
         createWaveLabel();
-        createPlayPauseButtons();
+        createPauseButton();
     }
     private void createGoldLabel() {
         Image coin = new Image(new Texture("coin.png"));
@@ -141,14 +143,14 @@ public class GameController {
         goldLabel = new Label(" " + playerGold, skin);
         goldLabel.setFontScale(LABEL_SCALE, LABEL_SCALE);
         goldLabel.setPosition(coin.getX() + coin.getWidth(), coin.getY());
-        stage.addActor(coin, LayerType.MENU_UI);
-        stage.addActor(goldLabel, LayerType.MENU_UI);
+        stage.addActor(coin, LayerType.GAME_MENU_UI);
+        stage.addActor(goldLabel, LayerType.GAME_MENU_UI);
     }
     private void createLevelLabel() {
         levelLabel = new Label("Lvl: " + 1, skin);
         levelLabel.setFontScale(LABEL_SCALE, LABEL_SCALE);
         levelLabel.setPosition(goldLabel.getX() + goldLabel.getWidth() + levelLabel.getWidth(), goldLabel.getY());
-        stage.addActor(levelLabel, LayerType.MENU_UI);
+        stage.addActor(levelLabel, LayerType.GAME_MENU_UI);
     }
     private void createXPBar() {
         Label xpLabel = new Label("XP: ", skin);
@@ -161,23 +163,23 @@ public class GameController {
         xpBar.setValue(0);
         xpBar.setAnimateDuration(0.2f);
         xpBar.setColor(Color.GOLD);
-        stage.addActor(xpLabel, LayerType.MENU_UI);
-        stage.addActor(xpBar, LayerType.MENU_UI);
+        stage.addActor(xpLabel, LayerType.GAME_MENU_UI);
+        stage.addActor(xpBar, LayerType.GAME_MENU_UI);
     }
     private void createWaveLabel() {
         waveLabel = new Label("Wave " + 1, skin);
         waveLabel.setFontScale(LABEL_SCALE, LABEL_SCALE);
         waveLabel.setPosition(xpBar.getX() + xpBar.getWidth() + waveLabel.getWidth(), xpBar.getY());
-        stage.addActor(waveLabel, LayerType.MENU_UI);
+        stage.addActor(waveLabel, LayerType.GAME_MENU_UI);
     }
-    private void createPlayPauseButtons() {
+    private void createPauseButton() {
         Image imagePlay = new Image(new Texture(BTN_PLAY));
         Image imagePause = new Image(new Texture(BTN_PAUSE));
         Button.ButtonStyle btnStyle = new Button.ButtonStyle(imagePause.getDrawable(), imagePlay.getDrawable(), imagePlay.getDrawable());
-        Button btn = new Button(btnStyle);
-        btn.setSize(BTN_DIAMETER, BTN_DIAMETER);
-        btn.setPosition(stage.getWidth() - btn.getWidth(), stage.getHeight() - btn.getHeight(), Align.center);
-        btn.addListener(new ChangeListener() {
+        btnPause = new Button(btnStyle);
+        btnPause.setSize(BTN_DIAMETER, BTN_DIAMETER);
+        btnPause.setPosition(stage.getWidth() - btnPause.getWidth(), stage.getHeight() - btnPause.getHeight(), Align.center);
+        btnPause.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 soundController.play(SoundType.CLICK);
@@ -192,7 +194,7 @@ public class GameController {
                 TweenAnimation.bounce(actor, tweenManager, null);
             }
         });
-        stage.addActor(btn, LayerType.MENU_UI);
+        stage.addActor(btnPause, LayerType.GAME_MENU_UI);
     }
     private void createLooseDialog() {
         Image btnUnpressed = new Image(new Texture(BUTTON_UNPRESSED));
@@ -223,7 +225,7 @@ public class GameController {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 soundController.play(SoundType.CLICK);
-                soundController.musicOn();
+                if (soundController.isMusicOn()) soundController.musicOn();
                 stage.clear();
                 game.setScreen(new GameScreen(game));
             }
@@ -293,8 +295,9 @@ public class GameController {
             }
             @Override
             public void onDie(GameObject dyingUnit, GameObject killerUnit) {
-                stage.setAlpha(0.5f);
                 pause();
+                stage.setAlpha(0.5f);
+                stage.setTouchable(Touchable.disabled);
                 soundController.musicOff();
                 createLooseDialog();
             }

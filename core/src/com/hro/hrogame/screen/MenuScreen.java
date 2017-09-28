@@ -104,7 +104,7 @@ public class MenuScreen extends ScreenAdapter {
     private void createMusicButton() {
         Image imageOn = new Image(new Texture(BTN_MUSIC_ON));
         Image imageOff = new Image(new Texture(BTN_MUSIC_OFF));
-        Button.ButtonStyle btnStyle = new Button.ButtonStyle(imageOff.getDrawable(), imageOn.getDrawable(), imageOn.getDrawable());
+        Button.ButtonStyle btnStyle = new Button.ButtonStyle(imageOn.getDrawable(), imageOff.getDrawable(), imageOff.getDrawable());
         Button btn = new Button(btnStyle);
         btn.setSize(BTN_DIAMETER, BTN_DIAMETER);
         btn.setPosition(stage.getWidth() - btn.getWidth(), btn.getHeight(), Align.center);
@@ -122,7 +122,7 @@ public class MenuScreen extends ScreenAdapter {
     private void createSoundButton() {
         Image imageOn = new Image(new Texture(BTN_SOUND_ON));
         Image imageOff = new Image(new Texture(BTN_SOUND_OFF));
-        Button.ButtonStyle btnStyle = new Button.ButtonStyle(imageOff.getDrawable(), imageOn.getDrawable(), imageOn.getDrawable());
+        Button.ButtonStyle btnStyle = new Button.ButtonStyle(imageOn.getDrawable(), imageOff.getDrawable(), imageOff.getDrawable());
         Button btn = new Button(btnStyle);
         btn.setSize(BTN_DIAMETER, BTN_DIAMETER);
         btn.setPosition(stage.getWidth() - btn.getWidth(), btn.getHeight() * 3, Align.center);

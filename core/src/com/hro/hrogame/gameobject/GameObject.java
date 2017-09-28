@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -99,6 +100,9 @@ public abstract class GameObject extends Entity {
     private void initLevelUpAnimation() {
         ParticleEffect particleEffect = new ParticleEffect();
         particleEffect.load(Gdx.files.internal("lvlup_particle"), Gdx.files.internal(""));
+        for (ParticleEmitter emitter : particleEffect.getEmitters()) {
+            emitter.getSpawnWidth().setLow(getWidth());
+        }
         levelUpAnimation = new ParticleAnimation(particleEffect);
     }
     // endregion
@@ -148,6 +152,7 @@ public abstract class GameObject extends Entity {
         initCurrentParams(data);
         if (getStage() != null) {
             levelUpAnimation.setPosition(getX() + getWidth() / 2, getY(), Align.center);
+
             levelUpAnimation.setCompleteListener(new AnimationListener() {
                 @Override
                 public void onComplete() {

@@ -37,7 +37,7 @@ public class BurnOverTimeEffect extends Effect {
         super(owner, entityManager, soundController);
         this.data = data;
         maxDamageAmount = data.maxDamageAmount.current;
-        addBurnOverTimeEffectAnimation();
+        addAnimation();
         addOnDieListener();
         makeEffectOvertime();
         startEffect();
@@ -45,7 +45,7 @@ public class BurnOverTimeEffect extends Effect {
     // endregion
 
     // region Initialization methods
-    private void addBurnOverTimeEffectAnimation() {
+    private void addAnimation() {
         ParticleEffect particleEffect = new ParticleEffect();
         particleEffect.load(Gdx.files.internal("burn_over_time"), Gdx.files.internal(""));
         animation = new ParticleAnimation(particleEffect);

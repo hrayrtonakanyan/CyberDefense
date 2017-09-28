@@ -1,6 +1,5 @@
 package com.hro.hrogame.controller;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.hro.hrogame.data.effect.cannoneffectdata.CannonEffectData;
 import com.hro.hrogame.data.effect.residualeffectdata.BurnOverTimeEffectData;
 import com.hro.hrogame.data.effect.residualeffectdata.FreezeOverTimeEffectData;
@@ -51,9 +50,6 @@ import static com.hro.hrogame.sensor.SensorType.CIRCLE_SENSOR;
 import static com.hro.hrogame.sensor.SensorType.RECTANGLE_SENSOR;
 
 public class EntityFactory implements EntityManager {
-
-    // TODO: 8/21/2017 Remove the static textures and use skin.getDrawable() instead.
-    public static Texture circleTexture = new Texture("circle_range.png");
 
     // region Instance fields
     private HashMap<PlayerRace, ArrayList<GameObject>> unitMap = new HashMap<>();
@@ -123,7 +119,7 @@ public class EntityFactory implements EntityManager {
     }
     // endregion
 
-    // region Create
+    // region Create Unit
     @Override
     public GameObject createUnit(UnitType type, PlayerRace race, int level) {
         //TODO Change unit creation to use appropriate pools.
@@ -143,7 +139,7 @@ public class EntityFactory implements EntityManager {
         GameObjectData data = new GameObjectData(level, speed, health, BaseUnit.TEXTURE_PATH);
         BaseUnit unit = new BaseUnit(data);
         unit.setSize(BaseUnit.WIDTH, BaseUnit.HEIGHT);
-        unit.addEffect(createEffect(unit, EffectType.SIMPLE_CANNON));
+        unit.addEffect(createEffect(unit, EffectType.FREEZER));
         unit.setPlayerRace(race);
         unit.addGameObjectAdapter(createEntityFactoryAdapter());
         addUnitToUnitMap(unit);
@@ -173,6 +169,9 @@ public class EntityFactory implements EntityManager {
         addUnitToUnitMap(unit);
         return unit;
     }
+    // endregion
+
+    // region Create Effect
     @Override
     public Effect createEffect(GameObject owner, EffectType type) {
         switch (type) {
@@ -323,6 +322,9 @@ public class EntityFactory implements EntityManager {
         ShieldOverTimeEffectData data = new ShieldOverTimeEffectData(duration);
         return new ShieldOverTimeEffect(owner, this, soundController, data);
     }
+    // endregion
+
+    // region Create Other
     @Override
     public UnitSensor createSensor(GameObject owner, SensorType type) {
         switch (type) {

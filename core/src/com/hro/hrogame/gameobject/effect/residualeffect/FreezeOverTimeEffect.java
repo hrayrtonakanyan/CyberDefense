@@ -34,7 +34,7 @@ public class FreezeOverTimeEffect extends Effect {
     public FreezeOverTimeEffect(GameObject owner, EntityManager entityManager, SoundController soundController, FreezeOverTimeEffectData data) {
         super(owner, entityManager, soundController);
         this.data = data;
-        addFreezeOverTimeEffectAnimation();
+        addAnimation();
         makeEffectOvertime();
         makeAutoExecutable();
         addOnDieListener();
@@ -42,12 +42,13 @@ public class FreezeOverTimeEffect extends Effect {
     // endregion
 
     // region Add on initialization
-    private void addFreezeOverTimeEffectAnimation() {
+    private void addAnimation() {
         ParticleEffect particleEffect = new ParticleEffect();
         particleEffect.load(Gdx.files.internal("freeze_over_time"), Gdx.files.internal(""));
-        adjustParticleEffectSize(particleEffect);
+//        adjustParticleEffectSize(particleEffect);
         animation = new ParticleAnimation(particleEffect);
         animation.setPosition(owner.getX(Align.center), owner.getY(Align.center), Align.center);
+//        animation.setRotation(owner.getRotation());
         animation.start();
         addActor(animation);
     }

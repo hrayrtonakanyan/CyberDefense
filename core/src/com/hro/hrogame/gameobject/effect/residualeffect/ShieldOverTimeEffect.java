@@ -32,7 +32,7 @@ public class ShieldOverTimeEffect extends Effect {
     public ShieldOverTimeEffect(GameObject owner, EntityManager entityManager, SoundController soundController, ShieldOverTimeEffectData data) {
         super(owner, entityManager, soundController);
         this.data = data;
-        addShieldOverTimeEffectAnimation();
+        addAnimation();
         makeEffectOvertime();
         makeAutoExecutable();
         addOnDieListener();
@@ -40,7 +40,7 @@ public class ShieldOverTimeEffect extends Effect {
     // endregion
 
     // region Add on initialization
-    private void addShieldOverTimeEffectAnimation() {
+    private void addAnimation() {
         ParticleEffect particleEffect = new ParticleEffect();
         particleEffect.load(Gdx.files.internal("shield_over_time"), Gdx.files.internal(""));
         adjustParticleEffectSize(particleEffect);

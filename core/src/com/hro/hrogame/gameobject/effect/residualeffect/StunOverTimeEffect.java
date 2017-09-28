@@ -32,7 +32,7 @@ public class StunOverTimeEffect extends Effect {
     public StunOverTimeEffect(GameObject owner, EntityManager entityManager, SoundController soundController, StunOverTimeEffectData data) {
         super(owner, entityManager, soundController);
         this.data = data;
-        addStunOverTimeEffectAnimation();
+        addAnimation();
         addOnDieListener();
         makeEffectOvertime();
         makeAutoExecutable();
@@ -40,10 +40,10 @@ public class StunOverTimeEffect extends Effect {
     // endregion
 
     // region Add on initialization
-    private void addStunOverTimeEffectAnimation() {
+    private void addAnimation() {
         ParticleEffect particleEffect = new ParticleEffect();
         particleEffect.load(Gdx.files.internal("stun_over_time"), Gdx.files.internal(""));
-        adjustParticleEffectSize(particleEffect);
+//        adjustParticleEffectSize(particleEffect);
         animation = new ParticleAnimation(particleEffect);
         animation.setPosition(owner.getX(Align.center), owner.getY(Align.center), Align.center);
         animation.start();

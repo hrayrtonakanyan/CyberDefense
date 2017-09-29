@@ -46,6 +46,7 @@ import com.hro.hrogame.ui.EffectDialogListener;
 import com.hro.hrogame.utils.Util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import static com.hro.hrogame.constants.StringConstants.*;
@@ -57,7 +58,7 @@ public class GameController {
 
     public static final float GAME_PROGRESS_RATIO = 1;
     public static final float PLAYER_PROGRESS_RATIO = 0.7f;
-    public static final float WAVE_TIMER_INTERVAL = 5;
+    public static final float WAVE_TIMER_INTERVAL = 2;
     public static final float WAVE_TIMER_DELAY = 5;
     // endregion
 
@@ -79,8 +80,7 @@ public class GameController {
 
     private Timer waveTimer;
     private BaseUnit baseUnit;
-    private Timeline timeline = null;
-    private ArrayList<Timeline> animationTimelineList;
+    private HashMap<Actor, Timeline> timelineMap;
     private ArrayList<GameObject> enemiesWaitList;
     private int playerGold;
     private float playerXP;
@@ -103,7 +103,7 @@ public class GameController {
     private void init() {
         waveController = new WaveController(WaveController.INITIAL_WEIGHT, GAME_PROGRESS_RATIO);
         entityFactory = new EntityFactory(soundController);
-        animationTimelineList = new ArrayList<>();
+        timelineMap = new HashMap<>();
         enemiesWaitList = new ArrayList<>();
         waveTimer = new Timer();
 
@@ -215,14 +215,9 @@ public class GameController {
             public void changed(ChangeEvent event, Actor actor) {
                 btnPause.setTouchable(Touchable.disabled);
                 soundController.play(SoundType.CLICK);
-                if (isPaused) {
-                    soundController.musicResume();
-                    play();
-                }
-                else {
-                    soundController.musicPause();
-                    pause();
-                }
+                if (isPaused) play();
+                else pause();
+
                 TweenAnimation.bounce(actor, tweenManager, new AnimationListener() {
                     @Override
                     public void onComplete() {
@@ -312,6 +307,7 @@ public class GameController {
     private void createBase() {
         baseUnit = (BaseUnit) entityFactory.createUnit(UnitType.BASE, PlayerRace.PLAYER, 1);
         baseUnit.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
+        baseUnit.setHealthBarLength(baseUnit.getWidth() * 2);
         baseUnit.addGameObjectAdapter(new GameObjectAdapter() {
             @Override
             public void onTakeDamage(float damage, GameObject damagedUnit) {
@@ -515,13 +511,15 @@ public class GameController {
     // region Play/Pause
     private void play() {
         waveTimer.resume();
-        for (Timeline timeline : animationTimelineList) timeline.resume();
+        soundController.musicResume();
+        for (Timeline timeline : timelineMap.values()) timeline.resume();
         stage.playGame();
         isPaused = false;
     }
     private void pause() {
         waveTimer.pause();
-        for (Timeline timeline : animationTimelineList) timeline.pause();
+        soundController.musicPause();
+        for (Timeline timeline : timelineMap.values()) timeline.pause();
         stage.pauseGame();
         isPaused = true;
     }
@@ -532,39 +530,39 @@ public class GameController {
         String text = "-" + (int) damage;
         final Label label = new Label(text, skin);
         label.setPosition(damagedUnit.getX() + damagedUnit.getWidth(), damagedUnit.getY());
-        timeline = TweenAnimation.pop_up(label, TweenAnimation.POP_UP_DURATION,
+        Timeline timeline = TweenAnimation.pop_up(label, TweenAnimation.POP_UP_DURATION,
                                                 TweenAnimation.POP_UP_MOVE_TARGET,
                                                 TweenAnimation.POP_UP_VANISH_TARGET,
                                                 tweenManager, new AnimationListener() {
                                                                   @Override
                                                                   public void onComplete() {
                                                                       label.remove();
-                                                                      animationTimelineList.remove(timeline);
+                                                                      timelineMap.remove(label);
                                                                   }
                                                               });
-        animationTimelineList.add(timeline);
+        timelineMap.put(label, timeline);
         stage.addActor(label, LayerType.GAME_UI);
     }
     private void pushOnDieTweenAnimation(int gold, GameObject damagedUnit) {
         Image coin = new Image(new Texture("coin.png"));
         coin.setSize(20, 20);
-        Label label = new Label(" " + gold, skin);
+        final Label label = new Label(" " + gold, skin);
         label.setX(coin.getWidth());
         final Group reward = new Group();
         reward.setPosition(damagedUnit.getX() + damagedUnit.getWidth(), damagedUnit.getY() + damagedUnit.getHeight());
         reward.addActor(coin);
         reward.addActor(label);
-        timeline = TweenAnimation.pop_up(reward, TweenAnimation.POP_UP_DURATION,
+        Timeline timeline = TweenAnimation.pop_up(reward, TweenAnimation.POP_UP_DURATION,
                                                  TweenAnimation.POP_UP_MOVE_TARGET,
                                                  TweenAnimation.POP_UP_VANISH_TARGET,
                                                  tweenManager, new AnimationListener() {
                                                                    @Override
                                                                    public void onComplete() {
                                                                        reward.remove();
-                                                                       animationTimelineList.remove(timeline);
+                                                                       timelineMap.remove(reward);
                                                                    }
                                                                });
-        animationTimelineList.add(timeline);
+        timelineMap.put(reward, timeline);
         stage.addActor(reward, LayerType.GAME_UI);
     }
     private void animateLabelOnWaveChange() {
@@ -572,14 +570,14 @@ public class GameController {
         float moveTargetX = waveLabel.getX();
         float moveTargetY = waveLabel.getY();
         waveLabel.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
-        timeline = TweenAnimation.animateWaveLabel(waveLabel, 5,
+        Timeline timeline = TweenAnimation.animateWaveLabel(waveLabel, 5,
                 moveTargetX, moveTargetY, ParametersConstants.FONT_SCALE, tweenManager, new AnimationListener() {
                     @Override
                     public void onComplete() {
-                        animationTimelineList.remove(timeline);
+                        timelineMap.remove(waveLabel);
                     }
                 });
-        animationTimelineList.add(timeline);
+        timelineMap.put(waveLabel, timeline);
     }
     // endregion
 }

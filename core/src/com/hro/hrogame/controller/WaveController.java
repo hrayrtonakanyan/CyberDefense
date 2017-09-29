@@ -5,7 +5,7 @@ import com.hro.hrogame.constants.ParametersConstants;
 public class WaveController {
 
     // region Static fields
-    public static final float INITIAL_WEIGHT = 50;
+    public static final float INITIAL_WEIGHT = 60;
     public static final float TANK_UNITS_CREATION_RATIO = 0.8f;
     public static final float RAM_UNITS_CREATION_RATIO = 0.2f;
     public static final int ENEMY_UNITS_LEVEL_UP_FREQUENCY_PER_WAVE = 2;

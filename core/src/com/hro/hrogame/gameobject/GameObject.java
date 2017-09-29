@@ -79,6 +79,7 @@ public abstract class GameObject extends Entity {
         int width = Gdx.graphics.getWidth() / 10;
         healthBar = new ProgressBar(0, health, 1, false, createHealthBarStyle());
         healthBar.setSize(width, 0);
+        healthBar.setPosition(getWidth() / 2, getHeight() + 5, Align.center);
         healthBar.setValue(health);
         healthBar.setAnimateDuration(0.2f);
         addGameObjectAdapter(new GameObjectAdapter() {
@@ -360,6 +361,7 @@ public abstract class GameObject extends Entity {
     }
     public void setHealthBarLength(float length) {
         healthBar.setSize(length, 10);
+        healthBar.setPosition(getWidth() / 2, getHeight() + 5, Align.center);
     }
     // TODO: 8/17/17 Change texture to drawable
     protected void setAppearance(String texturePath) {

@@ -44,7 +44,7 @@ public abstract class CannonEffect extends Effect {
     }
     @Override
     protected void execute() {
-        List<GameObject> targetList = sensor.obtainEnemies((int)data.targetLimit.current);
+        List<GameObject> targetList = sensor.obtainEnemies((int) data.targetLimit.current);
         for (GameObject target : targetList) {
             shootABullet(target);
         }

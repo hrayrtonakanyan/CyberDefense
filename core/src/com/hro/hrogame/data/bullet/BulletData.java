@@ -13,4 +13,8 @@ public class BulletData {
         this.speed = speed;
         this.splashAreaRadius = splashAreaRadius;
     }
+
+    public BulletData(float speed) {
+        this.speed = speed;
+    }
 }

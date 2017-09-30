@@ -82,6 +82,10 @@ public class SoundController {
         isMusicOn = false;
         backgroundMusic.stop();
     }
+    public void musicRestart() {
+        musicOff();
+        musicOn();
+    }
     public void musicResume() {
         backgroundMusic.resume();
     }

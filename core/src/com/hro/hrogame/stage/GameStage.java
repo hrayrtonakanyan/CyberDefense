@@ -55,6 +55,7 @@ public class GameStage extends Stage {
     // region Stage functionality
     @Override
     public void clear() {
+        play();
         setAlpha(1);
         setTouchable(Touchable.enabled);
         Collection<Layer> values = layers.values();
@@ -76,10 +77,10 @@ public class GameStage extends Stage {
             layer.setTouchable(influence);
         }
     }
-    public void pauseGame() {
+    public void pause() {
         layers.get(LayerType.FOREGROUND).stop();
     }
-    public void playGame() {
+    public void play() {
         layers.get(LayerType.FOREGROUND).play();
     }
     // endregion

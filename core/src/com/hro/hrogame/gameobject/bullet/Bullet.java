@@ -28,7 +28,7 @@ public abstract class Bullet extends GameObject {
     public abstract UnitSensor getUnitSensor();
     // endregion
 
-    // region Add/Remove
+    // region Listeners
     public void addBulletListener(BulletListener listener) {
         bulletListeners.add(listener);
     }

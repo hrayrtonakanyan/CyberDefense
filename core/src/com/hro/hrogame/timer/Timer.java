@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Timer {
 
     // region Instance fields
-    private final ArrayList<TimerTask> taskList = new ArrayList<TimerTask>();
+    private final ArrayList<TimerTask> taskList = new ArrayList<>();
     private boolean isPaused;
     // endregion
 

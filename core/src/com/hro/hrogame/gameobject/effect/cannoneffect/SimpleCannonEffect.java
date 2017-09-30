@@ -22,9 +22,11 @@ import java.util.List;
 public class SimpleCannonEffect extends CannonEffect {
 
     // region Static fields
-    public static final String BULLET_TEXTURE_PATH = "bullet.png";
+    public static final String BULLET_TEXTURE_PATH = "simple_bullet.png";
+    public static final float BULLET_HEIGHT = Gdx.graphics.getWidth() / 80;
+    public static final float BULLET_WIDTH = BULLET_HEIGHT * 2;
     public static final int BULLET_HIT_UNIT_LIMIT = 1;
-    public static final float BULLET_SPEED = Gdx.graphics.getWidth() / 4;
+    public static final float BULLET_SPEED = Gdx.graphics.getWidth() / 3;
     public static final int BULLET_SPLASH_AREA_RADIUS = Gdx.graphics.getWidth() / 10;
 
     public static final int INITIAL_WEIGHT = 5;
@@ -61,6 +63,7 @@ public class SimpleCannonEffect extends CannonEffect {
                                                SimpleCannonEffect.BULLET_SPEED,
                                                SimpleCannonEffect.BULLET_SPLASH_AREA_RADIUS);
         bullet.initialize(bulletData);
+        bullet.setSize(BULLET_WIDTH, BULLET_HEIGHT);
         bullet.setPosition(getFiringPointX(), getFiringPointY(), Align.center);
         bullet.setPlayerRace(owner.getPlayerType());
         bullet.shoot(target);

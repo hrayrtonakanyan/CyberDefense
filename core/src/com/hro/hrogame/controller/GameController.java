@@ -257,7 +257,7 @@ public class GameController {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 soundController.play(SoundType.CLICK);
-                if (soundController.isMusicOn()) soundController.musicOn();
+                if (soundController.isMusicOn()) soundController.musicRestart();
                 stage.clear();
                 game.setScreen(new GameScreen(game));
             }
@@ -331,7 +331,6 @@ public class GameController {
                 pause();
                 stage.setAlpha(0.5f);
                 stage.setTouchable(Touchable.disabled);
-                soundController.musicOff();
                 createLooseDialog();
             }
         });
@@ -427,22 +426,23 @@ public class GameController {
     private Point generateSpawnPoint() {
         int side = random.nextInt(4);
         float x, y;
+        float margin = Gdx.graphics.getWidth() / 10;
         switch (side) {
             case 0:
-                x = -40;
+                x = -margin;
                 y = random.nextInt((int) stage.getHeight());
                 return new Point(x, y);
             case 1:
                 x = random.nextInt((int) stage.getWidth());
-                y = stage.getHeight() + 40;
+                y = stage.getHeight() + margin;
                 return new Point(x, y);
             case 2:
-                x = stage.getWidth() + 40;
+                x = stage.getWidth() + margin;
                 y = random.nextInt((int) stage.getHeight());
                 return new Point(x, y);
             case 3:
                 x = random.nextInt((int) stage.getWidth());
-                y = -40;
+                y = -margin;
                 return new Point(x, y);
             default: throw new RuntimeException("Wrong Spawn Point coordinates was generated");
         }
@@ -513,14 +513,14 @@ public class GameController {
         waveTimer.resume();
         soundController.musicResume();
         for (Timeline timeline : timelineMap.values()) timeline.resume();
-        stage.playGame();
+        stage.play();
         isPaused = false;
     }
     private void pause() {
         waveTimer.pause();
         soundController.musicPause();
         for (Timeline timeline : timelineMap.values()) timeline.pause();
-        stage.pauseGame();
+        stage.pause();
         isPaused = true;
     }
     // endregion

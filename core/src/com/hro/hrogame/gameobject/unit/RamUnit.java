@@ -7,13 +7,14 @@ import com.hro.hrogame.gameobject.GameObject;
 public class RamUnit extends GameObject{
 
     // region Static fields
-    public static final float SPEED = 80;
-    public static final float MAX_SPEED = 360;
-    public static final int HEALTH = 30;
-    public static final int MAX_HEALTH = 200;
+    public static final String TEXTURE_PATH = "ram.png";
     public static final int WIDTH = Gdx.graphics.getWidth() / 11;
     public static final int HEIGHT = Gdx.graphics.getHeight() / 12;
-    public static final String TEXTURE_PATH = "ram.png";
+
+    public static final float SPEED = Gdx.graphics.getWidth() / 10;
+    public static final float MAX_SPEED = SPEED * 2;
+    public static final int HEALTH = 30;
+    public static final int MAX_HEALTH = 200;
     // endregion
 
     // region C-tor

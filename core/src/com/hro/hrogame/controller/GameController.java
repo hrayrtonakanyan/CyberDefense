@@ -70,6 +70,8 @@ public class GameController {
     private Label levelLabel;
     private Label waveLabel;
     private Button btnPause;
+    private Button btnMusic;
+    private Button btnSound;
     private ProgressBar xpBar;
     private EffectDialog effectDialog;
 
@@ -138,6 +140,8 @@ public class GameController {
         createXPBar();
         createWaveLabel();
         createPauseButton();
+        createMusicButton();
+        createSoundButton();
     }
     private void createGoldLabel() {
         Image coin = new Image(new Texture(StringConstants.COIN));
@@ -227,6 +231,62 @@ public class GameController {
             }
         });
         stage.addActor(btnPause, LayerType.GAME_MENU_UI);
+    }
+    private void createMusicButton() {
+        Image imageOn = new Image(new Texture(BTN_MUSIC_ON));
+        Image imageOff = new Image(new Texture(BTN_MUSIC_OFF));
+        Button.ButtonStyle btnStyle;
+        if (soundController.isMusicOn()) {
+            btnStyle = new Button.ButtonStyle(imageOn.getDrawable(), imageOff.getDrawable(), imageOff.getDrawable());
+        } else {
+            btnStyle = new Button.ButtonStyle(imageOff.getDrawable(), imageOn.getDrawable(), imageOn.getDrawable());
+        }
+        btnMusic = new Button(btnStyle);
+        btnMusic.setSize(ParametersConstants.BTN_DIAMETER * 0.8f, ParametersConstants.BTN_DIAMETER * 0.8f);
+        btnMusic.setPosition(stage.getWidth() - btnPause.getWidth(), btnPause.getY() - btnPause.getHeight(), Align.center);
+        btnMusic.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                btnMusic.setTouchable(Touchable.disabled);
+                soundController.play(SoundType.CLICK);
+                if (soundController.isMusicOn()) soundController.musicOff();
+                else soundController.musicOn();
+                TweenAnimation.bounce(actor, tweenManager, new AnimationListener() {
+                    @Override
+                    public void onComplete() {
+                        btnMusic.setTouchable(Touchable.enabled);
+                    }
+                });
+            }
+        });
+    }
+    private void createSoundButton() {
+        Image imageOn = new Image(new Texture(BTN_SOUND_ON));
+        Image imageOff = new Image(new Texture(BTN_SOUND_OFF));
+        Button.ButtonStyle btnStyle;
+        if (soundController.isSoundOn()) {
+            btnStyle = new Button.ButtonStyle(imageOn.getDrawable(), imageOff.getDrawable(), imageOff.getDrawable());
+        } else {
+            btnStyle = new Button.ButtonStyle(imageOff.getDrawable(), imageOn.getDrawable(), imageOn.getDrawable());
+        }
+        btnSound = new Button(btnStyle);
+        btnSound.setSize(ParametersConstants.BTN_DIAMETER * 0.8f, ParametersConstants.BTN_DIAMETER * 0.8f);
+        btnSound.setPosition(stage.getWidth() - btnPause.getWidth(), btnMusic.getY() - btnSound.getHeight(), Align.center);
+        btnSound.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                btnSound.setTouchable(Touchable.disabled);
+                soundController.play(SoundType.CLICK);
+                if (soundController.isSoundOn()) soundController.soundOff();
+                else soundController.soundOn();
+                TweenAnimation.bounce(actor, tweenManager, new AnimationListener() {
+                    @Override
+                    public void onComplete() {
+                        btnSound.setTouchable(Touchable.enabled);
+                    }
+                });
+            }
+        });
     }
     private void createLooseDialog() {
         Image btnUnpressed = new Image(new Texture(BUTTON_UNPRESSED));
@@ -518,6 +578,8 @@ public class GameController {
         for (Timeline timeline : timelineMap.values()) timeline.resume();
         stage.play();
         isPaused = false;
+        btnMusic.remove();
+        btnSound.remove();
     }
     private void pause() {
         waveTimer.pause();
@@ -525,6 +587,8 @@ public class GameController {
         for (Timeline timeline : timelineMap.values()) timeline.pause();
         stage.pause();
         isPaused = true;
+        stage.addActor(btnMusic,LayerType.GAME_MENU_UI);
+        stage.addActor(btnSound,LayerType.GAME_MENU_UI);
     }
     // endregion
 

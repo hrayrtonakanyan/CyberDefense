@@ -44,7 +44,7 @@ public class MenuScreen extends ScreenAdapter {
     // region Lifecycle
     @Override
     public void show() {
-        soundController.musicOn();
+        if (soundController.isMusicOn()) soundController.musicOn();
 
         Image background = new Image(new Texture("background.png"));
         background.setSize(stage.getWidth(), stage.getHeight());
@@ -106,7 +106,12 @@ public class MenuScreen extends ScreenAdapter {
     private void createMusicButton() {
         Image imageOn = new Image(new Texture(BTN_MUSIC_ON));
         Image imageOff = new Image(new Texture(BTN_MUSIC_OFF));
-        Button.ButtonStyle btnStyle = new Button.ButtonStyle(imageOn.getDrawable(), imageOff.getDrawable(), imageOff.getDrawable());
+        Button.ButtonStyle btnStyle;
+        if (soundController.isMusicOn()) {
+            btnStyle = new Button.ButtonStyle(imageOn.getDrawable(), imageOff.getDrawable(), imageOff.getDrawable());
+        } else {
+            btnStyle = new Button.ButtonStyle(imageOff.getDrawable(), imageOn.getDrawable(), imageOn.getDrawable());
+        }
         final Button btn = new Button(btnStyle);
         btn.setSize(ParametersConstants.BTN_DIAMETER, ParametersConstants.BTN_DIAMETER);
         btn.setPosition(stage.getWidth() - btn.getWidth(), btn.getHeight(), Align.center);
@@ -130,7 +135,12 @@ public class MenuScreen extends ScreenAdapter {
     private void createSoundButton() {
         Image imageOn = new Image(new Texture(BTN_SOUND_ON));
         Image imageOff = new Image(new Texture(BTN_SOUND_OFF));
-        Button.ButtonStyle btnStyle = new Button.ButtonStyle(imageOn.getDrawable(), imageOff.getDrawable(), imageOff.getDrawable());
+        Button.ButtonStyle btnStyle;
+        if (soundController.isSoundOn()) {
+            btnStyle = new Button.ButtonStyle(imageOn.getDrawable(), imageOff.getDrawable(), imageOff.getDrawable());
+        } else {
+            btnStyle = new Button.ButtonStyle(imageOff.getDrawable(), imageOn.getDrawable(), imageOn.getDrawable());
+        }
         final Button btn = new Button(btnStyle);
         btn.setSize(ParametersConstants.BTN_DIAMETER, ParametersConstants.BTN_DIAMETER);
         btn.setPosition(stage.getWidth() - btn.getWidth(), btn.getHeight() * 3, Align.center);

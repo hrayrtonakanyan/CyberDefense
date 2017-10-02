@@ -17,8 +17,8 @@ import com.hro.hrogame.utils.Util;
 public class ShieldOverTimeEffect extends Effect {
 
     // region Static fields
-    public static final float DURATION = 3;
-    public static final float MAX_DURATION = 10;
+    public static final float DURATION = 1;
+    public static final float MAX_DURATION = 5;
     // endregion
 
     // region Instance fields
@@ -84,7 +84,6 @@ public class ShieldOverTimeEffect extends Effect {
     }
     @Override
     protected void execute() {
-        System.out.println(owner.getPlayerType() + " become invincible");
         owner.makeInvincible();
         isAllowedToExecute = false;
     }

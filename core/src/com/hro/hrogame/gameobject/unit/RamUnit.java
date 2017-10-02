@@ -13,7 +13,7 @@ public class RamUnit extends GameObject{
 
     public static final float SPEED = Gdx.graphics.getWidth() / 10;
     public static final float MAX_SPEED = SPEED * 2;
-    public static final int HEALTH = 30;
+    public static final int HEALTH = 15;
     public static final int MAX_HEALTH = 200;
     // endregion
 

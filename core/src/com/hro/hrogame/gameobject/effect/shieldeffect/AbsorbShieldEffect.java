@@ -15,8 +15,8 @@ public class AbsorbShieldEffect extends Effect {
 
     // region Static fields
     public static final int INITIAL_WEIGHT = 10;
-    public static final float COOLDOWN = 30;
-    public static final float MIN_COOLDOWN = 10;
+    public static final float COOLDOWN = 40;
+    public static final float MIN_COOLDOWN = 15;
     public static final int SENSOR_RADIUS_FOR_TANK = Gdx.graphics.getWidth() / 5;
     // endregion
 
@@ -40,7 +40,6 @@ public class AbsorbShieldEffect extends Effect {
     }
     @Override
     protected void execute() {
-        System.out.println("Absorb shield acquired on " + owner.getPlayerType());
         acquireShield(owner);
     }
     // endregion

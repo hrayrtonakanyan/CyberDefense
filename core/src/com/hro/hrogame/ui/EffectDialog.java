@@ -34,11 +34,11 @@ public class EffectDialog extends Group {
     public static final String HELL_FIRE_TITLE = "Hell Fire";
 
     public static final String PURCHASED = "Purchased";
-    public static final int HARD_CANNON_PRICE = 80;
-    public static final int FREEZER_PRICE = 100;
-    public static final int STUNNER_PRICE = 130;
-    public static final int ABSORB_SHIELD_PRICE = 150;
-    public static final int HELL_FIRE_PRICE = 200;
+    public static final int HARD_CANNON_PRICE = 75;
+    public static final int FREEZER_PRICE = 245;
+    public static final int STUNNER_PRICE = 380;
+    public static final int ABSORB_SHIELD_PRICE = 2500;
+    public static final int HELL_FIRE_PRICE = 4000;
     // endregion
 
     // region Instance fields

@@ -73,9 +73,16 @@ public class GameStage extends Stage {
     public void setTouchable(Touchable influence) {
         Collection<Layer> values = layers.values();
         for (Layer layer : values) {
-            if (layer.getName().equals(LayerType.MENU_UI.toString())) continue;
             layer.setTouchable(influence);
         }
+    }
+    public void setTouchable(Touchable influence, LayerType... types) {
+        for (LayerType type : types) {
+            setTouchable(influence, type);
+        }
+    }
+    public void setTouchable(Touchable influence, LayerType type) {
+        layers.get(type).setTouchable(influence);
     }
     public void pause() {
         layers.get(LayerType.FOREGROUND).stop();

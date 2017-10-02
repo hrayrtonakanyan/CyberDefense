@@ -13,8 +13,8 @@ public class TankUnit extends GameObject {
 
     public static final float SPEED = Gdx.graphics.getWidth() / 16;
     public static final float MAX_SPEED = SPEED * 2;
-    public static final int HEALTH = 100;
-    public static final int MAX_HEALTH = 700;
+    public static final int HEALTH = 40;
+    public static final int MAX_HEALTH = 800;
     // endregion
 
     // region C-tor

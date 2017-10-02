@@ -57,7 +57,7 @@ public class GameController {
     public static final float WAVE_LABEL_SCALE_MAX = 4;
 
     public static final float GAME_PROGRESS_RATIO = 1;
-    public static final float PLAYER_PROGRESS_RATIO = 0.7f;
+    public static final float PLAYER_PROGRESS_RATIO = 0.5f;
     public static final float WAVE_TIMER_INTERVAL = 2;
     public static final float WAVE_TIMER_DELAY = 5;
     // endregion
@@ -151,14 +151,14 @@ public class GameController {
     }
     private void createLevelLabel() {
         levelLabel = new Label("Lvl: " + 1, skin);
-        levelLabel.setPosition(goldLabel.getX() + Gdx.graphics.getWidth() / 4, goldLabel.getY());
+        levelLabel.setPosition(goldLabel.getX() + Gdx.graphics.getWidth() / 10, goldLabel.getY());
         levelLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
         stage.addActor(levelLabel, LayerType.GAME_MENU_UI);
     }
     private void createXPBar() {
         Label xpLabel = new Label("XP: ", skin);
-        xpLabel.setScale(1.5f, 1.5f);
-        xpLabel.setPosition(levelLabel.getX() + Gdx.graphics.getWidth() / 8, levelLabel.getY());
+        xpLabel.setPosition(levelLabel.getX() + Gdx.graphics.getWidth() / 12, levelLabel.getY());
+        xpLabel.setScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
         xpLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
 
         xpBar = new ProgressBar(0, accessXP, 1, false, createHealthBarStyle());
@@ -330,7 +330,10 @@ public class GameController {
             public void onDie(GameObject dyingUnit, GameObject killerUnit) {
                 pause();
                 stage.setAlpha(0.5f);
-                stage.setTouchable(Touchable.disabled);
+                stage.setTouchable(Touchable.disabled, LayerType.BACKGROUND,
+                                                       LayerType.FOREGROUND,
+                                                       LayerType.GAME_UI,
+                                                       LayerType.GAME_MENU_UI);
                 createLooseDialog();
             }
         });
@@ -530,6 +533,7 @@ public class GameController {
         String text = "-" + (int) damage;
         final Label label = new Label(text, skin);
         label.setPosition(damagedUnit.getX() + damagedUnit.getWidth(), damagedUnit.getY());
+        label.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
         Timeline timeline = TweenAnimation.pop_up(label, TweenAnimation.POP_UP_DURATION,
                                                 TweenAnimation.POP_UP_MOVE_TARGET,
                                                 TweenAnimation.POP_UP_VANISH_TARGET,
@@ -545,8 +549,9 @@ public class GameController {
     }
     private void pushOnDieTweenAnimation(int gold, GameObject damagedUnit) {
         Image coin = new Image(new Texture("coin.png"));
-        coin.setSize(20, 20);
+        coin.setSize(ParametersConstants.COIN_DIAMETER, ParametersConstants.COIN_DIAMETER);
         final Label label = new Label(" " + gold, skin);
+        label.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
         label.setX(coin.getWidth());
         final Group reward = new Group();
         reward.setPosition(damagedUnit.getX() + damagedUnit.getWidth(), damagedUnit.getY() + damagedUnit.getHeight());

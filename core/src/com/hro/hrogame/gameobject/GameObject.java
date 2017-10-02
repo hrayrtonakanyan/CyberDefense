@@ -460,7 +460,7 @@ public abstract class GameObject extends Entity {
 
     // region Getters
     public int getReward() {
-        return (int) weight / ParametersConstants.WEIGHT_TO_REWARD_RATIO;
+        return (int) (weight * ParametersConstants.WEIGHT_TO_REWARD_RATIO);
     }
     public float getWeight() {
         return weight;

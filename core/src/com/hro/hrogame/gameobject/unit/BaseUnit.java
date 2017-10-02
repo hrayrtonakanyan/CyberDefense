@@ -13,8 +13,8 @@ public class BaseUnit extends GameObject {
 
     public static final float SPEED = 0;
     public static final float MAX_SPEED = 0;
-    public static final int HEALTH = 1000;
-    public static final int MAX_HEALTH = 1500;
+    public static final int HEALTH = 1200;
+    public static final int MAX_HEALTH = 1600;
     public static final float RECTANGLE_SENSOR_WIDTH = Gdx.graphics.getWidth();
     public static final float RECTANGLE_SENSOR_HEIGHT = Gdx.graphics.getHeight();
     // endregion

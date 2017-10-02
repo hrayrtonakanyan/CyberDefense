@@ -26,15 +26,15 @@ public class HardCannonEffect extends CannonEffect {
     public static final float BULLET_WIDTH = BULLET_HEIGHT * 2;
     public static final int BULLET_HIT_UNIT_LIMIT = 3;
     public static final float BULLET_SPEED = Gdx.graphics.getWidth() / 5;
-    public static final int BULLET_SPLASH_AREA_RADIUS = Gdx.graphics.getHeight() / 4;
 
     public static final int INITIAL_WEIGHT = 10;
-    public static final float COOLDOWN = 7;
-    public static final float MIN_COOLDOWN = 2;
-    public static final float DAMAGE = 50;
-    public static final float MAX_DAMAGE = 400;
+    public static final float COOLDOWN = 8;
+    public static final float MIN_COOLDOWN = 3;
+    public static final float DAMAGE = 15;
+    public static final float MAX_DAMAGE = 100;
     public static final int TARGET_LIMIT = 1;
     public static final int MAX_TARGET_LIMIT = 1;
+    public static final int BULLET_SPLASH_AREA_RADIUS = Gdx.graphics.getHeight() / 5;
     public static final int SENSOR_RADIUS_FOR_BASE = Gdx.graphics.getWidth() / 5;
     public static final int SENSOR_RADIUS_FOR_TANK = Gdx.graphics.getWidth() / 8;
     // endregion

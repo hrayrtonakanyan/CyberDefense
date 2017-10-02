@@ -64,6 +64,9 @@ public class HardCannonEffect extends CannonEffect {
                 soundController.play(SoundType.HARD_CANNONBALL);
                 for (final GameObject target : hitUnitList) {
                     target.takeDamage(owner, data.damage.current);
+                    hittingAnimation.setPosition(target.getX(Align.center), target.getY(Align.center), Align.center);
+                    hittingAnimation.start();
+                    target.addActor(hittingAnimation);
                 }
             }
         });

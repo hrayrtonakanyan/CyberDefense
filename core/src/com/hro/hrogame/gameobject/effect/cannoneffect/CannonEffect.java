@@ -1,7 +1,10 @@
 package com.hro.hrogame.gameobject.effect.cannoneffect;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
+import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.controller.SoundController;
 import com.hro.hrogame.data.effect.cannoneffectdata.CannonEffectData;
@@ -15,6 +18,7 @@ import java.util.List;
 public abstract class CannonEffect extends Effect {
 
     // region Instance field
+    protected ParticleAnimation hittingAnimation;
     protected CannonEffectData data;
     private Vector2 firingPoint;
     // endregion
@@ -26,8 +30,15 @@ public abstract class CannonEffect extends Effect {
         firingPoint = new Vector2();
         levelUpEffect(owner.getLevel());
         makeAutoExecutable();
+        initAnimation();
     }
     // endregion
+
+    private void initAnimation() {
+        ParticleEffect particleEffect = new ParticleEffect();
+        particleEffect.load(Gdx.files.internal("bang"), Gdx.files.internal(""));
+        hittingAnimation = new ParticleAnimation(particleEffect);
+    }
 
     // region Act
     @Override

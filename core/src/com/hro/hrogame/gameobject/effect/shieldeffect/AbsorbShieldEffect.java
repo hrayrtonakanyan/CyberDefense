@@ -1,6 +1,7 @@
 package com.hro.hrogame.gameobject.effect.shieldeffect;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.controller.SoundController;
@@ -25,8 +26,8 @@ public class AbsorbShieldEffect extends Effect {
     // endregion
 
     // region C-tor
-    public AbsorbShieldEffect(GameObject owner, EntityManager entityManager, SoundController soundController, AbsorbShieldEffectData data) {
-        super(owner, entityManager, soundController);
+    public AbsorbShieldEffect(Skin skin, GameObject owner, EntityManager entityManager, SoundController soundController, AbsorbShieldEffectData data) {
+        super(skin, owner, entityManager, soundController);
         this.data = data;
         levelUpEffect(owner.getLevel());
         makeAutoExecutable();

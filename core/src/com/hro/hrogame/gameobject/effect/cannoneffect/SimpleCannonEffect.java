@@ -1,6 +1,7 @@
 package com.hro.hrogame.gameobject.effect.cannoneffect;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
@@ -22,12 +23,11 @@ import java.util.List;
 public class SimpleCannonEffect extends CannonEffect {
 
     // region Static fields
-    public static final String BULLET_TEXTURE_PATH = "simple_bullet.png";
+    public static final String BULLET_DRAWABLE_NAME = "simple_bullet";
     public static final float BULLET_HEIGHT = Gdx.graphics.getWidth() / 80;
     public static final float BULLET_WIDTH = BULLET_HEIGHT * 2;
     public static final int BULLET_HIT_UNIT_LIMIT = 1;
     public static final float BULLET_SPEED = Gdx.graphics.getWidth() / 3;
-    public static final int BULLET_SPLASH_AREA_RADIUS = Gdx.graphics.getWidth() / 10;
 
     public static final int INITIAL_WEIGHT = 5;
     public static final float COOLDOWN = 2;
@@ -36,6 +36,7 @@ public class SimpleCannonEffect extends CannonEffect {
     public static final float MAX_DAMAGE = 80;
     public static final int TARGET_LIMIT = 1;
     public static final int MAX_TARGET_LIMIT = 1;
+    public static final int BULLET_SPLASH_AREA_RADIUS = Gdx.graphics.getWidth() / 10;
     public static final int SENSOR_RADIUS_FOR_BASE = Gdx.graphics.getWidth() / 3;
     public static final int SENSOR_RADIUS_FOR_TANK = Gdx.graphics.getWidth() / 5;
     // endregion
@@ -49,8 +50,9 @@ public class SimpleCannonEffect extends CannonEffect {
     // endregion
 
     // region C-tor
-    public SimpleCannonEffect(GameObject owner, EntityManager entityManager, SoundController soundController, CannonEffectData data) {
-        super(owner, entityManager, soundController, data);
+    public SimpleCannonEffect(Skin skin, GameObject owner, EntityManager entityManager,
+                              SoundController soundController, CannonEffectData data) {
+        super(skin, owner, entityManager, soundController, data);
     }
     // endregion
 
@@ -58,7 +60,7 @@ public class SimpleCannonEffect extends CannonEffect {
     @Override
     protected void shootABullet(GameObject target) {
         TargetBullet bullet = (TargetBullet) entityManager.createBullet(BulletType.TARGET_BULLET);
-        BulletData bulletData = new BulletData(SimpleCannonEffect.BULLET_TEXTURE_PATH,
+        BulletData bulletData = new BulletData(SimpleCannonEffect.BULLET_DRAWABLE_NAME,
                                                SimpleCannonEffect.BULLET_HIT_UNIT_LIMIT,
                                                SimpleCannonEffect.BULLET_SPEED,
                                                SimpleCannonEffect.BULLET_SPLASH_AREA_RADIUS);

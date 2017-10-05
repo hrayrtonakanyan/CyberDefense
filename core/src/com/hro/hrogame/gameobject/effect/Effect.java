@@ -1,6 +1,7 @@
 package com.hro.hrogame.gameobject.effect;
 
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.controller.SoundController;
@@ -27,7 +28,8 @@ public abstract class Effect extends GameObject {
     // endregion
 
     // region C-tor
-    public Effect(GameObject owner, EntityManager entityManager, SoundController soundController) {
+    public Effect(Skin skin, GameObject owner, EntityManager entityManager, SoundController soundController) {
+        super(skin);
         this.owner = owner;
         this.entityManager = entityManager;
         this.soundController = soundController;

@@ -1,13 +1,14 @@
 package com.hro.hrogame.gameobject.unit;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.hro.hrogame.data.gameobject.GameObjectData;
 import com.hro.hrogame.gameobject.GameObject;
 
 public class TankUnit extends GameObject {
 
     // region Static fields
-    public static final String TEXTURE_PATH = "tank.png";
+    public static final String DRAWABLE_NAME = "tank";
     public static final int WIDTH = Gdx.graphics.getWidth() / 10;
     public static final int HEIGHT = Gdx.graphics.getHeight() / 11;
 
@@ -18,8 +19,8 @@ public class TankUnit extends GameObject {
     // endregion
 
     // region C-tor
-    public TankUnit(GameObjectData data) {
-        super(data);
+    public TankUnit(Skin skin, GameObjectData data) {
+        super(skin, data);
     }
     // endregion
 

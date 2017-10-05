@@ -1,6 +1,7 @@
 package com.hro.hrogame.gameobject.effect.cannoneffect;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
@@ -21,7 +22,7 @@ import java.util.List;
 public class HardCannonEffect extends CannonEffect {
 
     // region Static fields
-    public static final String BULLET_TEXTURE_PATH = "hard_bullet.png";
+    public static final String BULLET_DRAWABLE_NAME = "hard_bullet";
     public static final float BULLET_HEIGHT = Gdx.graphics.getWidth() / 60;
     public static final float BULLET_WIDTH = BULLET_HEIGHT * 2;
     public static final int BULLET_HIT_UNIT_LIMIT = 3;
@@ -34,14 +35,15 @@ public class HardCannonEffect extends CannonEffect {
     public static final float MAX_DAMAGE = 100;
     public static final int TARGET_LIMIT = 1;
     public static final int MAX_TARGET_LIMIT = 1;
-    public static final int BULLET_SPLASH_AREA_RADIUS = Gdx.graphics.getHeight() / 5;
+    public static final int BULLET_SPLASH_AREA_RADIUS = Gdx.graphics.getHeight() / 4;
     public static final int SENSOR_RADIUS_FOR_BASE = Gdx.graphics.getWidth() / 5;
     public static final int SENSOR_RADIUS_FOR_TANK = Gdx.graphics.getWidth() / 8;
     // endregion
 
     // region C-tor
-    public HardCannonEffect(GameObject owner, EntityManager entityManager, SoundController soundController, CannonEffectData data) {
-        super(owner, entityManager, soundController, data);
+    public HardCannonEffect(Skin skin, GameObject owner, EntityManager entityManager,
+                            SoundController soundController, CannonEffectData data) {
+        super(skin, owner, entityManager, soundController, data);
     }
     // endregion
 
@@ -49,7 +51,7 @@ public class HardCannonEffect extends CannonEffect {
     @Override
     protected void shootABullet(GameObject target) {
         TargetBullet bullet = (TargetBullet) entityManager.createBullet(BulletType.TARGET_BULLET);
-        BulletData bulletData = new BulletData(HardCannonEffect.BULLET_TEXTURE_PATH,
+        BulletData bulletData = new BulletData(HardCannonEffect.BULLET_DRAWABLE_NAME,
                                                HardCannonEffect.BULLET_HIT_UNIT_LIMIT,
                                                HardCannonEffect.BULLET_SPEED,
                                                HardCannonEffect.BULLET_SPLASH_AREA_RADIUS);

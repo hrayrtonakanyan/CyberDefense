@@ -2,6 +2,7 @@ package com.hro.hrogame.gameobject.effect.waveeffect;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
@@ -27,10 +28,10 @@ public class HellFireEffect extends Effect {
 
     // region Static field
     public static final int INITIAL_WEIGHT = 10;
-    public static final float COOLDOWN = 45;
+    public static final float COOLDOWN = 50;
     public static final float MIN_COOLDOWN = 20;
-    public static final float DAMAGE = 40;
-    public static final float MAX_DAMAGE = 150;
+    public static final float DAMAGE = 15;
+    public static final float MAX_DAMAGE = 120;
     public static final int SENSOR_RADIUS_FOR_TANK = Gdx.graphics.getWidth() / 5;
     // endregion
 
@@ -40,12 +41,12 @@ public class HellFireEffect extends Effect {
     // endregion
 
     // region C-tor
-    public HellFireEffect(GameObject owner, EntityManager entityManager, SoundController soundController, HellFireEffectData data) {
-        super(owner, entityManager, soundController);
+    public HellFireEffect(Skin skin, GameObject owner, EntityManager entityManager, SoundController soundController, HellFireEffectData data) {
+        super(skin, owner, entityManager, soundController);
         this.data = data;
         levelUpEffect(owner.getLevel());
         hellFireBulletParticleEffect = new ParticleEffect();
-        hellFireBulletParticleEffect.load(Gdx.files.internal("hell_fire_particle"), Gdx.files.internal(""));
+        hellFireBulletParticleEffect.load(Gdx.files.internal("hell_fire_particle"), skin.getAtlas());
         makeAutoExecutable();
     }
     // endregion

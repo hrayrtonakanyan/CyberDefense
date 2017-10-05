@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 public abstract class Entity extends Group {
 
 
-    public static Vector2 coordinateConvertVector = new Vector2(0, 0);
+    protected static Vector2 coordinateConvertVector = new Vector2(0, 0);
 
 
     public Entity() {

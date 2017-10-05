@@ -3,31 +3,31 @@ package com.hro.hrogame.screen;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.HroGame;
 import com.hro.hrogame.animation.particleanimation.AnimationListener;
 import com.hro.hrogame.animation.tweenanimation.TweenAnimation;
 import com.hro.hrogame.constants.ParametersConstants;
+import com.hro.hrogame.constants.StringConstants;
 import com.hro.hrogame.controller.SoundController;
 import com.hro.hrogame.controller.SoundType;
 import com.hro.hrogame.stage.GameStage;
 import com.hro.hrogame.stage.LayerType;
 import com.hro.hrogame.utils.Util;
 
-import static com.hro.hrogame.constants.StringConstants.*;
-
 public class MenuScreen extends ScreenAdapter {
 
     // region Instance fields
-    private HroGame game;
     private GameStage stage;
+    private Skin skin;
+    private HroGame game;
     private TweenManager tweenManager;
     private SoundController soundController;
     // endregion
@@ -35,6 +35,7 @@ public class MenuScreen extends ScreenAdapter {
     // region C-tor
     public MenuScreen(HroGame game) {
         this.game = game;
+        this.skin = game.skin;
         this.stage = game.stage;
         this.tweenManager = game.tweenManager;
         this.soundController = game.soundController;
@@ -45,14 +46,10 @@ public class MenuScreen extends ScreenAdapter {
     @Override
     public void show() {
         if (soundController.isMusicOn()) soundController.musicOn();
-
-        Image background = new Image(new Texture("background.png"));
-        background.setSize(stage.getWidth(), stage.getHeight());
-        stage.addActor(background, LayerType.BACKGROUND);
-
-        createMainButtons();
-        createMusicButton();
-        createSoundButton();
+        addBackground();
+        addMainButtons();
+        addMusicButton();
+        addSoundButton();
     }
 
     @Override
@@ -64,19 +61,20 @@ public class MenuScreen extends ScreenAdapter {
     }
     // endregion
 
-    // region Create
-    private void createMainButtons() {
-        Image btnUnpressed = new Image(new Texture(BUTTON_UNPRESSED));
-        Image btnPressed = new Image(new Texture(BUTTON_PRESSED));
-        Button.ButtonStyle btnStyle = new Button.ButtonStyle(btnUnpressed.getDrawable(), btnPressed.getDrawable(), null);
-
-        Label playButtonLabel = new Label(PLAY_TITLE, skin);
-        Label quitButtonLabel = new Label(QUIT_TITLE, skin);
+    // region Add UI
+    private void addBackground() {
+        Image background = new Image(skin.getDrawable(StringConstants.BACKGROUND_DRAWABLE));
+        background.setSize(stage.getWidth(), stage.getHeight());
+        stage.addActor(background, LayerType.BACKGROUND);
+    }
+    private void addMainButtons() {
+        Label playButtonLabel = new Label(StringConstants.PLAY_TITLE, skin);
+        Label quitButtonLabel = new Label(StringConstants.QUIT_TITLE, skin);
         playButtonLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
         quitButtonLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
 
-        Button btnPlay = new Button(btnStyle);
-        Button btnQuit = new Button(btnStyle);
+        Button btnPlay = new Button(skin, StringConstants.BTN_RECTANGLE);
+        Button btnQuit = new Button(skin, StringConstants.BTN_RECTANGLE);
         btnPlay.add(playButtonLabel);
         btnQuit.add(quitButtonLabel);
         btnPlay.setSize(ParametersConstants.MAIN_BUTTON_WIDTH, ParametersConstants.MAIN_BUTTON_HEIGHT);
@@ -103,16 +101,13 @@ public class MenuScreen extends ScreenAdapter {
             }
         });
     }
-    private void createMusicButton() {
-        Image imageOn = new Image(new Texture(BTN_MUSIC_ON));
-        Image imageOff = new Image(new Texture(BTN_MUSIC_OFF));
-        Button.ButtonStyle btnStyle;
+    private void addMusicButton() {
+        final Button btn;
         if (soundController.isMusicOn()) {
-            btnStyle = new Button.ButtonStyle(imageOn.getDrawable(), imageOff.getDrawable(), imageOff.getDrawable());
+            btn = new Button(skin, StringConstants.BTN_MUSIC_ON);
         } else {
-            btnStyle = new Button.ButtonStyle(imageOff.getDrawable(), imageOn.getDrawable(), imageOn.getDrawable());
+            btn = new Button(skin, StringConstants.BTN_MUSIC_OFF);
         }
-        final Button btn = new Button(btnStyle);
         btn.setSize(ParametersConstants.BTN_DIAMETER, ParametersConstants.BTN_DIAMETER);
         btn.setPosition(stage.getWidth() - btn.getWidth(), btn.getHeight(), Align.center);
         btn.addListener(new ChangeListener() {
@@ -132,16 +127,13 @@ public class MenuScreen extends ScreenAdapter {
         });
         stage.addActor(btn, LayerType.MENU_UI);
     }
-    private void createSoundButton() {
-        Image imageOn = new Image(new Texture(BTN_SOUND_ON));
-        Image imageOff = new Image(new Texture(BTN_SOUND_OFF));
-        Button.ButtonStyle btnStyle;
+    private void addSoundButton() {
+        final Button btn;
         if (soundController.isSoundOn()) {
-            btnStyle = new Button.ButtonStyle(imageOn.getDrawable(), imageOff.getDrawable(), imageOff.getDrawable());
+            btn = new Button(skin, StringConstants.BTN_SOUND_ON);
         } else {
-            btnStyle = new Button.ButtonStyle(imageOff.getDrawable(), imageOn.getDrawable(), imageOn.getDrawable());
+            btn = new Button(skin, StringConstants.BTN_SOUND_OFF);
         }
-        final Button btn = new Button(btnStyle);
         btn.setSize(ParametersConstants.BTN_DIAMETER, ParametersConstants.BTN_DIAMETER);
         btn.setPosition(stage.getWidth() - btn.getWidth(), btn.getHeight() * 3, Align.center);
         btn.addListener(new ChangeListener() {

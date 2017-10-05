@@ -1,13 +1,14 @@
 package com.hro.hrogame.gameobject.unit;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.hro.hrogame.data.gameobject.GameObjectData;
 import com.hro.hrogame.gameobject.GameObject;
 
 public class BaseUnit extends GameObject {
 
     // region Static fields
-    public static final String TEXTURE_PATH = "base.png";
+    public static final String DRAWABLE_NAME = "base";
     public static final int WIDTH = Gdx.graphics.getHeight() / 7;
     public static final int HEIGHT = Gdx.graphics.getHeight() / 7;
 
@@ -20,8 +21,8 @@ public class BaseUnit extends GameObject {
     // endregion
 
     // region C-tor
-    public BaseUnit(GameObjectData data) {
-        super(data);
+    public BaseUnit(Skin skin, GameObjectData data) {
+        super(skin, data);
         setHealthBarLength(100);
     }
     // endregion

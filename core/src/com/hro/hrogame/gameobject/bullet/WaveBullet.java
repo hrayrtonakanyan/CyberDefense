@@ -3,6 +3,7 @@ package com.hro.hrogame.gameobject.bullet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.timer.Timer;
 import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
@@ -32,8 +33,8 @@ public class WaveBullet extends Bullet {
     // endregion
 
     // region C-tor
-    public WaveBullet(EntityManager entityManager) {
-        super(entityManager);
+    public WaveBullet(Skin skin, EntityManager entityManager) {
+        super(skin, entityManager);
     }
     // endregion
 

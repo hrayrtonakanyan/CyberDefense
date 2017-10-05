@@ -1,0 +1,32 @@
+{
+
+com.badlogic.gdx.graphics.g2d.BitmapFont: { font: { file: font.fnt } },
+
+com.badlogic.gdx.graphics.Color: {
+	green: { a: 1, b: 0, g: 1, r: 0 },
+	white: { a: 1, b: 1, g: 1, r: 1 },
+	red: { a: 1, b: 0, g: 0, r: 1 },
+	black: { a: 1, b: 0, g: 0, r: 0 }
+},
+
+com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+	rectangle: { down: btn_unpressed, up: btn_pressed },
+	purchase: { down: btn_unpressed, checked: btn_unpressed, up: btn_pressed },
+	music_on: { down: music_off, checked: music_off, up: music_on },
+	music_off: { down: music_on, checked: music_on, up: music_off },
+	sound_on: { down: sound_off, checked: sound_off, up: sound_on },
+	sound_off: { down: sound_on, checked: sound_on, up: sound_off },
+	pause: { down: play, checked: play, up: pause }
+},
+
+com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
+	xp_bar: { background: brown, knob: orange, knobBefore: orange },
+	health_bar: { background: red, knob: green, knobBefore: green }
+},
+
+com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+	default: { font: font, fontColor: white }
+},
+
+}
+

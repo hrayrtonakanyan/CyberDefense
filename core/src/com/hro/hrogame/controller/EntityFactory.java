@@ -1,5 +1,6 @@
 package com.hro.hrogame.controller;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.hro.hrogame.data.effect.cannoneffectdata.CannonEffectData;
 import com.hro.hrogame.data.effect.residualeffectdata.BurnOverTimeEffectData;
 import com.hro.hrogame.data.effect.residualeffectdata.FreezeOverTimeEffectData;
@@ -52,16 +53,18 @@ import static com.hro.hrogame.sensor.SensorType.RECTANGLE_SENSOR;
 public class EntityFactory implements EntityManager {
 
     // region Instance fields
-    private HashMap<PlayerRace, ArrayList<GameObject>> unitMap = new HashMap<>();
+    private Skin skin;
     private SoundController soundController;
+    private HashMap<PlayerRace, ArrayList<GameObject>> unitMap = new HashMap<>();
     // endregion
 
     // region C-tor
-    public EntityFactory(SoundController soundController) {
+    public EntityFactory(Skin skin, SoundController soundController) {
+        this.skin = skin;
+        this.soundController = soundController;
         for (PlayerRace race : PlayerRace.values()) {
             unitMap.put(race, new ArrayList<GameObject>());
         }
-        this.soundController = soundController;
     }
     // endregion
 
@@ -122,7 +125,6 @@ public class EntityFactory implements EntityManager {
     // region Create Unit
     @Override
     public GameObject createUnit(UnitType type, PlayerRace race, int level) {
-        //TODO Change unit creation to use appropriate pools.
         switch (type) {
             case BASE:
                 return createBaseUnit(race, level);
@@ -136,8 +138,8 @@ public class EntityFactory implements EntityManager {
     private BaseUnit createBaseUnit(PlayerRace race, int level) {
         ProgressiveAttribute speed = new ProgressiveAttribute(BaseUnit.SPEED, BaseUnit.MAX_SPEED);
         ProgressiveAttribute health = new ProgressiveAttribute(BaseUnit.HEALTH, BaseUnit.MAX_HEALTH);
-        GameObjectData data = new GameObjectData(level, speed, health, BaseUnit.TEXTURE_PATH);
-        BaseUnit unit = new BaseUnit(data);
+        GameObjectData data = new GameObjectData(level, speed, health, BaseUnit.DRAWABLE_NAME);
+        BaseUnit unit = new BaseUnit(skin, data);
         unit.setSize(BaseUnit.WIDTH, BaseUnit.HEIGHT);
         unit.addEffect(createEffect(unit, EffectType.SIMPLE_CANNON));
         unit.setPlayerRace(race);
@@ -148,8 +150,8 @@ public class EntityFactory implements EntityManager {
     private TankUnit createTankUnit(PlayerRace race, int level) {
         ProgressiveAttribute speed = new ProgressiveAttribute(TankUnit.SPEED, TankUnit.MAX_SPEED);
         ProgressiveAttribute health = new ProgressiveAttribute(TankUnit.HEALTH, TankUnit.MAX_HEALTH);
-        GameObjectData data = new GameObjectData(level, speed, health, TankUnit.TEXTURE_PATH);
-        TankUnit unit = new TankUnit(data);
+        GameObjectData data = new GameObjectData(level, speed, health, TankUnit.DRAWABLE_NAME);
+        TankUnit unit = new TankUnit(skin, data);
         unit.setSize(TankUnit.WIDTH, TankUnit.HEIGHT);
         unit.addEffect(createEffect(unit, EffectType.SIMPLE_CANNON));
         unit.setPlayerRace(race);
@@ -160,8 +162,8 @@ public class EntityFactory implements EntityManager {
     private RamUnit createRamUnit(PlayerRace race, int level) {
         ProgressiveAttribute speed = new ProgressiveAttribute(RamUnit.SPEED, RamUnit.MAX_SPEED);
         ProgressiveAttribute health = new ProgressiveAttribute(RamUnit.HEALTH, RamUnit.MAX_HEALTH);
-        GameObjectData data = new GameObjectData(level, speed, health, RamUnit.TEXTURE_PATH);
-        RamUnit unit = new RamUnit(data);
+        GameObjectData data = new GameObjectData(level, speed, health, RamUnit.DRAWABLE_NAME);
+        RamUnit unit = new RamUnit(skin, data);
         unit.setSize(RamUnit.WIDTH, RamUnit.HEIGHT);
         unit.addEffect(createEffect(unit, EffectType.SELF_DESTRUCTION));
         unit.setPlayerRace(race);
@@ -206,7 +208,7 @@ public class EntityFactory implements EntityManager {
         ProgressiveAttribute damage = new ProgressiveAttribute(SimpleCannonEffect.DAMAGE, SimpleCannonEffect.MAX_DAMAGE);
         ProgressiveAttribute targetLimit = new ProgressiveAttribute(SimpleCannonEffect.TARGET_LIMIT, SimpleCannonEffect.MAX_TARGET_LIMIT);
         CannonEffectData data = new CannonEffectData(SimpleCannonEffect.INITIAL_WEIGHT, cooldown, damage, targetLimit);
-        SimpleCannonEffect effect = new SimpleCannonEffect(owner, this, soundController, data);
+        SimpleCannonEffect effect = new SimpleCannonEffect(skin, owner, this, soundController, data);
         CircleSensor sensor = (CircleSensor) createSensor(owner, CIRCLE_SENSOR);
         if (owner instanceof BaseUnit) sensor.setRadius(SimpleCannonEffect.SENSOR_RADIUS_FOR_BASE);
         else if (owner instanceof TankUnit) sensor.setRadius(SimpleCannonEffect.SENSOR_RADIUS_FOR_TANK);
@@ -218,7 +220,7 @@ public class EntityFactory implements EntityManager {
         ProgressiveAttribute damage = new ProgressiveAttribute(HardCannonEffect.DAMAGE, HardCannonEffect.MAX_DAMAGE);
         ProgressiveAttribute targetLimit = new ProgressiveAttribute(HardCannonEffect.TARGET_LIMIT, HardCannonEffect.MAX_TARGET_LIMIT);
         CannonEffectData data = new CannonEffectData(HardCannonEffect.INITIAL_WEIGHT, cooldown, damage, targetLimit);
-        HardCannonEffect effect = new HardCannonEffect(owner, this, soundController, data);
+        HardCannonEffect effect = new HardCannonEffect(skin, owner, this, soundController, data);
         CircleSensor sensor = (CircleSensor) createSensor(owner, CIRCLE_SENSOR);
         if (owner instanceof BaseUnit) sensor.setRadius(HardCannonEffect.SENSOR_RADIUS_FOR_BASE);
         else if (owner instanceof TankUnit) sensor.setRadius(HardCannonEffect.SENSOR_RADIUS_FOR_TANK);
@@ -229,7 +231,7 @@ public class EntityFactory implements EntityManager {
         ProgressiveAttribute cooldown = new ProgressiveAttribute(HellFireEffect.COOLDOWN, HellFireEffect.MIN_COOLDOWN);
         ProgressiveAttribute damage = new ProgressiveAttribute(HellFireEffect.DAMAGE, HellFireEffect.MAX_DAMAGE);
         HellFireEffectData data = new HellFireEffectData(HellFireEffect.INITIAL_WEIGHT, cooldown, damage);
-        HellFireEffect effect = new HellFireEffect(owner, this, soundController, data);
+        HellFireEffect effect = new HellFireEffect(skin, owner, this, soundController, data);
         UnitSensor sensor;
         if (owner instanceof BaseUnit) {
             sensor = createSensor(owner, RECTANGLE_SENSOR);
@@ -244,7 +246,7 @@ public class EntityFactory implements EntityManager {
     private FreezerEffect createFreezerEffect(GameObject owner) {
         ProgressiveAttribute cooldown = new ProgressiveAttribute(FreezerEffect.COOLDOWN, FreezerEffect.MIN_COOLDOWN);
         FreezerEffectData data = new FreezerEffectData(FreezerEffect.INITIAL_WEIGHT, cooldown);
-        FreezerEffect effect = new FreezerEffect(owner, this, soundController, data);
+        FreezerEffect effect = new FreezerEffect(skin, owner, this, soundController, data);
         UnitSensor sensor;
         if (owner instanceof BaseUnit) {
             sensor = createSensor(owner, RECTANGLE_SENSOR);
@@ -259,7 +261,7 @@ public class EntityFactory implements EntityManager {
     private StunnerEffect createStunnerEffect(GameObject owner) {
         ProgressiveAttribute cooldown = new ProgressiveAttribute(StunnerEffect.COOLDOWN, StunnerEffect.MIN_COOLDOWN);
         StunnerEffectData data = new StunnerEffectData(StunnerEffect.INITIAL_WEIGHT, cooldown);
-        StunnerEffect effect = new StunnerEffect(owner, this, soundController, data);
+        StunnerEffect effect = new StunnerEffect(skin, owner, this, soundController, data);
         UnitSensor sensor;
         if (owner instanceof BaseUnit) {
             sensor = createSensor(owner, RECTANGLE_SENSOR);
@@ -274,7 +276,7 @@ public class EntityFactory implements EntityManager {
     private AbsorbShieldEffect createAbsorbShieldEffect(GameObject owner) {
         ProgressiveAttribute cooldown = new ProgressiveAttribute(AbsorbShieldEffect.COOLDOWN, AbsorbShieldEffect.MIN_COOLDOWN);
         AbsorbShieldEffectData data = new AbsorbShieldEffectData(AbsorbShieldEffect.INITIAL_WEIGHT, cooldown);
-        AbsorbShieldEffect effect = new AbsorbShieldEffect(owner, this, soundController, data);
+        AbsorbShieldEffect effect = new AbsorbShieldEffect(skin, owner, this, soundController, data);
         UnitSensor sensor;
         if (owner instanceof BaseUnit) {
             sensor = createSensor(owner, RECTANGLE_SENSOR);
@@ -289,7 +291,7 @@ public class EntityFactory implements EntityManager {
     private SelfDestructionEffect createSelfDestructionEffect(GameObject owner) {
         ProgressiveAttribute damage = new ProgressiveAttribute(SelfDestructionEffect.DAMAGE, SelfDestructionEffect.MAX_DAMAGE);
         SelfDestructionEffectData data = new SelfDestructionEffectData(SelfDestructionEffect.INITIAL_WEIGHT, damage);
-        SelfDestructionEffect effect = new SelfDestructionEffect(owner, this, soundController, data);
+        SelfDestructionEffect effect = new SelfDestructionEffect(skin, owner, this, soundController, data);
         UnitSensor sensor = createSensor(owner, CIRCLE_SENSOR);
         ((CircleSensor) sensor).setRadius(SelfDestructionEffect.SENSOR_RADIUS_FOR_RAM);
         effect.setSensor(sensor);
@@ -302,7 +304,7 @@ public class EntityFactory implements EntityManager {
                                                                BurnOverTimeEffect.MAX_DAMAGE);
         ProgressiveAttribute totalDamage = new ProgressiveAttribute(BurnOverTimeEffect.TOTAL_DAMAGE, BurnOverTimeEffect.MAX_TOTAL_DAMAGE);
         BurnOverTimeEffectData data = new BurnOverTimeEffectData(cooldown, damage, totalDamage);
-        return new BurnOverTimeEffect(owner, this, soundController, data);
+        return new BurnOverTimeEffect(skin, owner, this, soundController, data);
     }
     private FreezeOverTimeEffect createFreezeOverTimeEffect(GameObject owner) {
         ProgressiveAttribute duration = new ProgressiveAttribute(FreezeOverTimeEffect.DURATION,
@@ -310,17 +312,17 @@ public class EntityFactory implements EntityManager {
         ProgressiveAttribute speedRatio = new ProgressiveAttribute(FreezeOverTimeEffect.SPEED_RATIO,
                                                                    FreezeOverTimeEffect.MIN_SPEED_RATIO);
         FreezeOverTimeEffectData data = new FreezeOverTimeEffectData(duration, speedRatio);
-        return new FreezeOverTimeEffect(owner, this, soundController, data);
+        return new FreezeOverTimeEffect(skin, owner, this, soundController, data);
     }
     private StunOverTimeEffect createStunOverTimeEffect(GameObject owner) {
         ProgressiveAttribute duration = new ProgressiveAttribute(StunOverTimeEffect.DURATION, StunOverTimeEffect.MAX_DURATION);
         StunOverTimeEffectData data = new StunOverTimeEffectData(duration);
-        return new StunOverTimeEffect(owner, this, soundController, data);
+        return new StunOverTimeEffect(skin, owner, this, soundController, data);
     }
     private ShieldOverTimeEffect createShieldOverTimeEffect(GameObject owner) {
         ProgressiveAttribute duration = new ProgressiveAttribute(ShieldOverTimeEffect.DURATION, ShieldOverTimeEffect.MAX_DURATION);
         ShieldOverTimeEffectData data = new ShieldOverTimeEffectData(duration);
-        return new ShieldOverTimeEffect(owner, this, soundController, data);
+        return new ShieldOverTimeEffect(skin, owner, this, soundController, data);
     }
     // endregion
 
@@ -333,7 +335,7 @@ public class EntityFactory implements EntityManager {
                 rectangleSensor.setUnitFilter(new ClosestUnitFilter(rectangleSensor));
                 return rectangleSensor;
             case CIRCLE_SENSOR:
-                CircleSensor circleSensor = new CircleSensor(owner, this, null);
+                CircleSensor circleSensor = new CircleSensor(owner, this);
                 circleSensor.setUnitFilter(new ClosestUnitFilter(circleSensor));
                 if (owner instanceof TargetBullet) {
                     circleSensor.setRadius(((TargetBullet)owner).getBulletData().splashAreaRadius);
@@ -344,12 +346,11 @@ public class EntityFactory implements EntityManager {
     }
     @Override
     public Bullet createBullet(BulletType bulletType) {
-        // TODO: 8/16/17 Change bullet creation to use appropriate pools.
         switch (bulletType) {
             case TARGET_BULLET:
-                return new TargetBullet(this);
+                return new TargetBullet(skin, this);
             case WAVE_BULLET:
-                return new WaveBullet(this);
+                return new WaveBullet(skin, this);
         }
         return null;
     }
@@ -373,12 +374,10 @@ public class EntityFactory implements EntityManager {
     @Override
     public boolean removeUnit(GameObject unit) {
         unitMap.get(unit.getPlayerType()).remove(unit);
-        //TODO Add pool release functionality here.
         return unit.remove();
     }
     @Override
     public boolean removeBullet(Bullet bullet) {
-        //TODO Add pool release functionality here.
         if (bullet instanceof WaveBullet) ((WaveBullet) bullet).getTimer().clear();
         return bullet.remove();
     }

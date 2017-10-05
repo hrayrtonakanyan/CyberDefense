@@ -1,6 +1,7 @@
 package com.hro.hrogame.gameobject.bullet;
 
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.bullet.BulletData;
 import com.hro.hrogame.gameobject.GameObject;
@@ -17,7 +18,8 @@ public abstract class Bullet extends GameObject {
     // endregion
 
     // region C-tor
-    public Bullet(EntityManager entityManager) {
+    public Bullet(Skin skin, EntityManager entityManager) {
+        super(skin);
         this.entityManager = entityManager;
         setTouchable(Touchable.disabled);
     }

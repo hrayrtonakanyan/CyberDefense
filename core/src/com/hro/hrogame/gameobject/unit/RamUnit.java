@@ -1,13 +1,14 @@
 package com.hro.hrogame.gameobject.unit;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.hro.hrogame.data.gameobject.GameObjectData;
 import com.hro.hrogame.gameobject.GameObject;
 
 public class RamUnit extends GameObject{
 
     // region Static fields
-    public static final String TEXTURE_PATH = "ram.png";
+    public static final String DRAWABLE_NAME = "ram";
     public static final int WIDTH = Gdx.graphics.getWidth() / 11;
     public static final int HEIGHT = Gdx.graphics.getHeight() / 12;
 
@@ -18,8 +19,8 @@ public class RamUnit extends GameObject{
     // endregion
 
     // region C-tor
-    public RamUnit(GameObjectData data) {
-        super(data);
+    public RamUnit(Skin skin, GameObjectData data) {
+        super(skin, data);
     }
     // endregion
 

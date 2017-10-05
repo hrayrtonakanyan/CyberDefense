@@ -13,6 +13,7 @@ public class Layer extends Group {
 
     // region C-tor
     public Layer() {
+        setTransform(false);
     }
     // endregion
 

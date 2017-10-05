@@ -2,6 +2,7 @@ package com.hro.hrogame.gameobject.effect.waveeffect;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
@@ -37,12 +38,12 @@ public class StunnerEffect extends Effect {
     // endregion
 
     // region C-tor
-    public StunnerEffect(GameObject owner, EntityManager entityManager, SoundController soundController, StunnerEffectData data) {
-        super(owner, entityManager, soundController);
+    public StunnerEffect(Skin skin, GameObject owner, EntityManager entityManager, SoundController soundController, StunnerEffectData data) {
+        super(skin, owner, entityManager, soundController);
         this.data = data;
         levelUpEffect(owner.getLevel());
         stunnerBulletParticleEffect = new ParticleEffect();
-        stunnerBulletParticleEffect.load(Gdx.files.internal("stunner_particle"), Gdx.files.internal(""));
+        stunnerBulletParticleEffect.load(Gdx.files.internal("stunner_particle"), skin.getAtlas());
         makeAutoExecutable();
     }
     // endregion

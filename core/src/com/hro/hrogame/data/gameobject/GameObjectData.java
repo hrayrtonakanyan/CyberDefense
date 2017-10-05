@@ -7,15 +7,15 @@ public class GameObjectData {
     public int level = 1;
     public ProgressiveAttribute speed;
     public ProgressiveAttribute health;
-    public String texturePath;
+    public String drawableName;
 
     public GameObjectData() {
     }
 
-    public GameObjectData(int level, ProgressiveAttribute speed, ProgressiveAttribute health, String texturePath) {
+    public GameObjectData(int level, ProgressiveAttribute speed, ProgressiveAttribute health, String drawableName) {
         this.level = level;
         this.speed = speed;
         this.health = health;
-        this.texturePath = texturePath;
+        this.drawableName = drawableName;
     }
 }

@@ -18,5 +18,4 @@ public interface EntityManager extends EntityProvider {
     Bullet createBullet(BulletType bulletType);
     boolean removeUnit(GameObject unit);
     boolean removeBullet(Bullet bullet);
-    // TODO: 8/14/17 change this implementation to take drawable name instead of texture.
 }

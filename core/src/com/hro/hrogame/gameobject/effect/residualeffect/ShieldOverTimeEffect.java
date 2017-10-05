@@ -3,6 +3,7 @@ package com.hro.hrogame.gameobject.effect.residualeffect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.animation.particleanimation.ParticleAnimation;
 import com.hro.hrogame.constants.ParametersConstants;
@@ -29,8 +30,9 @@ public class ShieldOverTimeEffect extends Effect {
     // endregion
 
     // region C-tor
-    public ShieldOverTimeEffect(GameObject owner, EntityManager entityManager, SoundController soundController, ShieldOverTimeEffectData data) {
-        super(owner, entityManager, soundController);
+    public ShieldOverTimeEffect(Skin skin, GameObject owner, EntityManager entityManager,
+                                SoundController soundController, ShieldOverTimeEffectData data) {
+        super(skin, owner, entityManager, soundController);
         this.data = data;
         addAnimation();
         makeEffectOvertime();
@@ -42,7 +44,7 @@ public class ShieldOverTimeEffect extends Effect {
     // region Add on initialization
     private void addAnimation() {
         ParticleEffect particleEffect = new ParticleEffect();
-        particleEffect.load(Gdx.files.internal("shield_over_time"), Gdx.files.internal(""));
+        particleEffect.load(Gdx.files.internal("shield_over_time"), skin.getAtlas());
         adjustParticleEffectSize(particleEffect);
         animation = new ParticleAnimation(particleEffect);
         animation.setPosition(owner.getX(Align.center), owner.getY(Align.center), Align.center);

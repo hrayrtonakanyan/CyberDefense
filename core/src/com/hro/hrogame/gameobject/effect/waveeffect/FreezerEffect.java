@@ -2,6 +2,7 @@ package com.hro.hrogame.gameobject.effect.waveeffect;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.constants.ParametersConstants;
 import com.hro.hrogame.controller.EntityManager;
@@ -38,12 +39,12 @@ public class FreezerEffect extends Effect {
     // endregion
 
     // region C-tor
-    public FreezerEffect(GameObject owner, EntityManager entityManager, SoundController soundController, FreezerEffectData data) {
-        super(owner, entityManager, soundController);
+    public FreezerEffect(Skin skin, GameObject owner, EntityManager entityManager, SoundController soundController, FreezerEffectData data) {
+        super(skin, owner, entityManager, soundController);
         this.data = data;
         levelUpEffect(owner.getLevel());
         freezerBulletParticleEffect = new ParticleEffect();
-        freezerBulletParticleEffect.load(Gdx.files.internal("freezer_particle"), Gdx.files.internal(""));
+        freezerBulletParticleEffect.load(Gdx.files.internal("freezer_particle"), skin.getAtlas());
         makeAutoExecutable();
     }
     // endregion

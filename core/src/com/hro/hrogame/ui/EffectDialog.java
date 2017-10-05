@@ -2,11 +2,13 @@ package com.hro.hrogame.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.constants.ParametersConstants;
@@ -20,11 +22,11 @@ import java.util.ArrayList;
 public class EffectDialog extends Group {
 
     // region Static fields
-    public static final float WIDTH = Gdx.graphics.getWidth() / 3;
+    public static final float WIDTH = Gdx.graphics.getWidth() / 2;
     public static final float HEIGHT = Gdx.graphics.getHeight() / 2;
     public static final float BUTTON_WIDTH = WIDTH / 5;
     public static final float BUTTON_HEIGHT = HEIGHT / 6;
-    public static final float BUTTON_WIDTH_PURCHASED = BUTTON_WIDTH * 2;
+    public static final float BUTTON_WIDTH_PURCHASED = WIDTH / 3;
     public static final float PADDING = Gdx.graphics.getWidth() / 80;
 
     public static final String HARD_CANNON_TITLE = "Hard Cannon";
@@ -54,6 +56,7 @@ public class EffectDialog extends Group {
     public EffectDialog(Skin skin, GameStage stage) {
         this.stage = stage;
         this.skin = skin;
+        setTransform(false);
         init();
     }
     // endregion
@@ -61,6 +64,7 @@ public class EffectDialog extends Group {
     // region Init
     private void init() {
         container = new Table(skin);
+        container.setBackground(StringConstants.BROWN_BACKGROUND_DRAWABLE);
         addActor(container);
         elementList = new ArrayList<>();
         listenerList = new ArrayList<>();
@@ -183,17 +187,12 @@ public class EffectDialog extends Group {
             label.setTouchable(Touchable.disabled);
             createButton();
             add(label).expand().left().padLeft(PADDING);
-            add(button).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).right().padRight(PADDING);
+            add(button).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).right().pad(PADDING);
         }
         private void createButton() {
-            Image btnUnpressed = new Image(new Texture(StringConstants.BUTTON_UNPRESSED));
-            Image btnPressed = new Image(new Texture(StringConstants.BUTTON_PRESSED));
-            Button.ButtonStyle buttonStyle = new Button.ButtonStyle(btnPressed.getDrawable(),
-                                                                    btnUnpressed.getDrawable(),
-                                                                    btnUnpressed.getDrawable());
             buttonLabel = new Label(price + "", getSkin());
             buttonLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
-            button = new Button(buttonStyle);
+            button = new Button(skin, StringConstants.BTN_PURCHASE);
             button.add(buttonLabel);
         }
         // endregion
@@ -204,7 +203,7 @@ public class EffectDialog extends Group {
             button.setColor(Color.GRAY);
             buttonLabel.setText(PURCHASED);
             button.setTouchable(Touchable.disabled);
-            getCell(button).width(BUTTON_WIDTH_PURCHASED);
+            getCell(button).width(BUTTON_WIDTH_PURCHASED).right().pad(PADDING);
         }
         // endregion
     }

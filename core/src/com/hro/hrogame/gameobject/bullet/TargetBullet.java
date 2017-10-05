@@ -1,5 +1,6 @@
 package com.hro.hrogame.gameobject.bullet;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.hro.hrogame.controller.EntityManager;
 import com.hro.hrogame.data.bullet.BulletData;
@@ -22,8 +23,8 @@ public class TargetBullet extends Bullet {
     // endregion
 
     // region C-tor
-    public TargetBullet(EntityManager entityManager) {
-        super(entityManager);
+    public TargetBullet(Skin skin, EntityManager entityManager) {
+        super(skin, entityManager);
     }
     // endregion
 
@@ -36,8 +37,7 @@ public class TargetBullet extends Bullet {
         gameObjectData.speed = new ProgressiveAttribute(bulletData.speed, bulletData.speed);
         gameObjectData.health = new ProgressiveAttribute(0, 0);
         setGameObjectData(gameObjectData);
-        // TODO: 8/16/17 Remove texture and set drawable;
-        setAppearance(bulletData.texturePath);
+        setAppearance(bulletData.drawableName);
         sensor = (CircleSensor) entityManager.createSensor(this, SensorType.CIRCLE_SENSOR);
         updateSensorPosition();
         addActor(sensor);

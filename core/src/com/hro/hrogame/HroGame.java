@@ -64,9 +64,6 @@ public class HroGame extends Game {
         TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(backgroundPixmap)));
         backgroundPixmap.dispose();
 
-//		Drawable background = skin.getDrawable("red");
-//		background.setMinHeight(height);
-
 		Pixmap knobPixmap = new Pixmap(0, height, Pixmap.Format.RGB888);
 		if (type.equals(StringConstants.HEALTH_BAR)) knobPixmap.setColor(Color.GREEN);
 		else knobPixmap.setColor(Color.BROWN);
@@ -74,20 +71,12 @@ public class HroGame extends Game {
         TextureRegionDrawable knobDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(knobPixmap)));
         knobPixmap.dispose();
 
-//        Drawable knob = skin.getDrawable("green");
-//        knob.setLeftWidth(0);
-//        knob.setRightWidth(0);
-//        knob.setMinHeight(height);
-
 		Pixmap knobBeforePixmap = new Pixmap(10, height, Pixmap.Format.RGB888);
 		if (type.equals(StringConstants.HEALTH_BAR)) knobBeforePixmap.setColor(Color.GREEN);
 		else knobBeforePixmap.setColor(Color.BROWN);
         knobBeforePixmap.fill();
         TextureRegionDrawable knobBeforeDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(knobBeforePixmap)));
         knobBeforePixmap.dispose();
-
-//        Drawable knobBefore = skin.getDrawable("green");
-//        knobBefore.setMinHeight(height);
 
 		style.background = backgroundDrawable;
 		style.knob = knobDrawable;

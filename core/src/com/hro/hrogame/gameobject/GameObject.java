@@ -16,6 +16,13 @@ import com.hro.hrogame.constants.StringConstants;
 import com.hro.hrogame.data.gameobject.GameObjectData;
 import com.hro.hrogame.gameobject.effect.Effect;
 import com.hro.hrogame.gameobject.effect.EffectListener;
+import com.hro.hrogame.gameobject.effect.EffectType;
+import com.hro.hrogame.gameobject.effect.cannoneffect.HardCannonEffect;
+import com.hro.hrogame.gameobject.effect.cannoneffect.SimpleCannonEffect;
+import com.hro.hrogame.gameobject.effect.shieldeffect.AbsorbShieldEffect;
+import com.hro.hrogame.gameobject.effect.waveeffect.FreezerEffect;
+import com.hro.hrogame.gameobject.effect.waveeffect.HellFireEffect;
+import com.hro.hrogame.gameobject.effect.waveeffect.StunnerEffect;
 import com.hro.hrogame.primitives.Point;
 import com.hro.hrogame.utils.Util;
 
@@ -451,6 +458,30 @@ public abstract class GameObject extends Entity {
     }
     public int getLevel() {
         return data.level;
+    }
+    public Effect getEffect(EffectType type) {
+        switch (type) {
+            case SIMPLE_CANNON:
+                for (Effect effect : effectList) if (effect instanceof SimpleCannonEffect) return effect;
+                break;
+            case HARD_CANNON:
+                for (Effect effect : effectList) if (effect instanceof HardCannonEffect) return effect;
+                break;
+            case FREEZER:
+                for (Effect effect : effectList) if (effect instanceof FreezerEffect) return effect;
+                break;
+            case STUNNER:
+                for (Effect effect : effectList) if (effect instanceof StunnerEffect) return effect;
+                break;
+            case ABSORB_SHIELD:
+                for (Effect effect : effectList) if (effect instanceof AbsorbShieldEffect) return effect;
+                break;
+            case HELL_FIRE:
+                for (Effect effect : effectList) if (effect instanceof HellFireEffect) return effect;
+                break;
+            default: throw new RuntimeException("Overtime effects can not be get from outside");
+        }
+        return null;
     }
     public PlayerRace getPlayerType() {
         return playerType;

@@ -359,6 +359,19 @@ public class GameController {
             }
         });
         stage.addActor(baseUnit, LayerType.FOREGROUND);
+        stage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Actor actor = event.getTarget();
+                if (actor instanceof TankUnit || actor instanceof RamUnit) {
+                    GameObject target = (GameObject) actor;
+                    if (!target.isDead()) {
+                        SimpleCannonEffect effect = (SimpleCannonEffect) baseUnit.getEffect(EffectType.SIMPLE_CANNON);
+                        effect.setTarget(target);
+                    }
+                }
+            }
+        });
     }
     private void addEffectToBase(EffectType type) {
         switch (type) {

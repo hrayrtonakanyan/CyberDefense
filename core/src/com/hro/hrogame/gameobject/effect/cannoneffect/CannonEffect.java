@@ -22,6 +22,7 @@ public abstract class CannonEffect extends Effect {
     protected ParticleAnimation hittingAnimation;
     protected CannonEffectData data;
     private Vector2 firingPoint;
+    private GameObject target;
     // endregion
 
     // region C-tor
@@ -57,6 +58,10 @@ public abstract class CannonEffect extends Effect {
     }
     @Override
     protected void execute() {
+        if (target != null && !target.isDead()) {
+            shootABullet(target);
+            return;
+        }
         List<GameObject> targetList = sensor.obtainEnemies((int) data.targetLimit.current);
         for (GameObject target : targetList) {
             shootABullet(target);
@@ -71,6 +76,12 @@ public abstract class CannonEffect extends Effect {
         if (owner instanceof BaseUnit) firingPoint.set(owner.getWidth() / 2, owner.getHeight() / 2);
         if (owner instanceof TankUnit) firingPoint.set(owner.getWidth(), owner.getHeight() / 2);
         return localToStageCoordinates(firingPoint);
+    }
+    // endregion
+
+    // region Setter
+    public void setTarget(GameObject target) {
+        this.target = target;
     }
     // endregion
 

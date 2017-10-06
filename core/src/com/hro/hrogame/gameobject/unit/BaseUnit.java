@@ -23,7 +23,6 @@ public class BaseUnit extends GameObject {
     // region C-tor
     public BaseUnit(Skin skin, GameObjectData data) {
         super(skin, data);
-        setHealthBarLength(100);
     }
     // endregion
 
@@ -33,4 +32,5 @@ public class BaseUnit extends GameObject {
         return this;
     }
     // endregion
+
 }

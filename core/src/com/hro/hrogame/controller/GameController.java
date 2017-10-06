@@ -154,7 +154,6 @@ public class GameController {
     private void addXPBar() {
         Label xpLabel = new Label("XP: ", skin);
         xpLabel.setPosition(levelLabel.getX() + Gdx.graphics.getWidth() / 8, levelLabel.getY());
-        xpLabel.setScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
         xpLabel.setFontScale(ParametersConstants.FONT_SCALE, ParametersConstants.FONT_SCALE);
 
         xpBar = new ProgressBar(0, accessXP, 1, false, skin, StringConstants.XP_BAR);
@@ -368,6 +367,7 @@ public class GameController {
                     if (!target.isDead()) {
                         SimpleCannonEffect effect = (SimpleCannonEffect) baseUnit.getEffect(EffectType.SIMPLE_CANNON);
                         effect.setTarget(target);
+                        animateOnTargetSelect();
                     }
                 }
             }
@@ -623,6 +623,20 @@ public class GameController {
                     }
                 });
         timelineMap.put(waveLabel, timeline);
+    }
+    private void animateOnTargetSelect() {
+        final Label label = new Label("Target changed", skin);
+        label.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
+        Timeline timeline = TweenAnimation.vanish(label, 3, 0, tweenManager,
+                                                    new AnimationListener() {
+                                                        @Override
+                                                        public void onComplete() {
+                                                            label.remove();
+                                                            timelineMap.remove(label);
+                                                        }
+                                                    });
+        timelineMap.put(label, timeline);
+        stage.addActor(label, LayerType.GAME_MENU_UI);
     }
     // endregion
 }

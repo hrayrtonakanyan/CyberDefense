@@ -50,6 +50,20 @@ public class TweenAnimation {
                 .start(manager);
     }
 
+    public static Timeline vanish(Actor actor, float duration, float target, TweenManager manager, final AnimationListener listener) {
+        return Timeline.createSequence().beginSequence()
+                .push(Tween.to(actor, VANISH, duration)
+                        .target(target))
+                .end()
+                .setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int type, BaseTween<?> source) {
+                        if (listener != null) listener.onComplete();
+                    }
+                })
+                .start(manager);
+    }
+
     public static Timeline bounce(Actor actor, TweenManager manager, final AnimationListener listener) {
         float height = actor.getHeight();
         float width = actor.getWidth();
